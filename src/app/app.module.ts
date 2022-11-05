@@ -38,6 +38,7 @@ import { SignUpComponent } from './login-components/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './login-components/forgot-password/forgot-password.component';
 import { VerifyEmailComponent } from './login-components/verify-email/verify-email.component';
 import { AuthService } from "./services/auth.service";
+import { MessengerComponent } from './messenger/messenger.component';
 //import { environment } from '../environments/environment';
 
 
@@ -51,6 +52,7 @@ import { AuthService } from "./services/auth.service";
     SignUpComponent,
     ForgotPasswordComponent,
     VerifyEmailComponent,
+    MessengerComponent,
   ],
   imports: [
     BrowserModule,
