@@ -9,7 +9,7 @@ export class Channel {
     constructor(obj?: any){
         this.channelName = obj ? obj.channelName : '';
         this.description = obj ? obj.description : '';
-        this.privacy = obj ? obj.privacy : 'public';
+        this.privacy = obj ? obj.privacy : 'Public';
         this.posts = obj ? obj.posts : '';
     }
 
