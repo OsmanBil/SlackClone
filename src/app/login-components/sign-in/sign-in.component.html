@@ -1,34 +1,54 @@
-<div class="displayTable">
-    <div class="displayTableCell">
-      <div class="authBlock">
-        <h3>Sign In</h3>
-        <div class="formGroup">
-          <input type="text" class="formControl" placeholder="Username" #userName required>
-        </div>
-        <div class="formGroup">
-          <input type="password" class="formControl" placeholder="Password" #userPassword required>
-        </div>
-        <!-- Calling SignIn Api from AuthService -->
-        <div class="formGroup">
-          <input type="button" class="btn btnPrimary" value="Log in" (click)="authService.SignIn(userName.value, userPassword.value)">
-        </div>
-        <div class="formGroup">
-          <span class="or"><span class="orInner">Or</span></span>
-        </div>
-        <!-- Calling GoogleAuth Api from AuthService -->
-        <div class="formGroup">
-          <button type="button" class="btn googleBtn" (click)="authService.GoogleAuth()">
-            <i class="fab fa-google-plus-g"></i>
-            Log in with Google
-          </button>
-        </div>
-        <div class="forgotPassword">
-          <span routerLink="/forgot-password">Forgot Password?</span>
-        </div>
+<div class="center-container">
+  <mat-card class="login-card">
+    <mat-card-title>Login</mat-card-title>
+    <mat-card-subtitle>Login mit E-mail oder mit Google Account möglich </mat-card-subtitle>
+    <mat-card-content>
+    </mat-card-content>
+
+    <form class="login-form">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Email</mat-label>
+        <input type="email" matInput [formControl]="emailFormControl" #userName placeholder="z.B. mail@example.com">
+        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error *ngIf="emailFormControl.hasError('required')">
+          Email wird <strong>benötigt</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Passwort</mat-label>
+        <input matInput matInput [formControl]="passwordFormControl" #userPassword placeholder="z.B. Password"
+          [type]="hide ? 'password' : 'text'">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="passwordFormControl.hasError('required')">
+          Password wird <strong>benötigt</strong>
+        </mat-error>
+
+      </mat-form-field>
+      <div class="center-container">
+        <button mat-raised-button color="primary" (click)="authService.SignIn(userName.value, userPassword.value)">Einloggen</button>
       </div>
-      <div class="redirectToLogin">
-        <span>Don't have an account?<span class="redirect" routerLink="/register-user"> Sign Up</span></span>
-      </div>
+
+    </form>
+
+    <div class="center-container padding-top padding-bottom">
+      OR
     </div>
-  </div>
-  
+    <div class="center-container">
+      <button mat-raised-button color="primary" (click)="authService.GoogleAuth()">Login mit Google</button>
+    </div>
+    <div class="center-container padding-top padding-bottom" routerLink="/forgot-password">
+      Passwort vergessen?
+    </div>
+    <div class="center-container padding-top padding-bottom">
+      Kein Account? <span routerLink="/register-user">Registrieren</span>
+    </div>
+
+  </mat-card>
+</div>
+

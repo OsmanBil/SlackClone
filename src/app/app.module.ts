@@ -25,9 +25,11 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MainpageComponent } from './mainpage/mainpage.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { DialogCreateChannelComponent } from './dialog-create-channel/dialog-create-channel.component';
+import { MatCardModule} from '@angular/material/card'; 
 
 
 //Angular Fire for Login
+
 //import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
@@ -70,6 +72,7 @@ import { MessengerComponent } from './messenger/messenger.component';
     MatInputModule,
     MatTooltipModule,
     MatMenuModule,
+    MatCardModule,
     AngularFireModule.initializeApp(environment.firebase),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
