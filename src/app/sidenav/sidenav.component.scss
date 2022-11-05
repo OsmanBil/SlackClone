@@ -1,0 +1,47 @@
+.container-workspace{
+    display:flex;
+    align-items: center;
+    padding: 12px;
+    font-weight: 500;
+    font-size: 18px;
+    border-top: 1px solid #522653;
+}
+
+mat-icon{
+    cursor: pointer;
+}
+
+.container{
+    margin-bottom: 12px;
+    margin-left: 8px;
+    margin-right: 8px;
+    border-top: 1px solid #522653;
+
+    .container-head{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 12px;
+
+        .channel-menu{
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            mat-icon{
+                margin-right: 4px;
+            }
+        }
+    }
+
+    .add-channel{
+        display: flex;
+        align-items: center;
+        margin-top: 12px;
+
+        mat-icon{
+            margin-right: 4px;
+            color: #a161a3;
+        }
+    }
+}

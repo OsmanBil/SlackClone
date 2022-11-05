@@ -1,0 +1,40 @@
+<div class="container-workspace">
+  Developer Akademie
+</div>
+
+<div class="container">
+  <div class="container-head">
+    <div class="channel-menu">
+      <mat-icon *ngIf="channelOpen" (click)="toggleChannelMenu()" fontIcon="arrow_drop_down"></mat-icon>
+      <mat-icon *ngIf="!channelOpen" (click)="toggleChannelMenu()" fontIcon="arrow_right"></mat-icon>
+      <span>Channels</span>
+    </div>
+    <mat-icon fontIcon="add" (click)="openDialogCreateChannel()"></mat-icon>
+  </div>
+
+  <div *ngIf="channelOpen">
+    <div *ngFor="let channel of channels">
+      <!-- <span># {{channel.channelName}}</span> -->
+    </div>
+  
+  </div>
+
+  <div class="add-channel">
+    <mat-icon fontIcon="add_circle" (click)="openDialogCreateChannel()"></mat-icon>
+    <span>Create new Channel</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="container-head">
+    <div class="channel-menu">
+      <mat-icon *ngIf="messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_drop_down"></mat-icon>
+      <mat-icon *ngIf="!messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_right"></mat-icon>
+      <span>Personal message</span>
+    </div>
+
+    <div>
+      <mat-icon fontIcon="add"></mat-icon>
+    </div>
+  </div>
+</div>
