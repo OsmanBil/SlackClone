@@ -86,21 +86,24 @@ export class AuthService {
     return user !== null && user.emailVerified !== false ? true : false;
   }
   // Sign in with Google
-  GoogleAuth() {
-    return this.AuthLogin(new auth.GoogleAuthProvider()).then((res: any) => {
-      this.router.navigate(['mainpage']);
-    });
+  async GoogleAuth() {
+    await this.AuthLogin(new auth.GoogleAuthProvider())
+      .then((res: any) => {
+        this.router.navigate(['mainpage']);
+      });
   }
   // Auth logic to run auth providers
-  AuthLogin(provider: any) {
-    return this.afAuth
+  async AuthLogin(provider: any) {
+    await this.afAuth
       .signInWithPopup(provider)
       .then((result) => {
-        this.router.navigate(['mainpage']);
         this.SetUserData(result.user);
       })
       .catch((error) => {
         window.alert(error);
+      })
+      .finally(()=>{
+        this.router.navigate(['mainpage']);
       });
   }
   /* Setting up user data when sign in with username/password, 
@@ -122,12 +125,10 @@ export class AuthService {
     });
   }
   // Sign out
-  SignOut() {
-    return this.afAuth.signOut().then(() => {
-      localStorage.removeItem('user');
-      this.router.navigate(['sign-in']);
+  async SignOut() {
+    return this.afAuth.signOut()
+    .then(() => localStorage.removeItem('user'))
+    .finally(() => this.router.navigate(['sign-in']));
      // window.location.reload();
-
-    });
   }
 }
