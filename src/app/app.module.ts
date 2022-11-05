@@ -27,12 +27,29 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { DialogCreateChannelComponent } from './dialog-create-channel/dialog-create-channel.component';
 
 
+//Angular Fire for Login
+//import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { SignInComponent } from './login-components/sign-in/sign-in.component';
+import { SignUpComponent } from './login-components/sign-up/sign-up.component';
+import { ForgotPasswordComponent } from './login-components/forgot-password/forgot-password.component';
+import { VerifyEmailComponent } from './login-components/verify-email/verify-email.component';
+//import { environment } from '../environments/environment';
+
+
 @NgModule({
   declarations: [
     AppComponent,
     MainpageComponent,
     SidenavComponent,
     DialogCreateChannelComponent,
+    SignInComponent,
+    SignUpComponent,
+    ForgotPasswordComponent,
+    VerifyEmailComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +70,13 @@ import { DialogCreateChannelComponent } from './dialog-create-channel/dialog-cre
     AngularFireModule.initializeApp(environment.firebase),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    
+    //Firebase Login Module imports
+    AngularFireAuthModule,
+    AngularFirestoreModule,
+    AngularFireStorageModule,
+    AngularFireDatabaseModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

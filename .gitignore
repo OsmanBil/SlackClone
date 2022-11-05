@@ -45,3 +45,5 @@ Thumbs.db
 .firebase
 *-debug.log
 .runtimeconfig.json
+/SlackClone/.angular/cache
+/SlackClone/node_modules
