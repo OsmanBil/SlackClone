@@ -34,6 +34,20 @@ mat-icon{
         }
     }
 
+    .container-channels{
+        margin-top: 12px;
+        margin-left: 4px;
+
+        .channel{
+            cursor: pointer;
+    
+            &:hover{
+                color:#a161a3;
+            }
+        }
+    }
+
+
     .add-channel{
         display: flex;
         align-items: center;

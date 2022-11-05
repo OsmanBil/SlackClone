@@ -12,8 +12,8 @@
     <mat-icon fontIcon="add" (click)="openDialogCreateChannel()"></mat-icon>
   </div>
 
-  <div *ngIf="channelOpen">
-    <div *ngFor="let channel of channels">
+  <div class="container-channels" *ngIf="channelOpen">
+    <div class="channel" *ngFor="let channel of channels">
       <span># {{ channel['channelName'] }}</span>
     </div>
   
@@ -32,9 +32,6 @@
       <mat-icon *ngIf="!messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_right"></mat-icon>
       <span>Personal message</span>
     </div>
-
-    <div>
-      <mat-icon fontIcon="add"></mat-icon>
-    </div>
+    <mat-icon fontIcon="add"></mat-icon>
   </div>
 </div>
