@@ -15,17 +15,11 @@ export class SignInComponent implements OnInit {
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(6)]);
 
-  constructor(
-    public authService: AuthService
-  ) {}
-  
+  constructor(public authService: AuthService) {}
 
   ngOnInit(): void {
     
   }
-  
-
-
 }
 
 

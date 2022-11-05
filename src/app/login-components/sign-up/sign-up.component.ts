@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from "../../services/auth.service";
+import {FormControl, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-sign-up',
@@ -7,10 +8,12 @@ import { AuthService } from "../../services/auth.service";
   styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent implements OnInit {
+  hide = true;
 
-  constructor(
-    public authService: AuthService
-  ) { }
+  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+  passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(6)]);
+
+  constructor(public authService: AuthService) { }
 
   ngOnInit(): void {
   }
