@@ -37,6 +37,7 @@ import { SignInComponent } from './login-components/sign-in/sign-in.component';
 import { SignUpComponent } from './login-components/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './login-components/forgot-password/forgot-password.component';
 import { VerifyEmailComponent } from './login-components/verify-email/verify-email.component';
+import { AuthService } from "./services/auth.service";
 //import { environment } from '../environments/environment';
 
 
@@ -78,7 +79,7 @@ import { VerifyEmailComponent } from './login-components/verify-email/verify-ema
     AngularFireStorageModule,
     AngularFireDatabaseModule,
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

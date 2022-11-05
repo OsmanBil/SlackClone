@@ -14,7 +14,7 @@
             </button>
             <mat-menu #menu="matMenu">
                 <button mat-menu-item>Settings</button>
-                <button mat-menu-item>Logout</button>
+                <button (click)="authService.SignOut()" mat-menu-item>Logout</button>
             </mat-menu>
             
         </div>
