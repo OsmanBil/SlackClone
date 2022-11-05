@@ -39,10 +39,23 @@ mat-icon{
         margin-left: 4px;
 
         .channel{
+            display: flex;
+            align-items: center;
             cursor: pointer;
+            margin-top: 8px;
     
             &:hover{
                 color:#a161a3;
+            }
+
+            .material-icons{
+                font-size: 18px;
+            }
+
+            mat-icon{
+                height: 18px;
+                width: 18px;
+                margin-right: 4px;
             }
         }
     }

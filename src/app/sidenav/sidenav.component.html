@@ -14,7 +14,9 @@
 
   <div class="container-channels" *ngIf="channelOpen">
     <div class="channel" *ngFor="let channel of channels">
-      <span># {{ channel['channelName'] }}</span>
+      <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
+      <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
+      <span>{{ channel['channelName'] }}</span>
     </div>
   
   </div>
