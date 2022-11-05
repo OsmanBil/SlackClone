@@ -23,15 +23,11 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit(): void {
     this.firestore
-    .collection('channels')
-    .valueChanges({ idField: 'channelId' })
-    .subscribe((changes: any) => {
-
-      this.channels = changes;
-      console.log("Wird von firestore geladen:", this.channels);
+      .collection('channels')
+      .valueChanges({ idField: 'channelId' })
+      .subscribe((changes: any) => {
+        this.channels = changes;
     })
-
-    console.log("Dieser Code wird direkt ausgegeben:", this.channels);
   }
 
 
