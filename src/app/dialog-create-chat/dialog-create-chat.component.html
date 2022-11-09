@@ -6,18 +6,17 @@
             <input placeholder="@somebody or somebody@example.com">
         </div>
 </div>
-<div class="body-container">
+<div class="body-container" *ngFor="let message of messages">
     <div class="day-container">
-        <p class="day-text">Yesterday</p>
-        <div class="message-container">
-            <img src="assets/img/p23.jpg">
+        <p class="day-text">{{ message['date'] }}</p>
+        <div class="message-container" >
+            <img src="{{ message['day_message']['user_src'] }}">
             <div class="message-text-container">
-                <div>Oda Schneider</div>
+                <p class="user-name">{{ message['day_message']['user'] }}</p>
                 <div>
-                    <p>Oda: </p>
-                    <p>ah ok alles klar :D</p>
+                    <p>{{ message['day_message']['user_firstname'] }}<span>{{ message['day_message']['user_message'] }}</span></p>
+                 
                 </div>
-
             </div>
         </div>
     </div>

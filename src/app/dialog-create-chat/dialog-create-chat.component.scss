@@ -1,6 +1,6 @@
 .container {
     width: 70%;
-    background-color: rgb(228, 220, 220);
+    background-color: rgb(230, 230, 230);
     min-height: calc(100vh - 50px);
 }
 
@@ -17,7 +17,7 @@
         align-items: center;
         padding: 10px 0;
         color: gray;
-        font-size: 18px;
+        font-size: 16px;
         p{
             padding-right: 5px;
         }
@@ -32,20 +32,40 @@
 
 .day-container {
     padding: 30px 15px;
-    
-    
+    padding-bottom: 0;
 }
 
 .day-text {
     font-weight: 500;
     font-size: 16px;
+    padding-left: 15px;
 }
 
 .message-container{
     display: flex;
-    align-items: center;
-    padding-top: 15px;
+    align-items: flex-start;
+    padding: 15px 15px;
+    margin-top: 15px;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid lightgray;
     img{
         height: 40px;
+        width: 40px;
+        object-fit: cover;
+        border-radius: 5px;
     }
+}
+
+.message-text-container{
+    padding-left: 10px;
+    div{
+        display: flex;
+        p{
+        padding-right: 3px;
+    }}
+}
+
+.user-name {
+    font-weight: bold;
 }

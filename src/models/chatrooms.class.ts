@@ -1,4 +1,4 @@
-import { Message } from "./message.class";
+import { Message } from "./message";
 
 export class Chatroom {
 

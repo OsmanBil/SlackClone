@@ -42,7 +42,7 @@ import { ForgotPasswordComponent } from './login-components/forgot-password/forg
 import { VerifyEmailComponent } from './login-components/verify-email/verify-email.component';
 import { AuthService } from "./services/auth.service";
 import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-chat.component';
-import { NewDirectMessageComponent } from './new-direct-message/new-direct-message.component';
+
 //import { environment } from '../environments/environment';
 
 
@@ -58,7 +58,7 @@ import { NewDirectMessageComponent } from './new-direct-message/new-direct-messa
     ForgotPasswordComponent,
     VerifyEmailComponent,
     DialogCreateChatComponent,
-    NewDirectMessageComponent,
+  
   ],
   imports: [
     BrowserModule,
@@ -81,12 +81,16 @@ import { NewDirectMessageComponent } from './new-direct-message/new-direct-messa
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
+  
     
     //Firebase Login Module imports
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireDatabaseModule,
+
+
+    
   ],
   providers: [AuthService],
   bootstrap: [AppComponent]
