@@ -41,7 +41,8 @@ import { SignUpComponent } from './login-components/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './login-components/forgot-password/forgot-password.component';
 import { VerifyEmailComponent } from './login-components/verify-email/verify-email.component';
 import { AuthService } from "./services/auth.service";
-import { MessengerComponent } from './messenger/messenger.component';
+import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-chat.component';
+import { NewDirectMessageComponent } from './new-direct-message/new-direct-message.component';
 //import { environment } from '../environments/environment';
 
 
@@ -56,7 +57,8 @@ import { MessengerComponent } from './messenger/messenger.component';
     SignUpComponent,
     ForgotPasswordComponent,
     VerifyEmailComponent,
-    MessengerComponent,
+    DialogCreateChatComponent,
+    NewDirectMessageComponent,
   ],
   imports: [
     BrowserModule,

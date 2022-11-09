@@ -4,6 +4,7 @@ import * as auth from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreDocument} from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
+import { Chatroom } from "src/models/chatrooms.class";
 
 
 @Injectable({
@@ -138,6 +139,7 @@ export class AuthService {
       displayName: user.displayName,
       photoURL: user.photoURL,
       emailVerified: user.emailVerified,
+  
     };
     return userRef.set(userData, {
       merge: true,

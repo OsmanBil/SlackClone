@@ -7,7 +7,6 @@ export const environment = {
     projectId: 'slack-clone-5c2d6',
     appId: '1:305633458593:web:a3d5635f6fe629b78833e0',
     storageBucket: 'slack-clone-5c2d6.appspot.com',
-    databaseURL: 'https://slack-clone-5c2d6-default-rtdb.europe-west1.firebasedatabase.app',
     locationId: 'europe-west',
     apiKey: 'AIzaSyD-17metJgucPLMcs67ZtSPvCMAqzkQkD8',
     authDomain: 'slack-clone-5c2d6.firebaseapp.com',
