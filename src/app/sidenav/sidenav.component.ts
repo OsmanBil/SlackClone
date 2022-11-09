@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCreateChannelComponent } from '../dialog-create-channel/dialog-create-channel.component';
+import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 
 
 @Component({
@@ -18,7 +20,7 @@ export class SidenavComponent implements OnInit {
   channelOpen = true;
   messageOpen = false;
 
-  constructor(public dialog: MatDialog, private firestore: AngularFirestore) {}
+  constructor(public dialog: MatDialog, private firestore: AngularFirestore,) {}
 
 
   ngOnInit(): void {
@@ -28,7 +30,11 @@ export class SidenavComponent implements OnInit {
       .subscribe((changes: any) => {
         this.channels = changes;
     })
+
+   
   }
+
+
 
 
   openDialogCreateChannel(){

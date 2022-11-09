@@ -28,6 +28,7 @@ import { DialogCreateChannelComponent } from './dialog-create-channel/dialog-cre
 import { MatCardModule} from '@angular/material/card'; 
 
 
+
 //Angular Fire for Login
 
 //import { AngularFireModule } from '@angular/fire/compat';
@@ -42,6 +43,7 @@ import { VerifyEmailComponent } from './login-components/verify-email/verify-ema
 import { AuthService } from "./services/auth.service";
 import { MessengerComponent } from './messenger/messenger.component';
 //import { environment } from '../environments/environment';
+
 
 
 @NgModule({
