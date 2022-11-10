@@ -45,22 +45,19 @@ export class DialogCreateChatComponent implements OnInit {
   // loading = false;
   // isChecked = true;
 
-  // chatroom = new Chatroom();
+  chatroom = new Chatroom();
 
-  constructor() { }
-
+constructor(private firestore: AngularFirestore) { }
   ngOnInit(): void {
   }
 
   save(){
-  //   this.loading = true;
+  
+ this.firestore
+   .collection('chatrooms')
+   .add(this.chatroom.toJSON());
 
-  //   this.firestore
-  //   .collection('chatrooms')
-  //   .add(this.chatroom.toJSON());
-
-  // //   this.loading = false;
-  //    this.dialogRef.close();
+    
  }
 
 }

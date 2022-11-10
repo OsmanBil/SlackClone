@@ -3,7 +3,8 @@
         <h2>Direct messages</h2>
         <div class="search-container">
             <p>To:</p>
-            <input placeholder="@somebody or somebody@example.com">
+            <input placeholder="@somebody or somebody@example.com" [(ngModel)]="chatroom.users">
+            <button (click)="save()">Submit</button>
         </div>
 </div>
 <div class="body-container" *ngFor="let message of messages">
@@ -22,6 +23,8 @@
     </div>
 </div>
 
+
+<div mat-dialog-content class="mat-dialog-content">adsf</div>
 
 
 </div>
