@@ -7,15 +7,21 @@ import { ForgotPasswordComponent } from './login-components/forgot-password/forg
 import { VerifyEmailComponent } from './login-components/verify-email/verify-email.component';
 // route guard
 import { AuthGuard } from './shared/guard/auth.guard';
+import { DialogCreateChannelComponent } from './dialog-create-channel/dialog-create-channel.component';
+import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-chat.component';
 
 const routes: Routes = [
  // { path: '', component: MainpageComponent},
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
-  { path: 'mainpage', component: MainpageComponent, canActivate: [AuthGuard] },
   { path: 'sign-in', component: SignInComponent },
   { path: 'register-user', component: SignUpComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
+  { path: 'mainpage', component: MainpageComponent, canActivate: [AuthGuard] ,
+    children:[
+      {path: '', component: DialogCreateChatComponent},
+      {path: 'create-chanel', component: DialogCreateChatComponent},
+    ]},
 ];
 
 
