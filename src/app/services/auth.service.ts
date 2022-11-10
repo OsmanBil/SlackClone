@@ -139,6 +139,7 @@ export class AuthService {
       displayName: user.displayName,
       photoURL: user.photoURL,
       emailVerified: user.emailVerified,
+      isOnline: true,
   
     };
     return userRef.set(userData, {

@@ -38,7 +38,7 @@ export class DialogCreateChatComponent implements OnInit {
             user_message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. 👌 Totam non rem similique? A totam amet optio ipsam quod. Quaerat quasi similique autem corporis nostrum tempora doloribus officiis neque molestiae eveniet?', 
           },
           },
-  ];
+  ]
 
 
 
@@ -49,19 +49,18 @@ export class DialogCreateChatComponent implements OnInit {
 
   constructor() { }
 
-
   ngOnInit(): void {
   }
 
-  // save(){
+  save(){
   //   this.loading = true;
 
   //   this.firestore
   //   .collection('chatrooms')
   //   .add(this.chatroom.toJSON());
 
-  //   this.loading = false;
-  //   this.dialogRef.close();
-  // }
+  // //   this.loading = false;
+  //    this.dialogRef.close();
+ }
 
 }
