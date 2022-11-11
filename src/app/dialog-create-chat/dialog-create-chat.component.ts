@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Chatroom } from 'src/models/chatrooms.class';
+import { Message } from 'src/models/message.class';
+import { chatroomUser } from 'src/models/chatroomUser.class';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Firestore, CollectionReference, collectionData, collection, setDoc, doc, addDoc, docData, onSnapshot } from '@angular/fire/firestore';
+import { map } from '@firebase/util';
 
 
 @Component({
@@ -45,19 +49,59 @@ export class DialogCreateChatComponent implements OnInit {
   // loading = false;
   // isChecked = true;
 
-  chatroom = new Chatroom();
+  chatroom2 = new Chatroom();
+  chatroomUser = new chatroomUser();
+
+  neueMessage = [];
+  
+  chatroom = [
+    [{user: 'ASdf', lastLogin: '5'}],
+    [{message: 'blabla', time: '5454', author: 'osman'}]
+  ]
+
+chatID: any;
+
 
 constructor(private firestore: AngularFirestore) { }
   ngOnInit(): void {
   }
 
-  save(){
   
- this.firestore
-   .collection('chatrooms')
-   .add(this.chatroom.toJSON());
+  save(){ 
+    var arr = this.chatroom;
+    var arrayToString = JSON.stringify(Object.assign({}, arr));  // convert array to string
+    let dishesInChart = JSON.parse(arrayToString); //Strig to Json
 
+    this.chatID = this.firestore.createId()
     
- }
+  
 
+  this.firestore
+  .collection('chatrooms')
+  .doc(this.chatID).set(dishesInChart)
+
+  console.log(this.chatID)
+   
+ 
+  
+  }
+
+
+ async addmessage(){
+  let hans = {message: 'hans hans kanns 222',}
+  var arrayToString = JSON.stringify(Object.assign({}, hans));  // convert array to string
+  let dishesInChart2 = JSON.parse(arrayToString); //Strig to Json
+ 
+  this.chatroom[1].push(dishesInChart2)
+
+  var arr = this.chatroom;
+  var arrayToString = JSON.stringify(Object.assign({}, arr));  // convert array to string
+  let dishesInChart = JSON.parse(arrayToString); //Strig to Json
+
+  this.firestore
+  .collection('chatrooms').doc(this.chatID)
+  .update(dishesInChart)
+ ;
+
+ }
 }
