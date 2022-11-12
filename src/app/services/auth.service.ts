@@ -2,10 +2,10 @@ import { Injectable, NgZone } from '@angular/core';
 import { User } from '../services/user';
 import * as auth from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore, AngularFirestoreDocument} from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { Chatroom } from "src/models/chatrooms.class";
-
+import { GoogleAuthProvider, GithubAuthProvider, FacebookAuthProvider } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -103,6 +103,9 @@ export class AuthService {
 
   // Sign in with Google
   async GoogleAuth() {
+
+
+
     await this.AuthLogin(new auth.GoogleAuthProvider())
       .then((result: any) => {
         this.router.navigate(['mainpage']);
@@ -141,7 +144,7 @@ export class AuthService {
       emailVerified: user.emailVerified,
       isOnline: true,
       chatids: [],
-  
+
     };
     return userRef.set(userData, {
       merge: true,
