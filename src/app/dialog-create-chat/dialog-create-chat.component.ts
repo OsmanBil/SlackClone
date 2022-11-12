@@ -14,7 +14,7 @@ import { map } from '@firebase/util';
   styleUrls: ['./dialog-create-chat.component.scss']
 })
 export class DialogCreateChatComponent implements OnInit {
-  messages = [
+  messagesExample = [
     {
       date: 'Yesterday',
       day_message: { 
@@ -44,35 +44,34 @@ export class DialogCreateChatComponent implements OnInit {
           },
   ]
 
-
-
-  // loading = false;
-  // isChecked = true;
-
-  chatroom2 = new Chatroom();
-  chatroomUser = new chatroomUser();
-
-  neueMessage = [];
-  
-  chatroom = [
-    [{user: 'ASdf', lastLogin: '5'}],
-    [{message: 'blabla', time: '5454', author: 'osman'}]
-  ]
+  chatroomUsers = {user: '', lastLogin: ''};
+  chatroomMessages = {message: '', time: '', author: ''};
+ 
+  chatroom = 
+    {usersss: this.chatroomUsers,
+    chatsss: []
+  };
 
 chatID: any;
+chatListener: [];
 
 
 constructor(private firestore: AngularFirestore) { }
   ngOnInit(): void {
+   console.log(this.chatroom)
+
+   this.chatListener = [];
   }
 
   
   save(){ 
+
+
     var arr = this.chatroom;
     var arrayToString = JSON.stringify(Object.assign({}, arr));  // convert array to string
     let dishesInChart = JSON.parse(arrayToString); //Strig to Json
 
-    this.chatID = this.firestore.createId()
+    this.chatID = this.firestore.createId();
     
   
 
@@ -87,12 +86,13 @@ constructor(private firestore: AngularFirestore) { }
   }
 
 
- async addmessage(){
-  let hans = {message: 'hans hans kanns 222',}
-  var arrayToString = JSON.stringify(Object.assign({}, hans));  // convert array to string
-  let dishesInChart2 = JSON.parse(arrayToString); //Strig to Json
+  addmessage(){
  
-  this.chatroom[1].push(dishesInChart2)
+   let hans = this.chatroomMessages
+   var arrayToString = JSON.stringify(Object.assign({}, hans));  // convert array to string
+   let dishesInChart2 = JSON.parse(arrayToString); //Strig to Json
+ 
+  this.chatroom.chatsss.push(dishesInChart2)
 
   var arr = this.chatroom;
   var arrayToString = JSON.stringify(Object.assign({}, arr));  // convert array to string

@@ -1,16 +1,22 @@
-import { Message } from "./message.class";
-import { chatroomUser } from "./chatroomUser.class"; 
+
 
 export class Chatroom {
 
-    chatroomUsers: [chatroomUser];
-    messages: [Message];
+    chatroomUsers: [{
+        name: string;
+        lastLogin: any;
+    }];
+    messages2: [
+        {message: string;
+        time: any;
+        author: string;}
+        ];
     
 
 
     constructor(obj?: any){
         this.chatroomUsers = obj ? obj.chatroomUsers : '';
-        this.messages = obj ? obj.messages : '';
+        this.messages2 = obj ? obj.messages : '';
 
        
     }
@@ -18,7 +24,7 @@ export class Chatroom {
     public toJSON(){
         return{
             chatroomUsers: this.chatroomUsers,
-            messages: this.messages
+            messages: this.messages2
 
         };
     }
