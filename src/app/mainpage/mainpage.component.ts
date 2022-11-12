@@ -30,7 +30,12 @@ export class MainpageComponent implements OnInit {
   getCurrentUserId(){
       let currentUser = localStorage.getItem('user');
       currentUser = JSON.parse(currentUser);
+      if (currentUser == null){
+        // nothing happen
+    }else{
       this.currentUserId = currentUser['uid'];
+    }
+
       this.setCurrentUser();
   }
 
