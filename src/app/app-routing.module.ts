@@ -11,17 +11,20 @@ import { DialogCreateChannelComponent } from './dialog-create-channel/dialog-cre
 import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-chat.component';
 
 const routes: Routes = [
- // { path: '', component: MainpageComponent},
+  // { path: '', component: MainpageComponent},
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: 'sign-in', component: SignInComponent },
+  {
+    path: 'mainpage', component: MainpageComponent,
+    children: [
+      { path: '', component: DialogCreateChatComponent },
+      { path: 'create-chanel', component: DialogCreateChatComponent },
+    ]
+  },
   { path: 'register-user', component: SignUpComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
-  { path: 'mainpage', component: MainpageComponent, canActivate: [AuthGuard] ,
-    children:[
-      {path: '', component: DialogCreateChatComponent},
-      {path: 'create-chanel', component: DialogCreateChatComponent},
-    ]},
+
 ];
 
 
