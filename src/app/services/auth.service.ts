@@ -17,6 +17,7 @@ export class AuthService {
   userData: any; // Save logged in user data
 
   constructor(
+    public firestore: AngularFirestore,
     public afs: AngularFirestore, // Inject Firestore service
     public afAuth: AngularFireAuth, // Inject Firebase auth service
     public router: Router,
@@ -133,22 +134,41 @@ export class AuthService {
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
   SetUserData(user: any) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(
-      `users/${user.uid}`
-    );
-    const userData: User = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      emailVerified: user.emailVerified,
-      isOnline: true,
-      chatids: [],
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    console.log('Testing:', user.photoURL);
 
-    };
-    return userRef.set(userData, {
-      merge: true,
+
+    this.firestore.collection(`users`).doc(user.uid).get().subscribe(ref => {
+
+      if (!ref.exists) {
+        const userData: User = {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          emailVerified: user.emailVerified,
+          isOnline: true,
+          chatids: [],
+        };
+
+         userRef.set(userData, {
+          merge: true,
+        });
+      } else {
+
+
+
+      }
+
     });
+
+
+
+
+
+
+
+
   }
 
 
@@ -158,5 +178,6 @@ export class AuthService {
       .then(() => localStorage.removeItem('user'))
       .finally(() => this.router.navigate(['sign-in']));
     // window.location.reload();
+
   }
 }
