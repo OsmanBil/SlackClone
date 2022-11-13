@@ -42,6 +42,7 @@ import { ForgotPasswordComponent } from './login-components/forgot-password/forg
 import { VerifyEmailComponent } from './login-components/verify-email/verify-email.component';
 import { AuthService } from "./services/auth.service";
 import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-chat.component';
+import { DialogEditUserComponent } from './dialog-edit-user/dialog-edit-user.component';
 
 
 //import { environment } from '../environments/environment';
@@ -59,6 +60,7 @@ import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-ch
     ForgotPasswordComponent,
     VerifyEmailComponent,
     DialogCreateChatComponent,
+    DialogEditUserComponent
   
   ],
   imports: [

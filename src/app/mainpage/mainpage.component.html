@@ -11,11 +11,11 @@
             <mat-icon fontIcon="help" matTooltip="Help"></mat-icon>
             <button mat-button [matMenuTriggerFor]="menu">
                 <div class="container-profil-img">
-                    <img *ngIf="currentUser['photoURL']" src="{{ currentUser['photoURL'] }}">
+                    <img *ngIf="currentUser.photoURL" src="{{ currentUser.photoURL }}">
                 </div>
             </button>
             <mat-menu #menu="matMenu">
-                <button mat-menu-item>Settings</button>
+                <button (click)="openSettings()" mat-menu-item>Settings</button>
                 <button (click)="authService.SignOut()" mat-menu-item>Logout</button>
             </mat-menu>
             
