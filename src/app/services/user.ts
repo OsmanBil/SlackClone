@@ -8,5 +8,6 @@ export interface User {
     emailVerified: boolean;
     isOnline: boolean;
     chatids: [];
+    search: string[];
 
  }

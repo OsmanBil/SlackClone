@@ -6,6 +6,9 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat
 import { Router } from '@angular/router';
 import { Chatroom } from "src/models/chatrooms.class";
 import { GoogleAuthProvider, GithubAuthProvider, FacebookAuthProvider } from '@angular/fire/auth';
+import { getFirestore } from '@firebase/firestore';
+import { doc, updateDoc } from '@firebase/firestore';
+
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +17,8 @@ import { GoogleAuthProvider, GithubAuthProvider, FacebookAuthProvider } from '@a
 
 export class AuthService {
 
+
+  db = getFirestore();
   userData: any; // Save logged in user data
 
   constructor(
@@ -133,15 +138,17 @@ export class AuthService {
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  SetUserData(user: any) {
+  async SetUserData(user: any) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     console.log('Testing:', user.photoURL);
 
+    let searchName = String(user.displayName);
+    let searchUserValue = '';
 
     this.firestore.collection(`users`).doc(user.uid).get().subscribe(ref => {
 
       if (!ref.exists) {
-        const userData: User = {
+        let userData: User = {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
@@ -149,21 +156,40 @@ export class AuthService {
           emailVerified: user.emailVerified,
           isOnline: true,
           chatids: [],
+          search: [],
         };
 
-         userRef.set(userData, {
+        for (let i = 0; i < searchName.length; i++) {
+            searchUserValue += searchName[i]
+            userData.search.push(String(searchUserValue).toLowerCase())
+           }
+
+        userRef.set(userData, {
           merge: true,
         });
-      } else {
 
 
 
-      }
+      } else { }
 
     });
 
 
+    // this.firestore.collection(`users`).doc(user.uid).collection('search').get().subscribe(ref => {
 
+    //   let searchName = String(user.displayName);
+    //   let searchUserValue = '';
+    //   let searchUserValueArray = [];
+
+    //   for (let i = 0; i < searchName.length; i++) {
+    //     searchUserValue += searchName[i]
+    //     console.log(searchUserValue)
+    //   }
+    //   console.log(searchUserValue)
+
+    //   // for(let i = 0; i < searchName.lenght; )
+
+    // });
 
 
 
