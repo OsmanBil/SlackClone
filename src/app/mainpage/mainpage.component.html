@@ -11,7 +11,7 @@
             <mat-icon fontIcon="help" matTooltip="Help"></mat-icon>
             <button mat-button [matMenuTriggerFor]="menu">
                 <div class="container-profil-img">
-                    <img *ngIf="currentUser.photoURL" src="{{ currentUser.photoURL }}">
+                    <img *ngIf="currentUser?.photoURL" src="{{ currentUser.photoURL }}">
                 </div>
             </button>
             <mat-menu #menu="matMenu">

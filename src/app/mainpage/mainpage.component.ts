@@ -45,8 +45,8 @@ export class MainpageComponent implements OnInit {
   setCurrentUser(){
     let currentUser = this.users.filter((user:any) => user['uid'] == this.currentUserId);
     this.currentUser = currentUser[0];
-    console.log(this.currentUser);
   }
+
 
   openSettings(){
     let dialog = this.dialog.open(DialogEditUserComponent);
