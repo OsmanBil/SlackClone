@@ -18,7 +18,7 @@ export class DialogEditUserComponent implements OnInit {
   uploadProgress: Observable<number>;
   uploadState: Observable<string>;
   downloadURL: Observable<string>;
-  fb;
+  imageURL: string;
 
   user: User;
   userId = '';
@@ -29,9 +29,9 @@ export class DialogEditUserComponent implements OnInit {
     private firestore: AngularFirestore,
     private afStorage: AngularFireStorage) { }
 
-  ngOnInit(): void {
 
-  }
+  ngOnInit(): void 
+  {}
 
 
   upload = (event) => {
@@ -47,28 +47,49 @@ export class DialogEditUserComponent implements OnInit {
         this.downloadURL = this.ref.getDownloadURL();
         this.downloadURL.subscribe(url => {
           if (url) {
-            this.fb = url;
-            console.log(this.fb);
+            this.imageURL = url;
+            this.uploadState = null;
           }
       });
     })
     )
     .subscribe();
-
     this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
   }
 
 
   discardUpload(){
-    this.downloadURL = null;
-    this.uploadState = null;
+    this.ref.delete();
+    this.resetUpload();
   }
 
 
   changePicture(){
-    this.user['photoURL'] = this.fb;
+    let currentImageURL = this.afStorage.refFromURL(this.user['photoURL']);
+    currentImageURL.delete();
+    this.user['photoURL'] = this.imageURL;
+    this.resetUpload();
+    this.saveWithoutClose();
+  }
+
+
+  resetUpload(){
     this.downloadURL = null;
     this.uploadState = null;
+    this.ref = null;
+    this.task = null;
+  }
+
+
+  saveWithoutClose(){
+    this.loading = true;
+    this.firestore
+    .collection('users')
+    .doc(this.userId)
+    .update(this.user)
+    .then(() =>{
+      this.loading = false;
+    });
   }
 
 

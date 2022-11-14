@@ -20,6 +20,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MainpageComponent } from './mainpage/mainpage.component';
@@ -80,6 +81,7 @@ import { DialogEditUserComponent } from './dialog-edit-user/dialog-edit-user.com
     MatTooltipModule,
     MatMenuModule,
     MatCardModule,
+    MatSlideToggleModule,
     AngularFireModule.initializeApp(environment.firebase),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
