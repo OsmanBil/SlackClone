@@ -3,7 +3,7 @@
         <h2>Direct messages</h2>
         <div class="search-container">
             <p>To:</p>
-            <button (click)="createChat()">create Chat</button>
+            <button (click)="createChat()" [disabled]="usersWantToChat.length == 0">create Chat</button>
 
         </div>
         <div class="search-container">

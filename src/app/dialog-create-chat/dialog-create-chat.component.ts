@@ -93,7 +93,7 @@ export class DialogCreateChatComponent implements OnInit {
   foundUsers: any[];
   usersWantToChat: any[] = [];
 
-  @Input() chatActive:boolean = false;
+  @Input() chatActive: boolean = false;
   chatroomData = {
     numberOfUsers: 2
   }
@@ -123,7 +123,7 @@ export class DialogCreateChatComponent implements OnInit {
     this.foundUsers = [];
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
+     //  console.log(doc.id, " => ", doc.data());
       const founduser: any = { name: doc.data()['displayName'], imageUrl: doc.data()['photoURL'], id: doc.id };
       this.foundUsers.push(founduser)
     });
@@ -140,26 +140,45 @@ export class DialogCreateChatComponent implements OnInit {
       input.value = '';
       const foundIndex = this.foundUsers.indexOf(this.foundUsers[i]);
       this.foundUsers.splice(foundIndex);
-      
+
     } else {
       alert('This user already exists')
     }
   }
 
-  deleteUserWantToChat(i){
+  deleteUserWantToChat(i) {
     this.usersWantToChat.splice(i);
   }
 
-  async createChat(){
+  async createChat() {
     const localUser: any = JSON.parse(localStorage.getItem('user'))
-  
-    this.room = [this.foundUsers[0].id + localUser.uid]
+    this.chatActive = true;
+    this.room = [this.usersWantToChat[0].id, localUser.uid]
     this.roomidsSort = this.room.sort();
     this.roomid = '';
-    for(let r = 0; r < this.roomidsSort.length; r++){
+    for (let r = 0; r < this.roomidsSort.length; r++) {
       this.roomid += this.roomidsSort[r]
     }
-    await setDoc(doc(this.db, "chatrooms", this.roomid), this.chatroomData)
+    await setDoc(doc(this.db, "chatrooms", this.roomid), this.chatroomData);
+    let userData = {
+      name: '',
+      id: '',
+      shownInSidebar: true
+    }
+
+    for (let x = 0; x < this.room.length; x++) {
+      let currentUserID = this.room[x]
+      // let docRef = doc(this.db, "users", currentUserID);
+      let docRef = collection(this.db, "users");
+      let q = query(docRef, where("uid", "==", currentUserID))
+      let querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+       let currentUser: any = doc.data();
+       userData.name = currentUser.displayName;
+       userData.id = currentUser.uid;
+      });
+      await setDoc(doc(this.db, "chatrooms", this.roomid, "users", `${'user' + x}`), userData);
+    }
   }
 
   async updateSnap() {
