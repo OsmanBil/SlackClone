@@ -12,7 +12,7 @@
         padding: 10px 0;
         margin: 0;
     }
-    div {
+    .search-container {
         display: flex;
         align-items: center;
         padding: 10px 0;
@@ -68,4 +68,75 @@
 
 .user-name {
     font-weight: bold;
+}
+
+.search-user-list{
+    margin-left: 10px;
+    margin-right: 10px;
+    width: calc(100% - 20px);
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 10px 0;
+    div{
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        cursor: pointer;
+        &:hover{
+            background-color: darkblue;
+            color: white;
+        }
+      }
+}
+
+.found-user-image{
+    height: 24px;
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+
+.want-to-chat-user-list{
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: calc(100% - 20px);
+    display: flex;
+    align-items: center;
+   
+}
+
+.want-to-chat-user{
+        width: auto;
+        display: flex;
+        align-items: center;
+        background: rgb(193, 230, 242);
+        font-weight: 600;
+        p{
+            margin-right: 15px;
+        }    
+        img{
+            height: 24px;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+}
+
+.want-to-chat-icon{
+    mat-icon{
+        color: gray;
+        font-size: 20px;
+        font-weight: 200;
+        vertical-align: middle!important;
+        height: auto;
+        width: auto;
+      }
+      &:hover{
+        mat-icon{
+            color: black;
+        }
+        background-color: rgb(164, 207, 220);
+        cursor: pointer;
+    }
 }

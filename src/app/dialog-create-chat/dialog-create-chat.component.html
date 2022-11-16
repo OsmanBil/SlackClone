@@ -1,37 +1,58 @@
 <div class="container">
-<div class="header-container">
+    <div class="header-container">
         <h2>Direct messages</h2>
         <div class="search-container">
             <p>To:</p>
-            
-       
+            <button (click)="createChat()">create Chat</button>
+
         </div>
         <div class="search-container">
-            <input placeholder="Search User" type="text" [ngModel]="mymodel" (ngModelChange)="valuechange($event)" />
-           
+            <input #searchUserField placeholder="Search User" type="text" [ngModel]="mymodel"
+                (ngModelChange)="valuechange($event)" />
+
         </div>
-        <div class="search-user-list" *ngFor="let foundUser of foundUsers">
-            <p>{{ foundUser }}</p>
-        </div>
-</div>
-<div class="body-container" *ngFor="let message of messagesExample">
-    <div class="day-container">
-        <p class="day-text">{{ message['date'] }}</p>
-        <div class="message-container" >
-            <img src="{{ message['day_message']['user_src'] }}">
-            <div class="message-text-container">
-                <p class="user-name">{{ message['day_message']['user'] }}</p>
-                <div>
-                    <p>{{ message['day_message']['user_firstname'] }}<span>{{ message['day_message']['user_message'] }}</span></p>
-                 
+        <div class="want-to-chat-user-list" *ngFor="let userwantToChat of usersWantToChat; let i = index">
+            <div class="want-to-chat-user">
+                <img src="{{ userwantToChat['imageUrl'] }}">
+                <p>{{ userwantToChat['name'] }}</p>
+                <div class="want-to-chat-icon" (click)="deleteUserWantToChat(i)">
+                    <mat-icon>close</mat-icon>
                 </div>
             </div>
+        </div>
+        <div class="search-user-list" *ngFor="let foundUser of foundUsers; let i = index">
+            <div (click)="addUserWantToChat(i, searchUserField)">
+                <img class="found-user-image" src="{{ foundUser['imageUrl'] }}">
+                <p>{{ foundUser['name'] }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="body-container">
+        <div class="latest-messages-container" *ngIf="chatActive == false">
+            <div *ngFor="let message of messagesExample">
+                <div class="day-container">
+                    <p class="day-text">{{ message['date'] }}</p>
+                    <div class="message-container">
+                        <img src="{{ message['day_message']['user_src'] }}">
+                        <div class="message-text-container">
+                            <p class="user-name">{{ message['day_message']['user'] }}</p>
+                            <div>
+                                <p>{{ message['day_message']['user_firstname'] }}<span>{{
+                                        message['day_message']['user_message']
+                                        }}</span></p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="active-chat-container">
+
+
         </div>
     </div>
 </div>
 
-
 <div mat-dialog-content class="mat-dialog-content">adsf</div>
-
-
-</div>

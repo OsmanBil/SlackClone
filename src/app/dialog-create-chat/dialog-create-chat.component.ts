@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Chatroom } from 'src/models/chatrooms.class';
 import { Message } from 'src/models/message.class';
 
@@ -10,6 +10,7 @@ import { map } from '@firebase/util';
 
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
+import { user } from '@angular/fire/auth';
 
 class City {
   name: any;
@@ -89,9 +90,18 @@ export class DialogCreateChatComponent implements OnInit {
 
 
   mymodel;
-  foundUsers: string[];
+  foundUsers: any[];
+  usersWantToChat: any[] = [];
 
-  constructor(private firestore: AngularFirestore) { }
+  @Input() chatActive:boolean = false;
+  chatroomData = {
+    numberOfUsers: 2
+  }
+  room: string[];
+  roomidsSort: string[];
+  roomid: string;
+
+  constructor(private firestore: AngularFirestore,) { }
   ngOnInit(): void {
     this.unsub = onSnapshot(doc(this.db, "cities", "SF"), (doc) => {
       console.log("Current data: ", doc.data());
@@ -103,7 +113,7 @@ export class DialogCreateChatComponent implements OnInit {
 
 
   async valuechange(newValue) {
-   
+
     this.mymodel = newValue;
     let mymodelLength = String(this.mymodel).length;
     let mymodelLengthLowerCase = String(this.mymodel).toLocaleLowerCase();
@@ -114,8 +124,8 @@ export class DialogCreateChatComponent implements OnInit {
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       console.log(doc.id, " => ", doc.data());
-      const founduser = doc.data()['displayName'];
-      this.foundUsers.push(String(founduser))
+      const founduser: any = { name: doc.data()['displayName'], imageUrl: doc.data()['photoURL'], id: doc.id };
+      this.foundUsers.push(founduser)
     });
 
 
@@ -124,8 +134,33 @@ export class DialogCreateChatComponent implements OnInit {
     // }
   }
 
+  addUserWantToChat(i, input: HTMLInputElement) {
+    if (this.usersWantToChat.includes(this.foundUsers[i]) == false) {
+      this.usersWantToChat.push(this.foundUsers[i])
+      input.value = '';
+      const foundIndex = this.foundUsers.indexOf(this.foundUsers[i]);
+      this.foundUsers.splice(foundIndex);
+      
+    } else {
+      alert('This user already exists')
+    }
+  }
 
+  deleteUserWantToChat(i){
+    this.usersWantToChat.splice(i);
+  }
 
+  async createChat(){
+    const localUser: any = JSON.parse(localStorage.getItem('user'))
+  
+    this.room = [this.foundUsers[0].id + localUser.uid]
+    this.roomidsSort = this.room.sort();
+    this.roomid = '';
+    for(let r = 0; r < this.roomidsSort.length; r++){
+      this.roomid += this.roomidsSort[r]
+    }
+    await setDoc(doc(this.db, "chatrooms", this.roomid), this.chatroomData)
+  }
 
   async updateSnap() {
 
@@ -176,7 +211,7 @@ export class DialogCreateChatComponent implements OnInit {
     });
 
   }
-  
+
   async updateDoc2() {
     // To update age and favorite color:
     const frankDocRef = doc(this.db, "update", "frank");
