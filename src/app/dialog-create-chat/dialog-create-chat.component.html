@@ -29,16 +29,16 @@
     </div>
     <div class="body-container">
         <div class="latest-messages-container" *ngIf="chatActive == false">
-            <div *ngFor="let message of messagesExample">
+            <div *ngFor="let messageEx of messagesExample">
                 <div class="day-container">
-                    <p class="day-text">{{ message['date'] }}</p>
+                    <p class="day-text">{{ messageEx['date'] }}</p>
                     <div class="message-container">
-                        <img src="{{ message['day_message']['user_src'] }}">
+                        <img src="{{ messageEx['day_message']['user_src'] }}">
                         <div class="message-text-container">
-                            <p class="user-name">{{ message['day_message']['user'] }}</p>
+                            <p class="user-name">{{ messageEx['day_message']['user'] }}</p>
                             <div>
-                                <p>{{ message['day_message']['user_firstname'] }}<span>{{
-                                        message['day_message']['user_message']
+                                <p>{{ messageEx['day_message']['user_firstname'] }}<span>{{
+                                        messageEx['day_message']['user_message']
                                         }}</span></p>
 
                             </div>
@@ -49,7 +49,10 @@
         </div>
 
         <div class="active-chat-container">
-
+            <div *ngFor="let message of messages">
+                <p>Message</p>
+                <p>{{ message['loadMessageText']}}</p>
+            </div>
 
         </div>
     </div>

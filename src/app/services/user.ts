@@ -7,7 +7,6 @@ export interface User {
     photoURL: string;
     emailVerified: boolean;
     isOnline: boolean;
-    chatids: [];
     search: string[];
 
  }

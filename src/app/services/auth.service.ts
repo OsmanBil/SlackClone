@@ -155,7 +155,6 @@ export class AuthService {
           photoURL: user.photoURL,
           emailVerified: user.emailVerified,
           isOnline: true,
-          chatids: [],
           search: [],
         };
 
@@ -167,7 +166,7 @@ export class AuthService {
         userRef.set(userData, {
           merge: true,
         });
-
+        this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
 
 
       } else { }
