@@ -10,7 +10,7 @@ import { map } from '@firebase/util';
 
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
-import { user } from '@angular/fire/auth';
+import { checkActionCode, user } from '@angular/fire/auth';
 import { from, Observable, of } from 'rxjs';
 
 class City {
@@ -106,21 +106,26 @@ export class DialogCreateChatComponent implements OnInit {
     messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
     messageServerTime: serverTimestamp(),
     messageAuthor: 'server',
-    messageTime:  Timestamp.fromDate(new Date())
-  } 
+    messageTime: Timestamp.fromDate(new Date())
+  }
 
   @Input() public messages: any[] = [];
+  textMessage;
 
   constructor(private firestore: AngularFirestore) { }
   ngOnInit(): void {
-    this.unsub = onSnapshot(doc(this.db, "cities", "SF"), (doc) => {
-      console.log("Current data: ", doc.data());
-    });
-
 
   }
 
-
+  async addMessage(newValue) {
+    const localUser: any = JSON.parse(localStorage.getItem('user'))
+    this.messageData.messageText = newValue;
+    this.messageData.messageServerTime = serverTimestamp(),
+    this.messageData.messageAuthor = localUser.displayName;
+    this.messageData.messageTime = Timestamp.fromDate(new Date())
+    await addDoc(collection(this.db, "chatrooms", this.roomid, "messages"), this.messageData);
+    console.log(this.messages)
+  }
 
   async valuechange(newValue) {
 
@@ -171,7 +176,7 @@ export class DialogCreateChatComponent implements OnInit {
 
     for (let x = 0; x < this.room.length; x++) {
       let currentUserID = this.room[x]
-      // let docRef = doc(this.db, "users", currentUserID);
+
       let docRef = collection(this.db, "users");
       let q = query(docRef, where("uid", "==", currentUserID))
       let querySnapshot = await getDocs(q);
@@ -183,23 +188,20 @@ export class DialogCreateChatComponent implements OnInit {
       await setDoc(doc(this.db, "chatrooms", this.roomid, "users", `${'user' + x}`), userData);
     }
 
-
     const localUserRef = doc(this.db, "users", localUser.uid, "chatids", this.roomid);
     const localUserSnap = await getDoc(localUserRef);
 
     if (localUserSnap.exists()) {
       this.chatActive = true;
-      alert('existiert');
       const messagesRef = collection(this.db, "chatrooms", this.roomid, "messages");
       const messagesQ = query(messagesRef, orderBy("messageServerTime"));
-      const messageQuerySnapshot = await getDocs(messagesQ);
-      this.messages = [];
-      messageQuerySnapshot.forEach((doc) => {
-        let loadMessage = { loadMessageText: doc.data()['messageText'], loadMessageTime: doc.data()['messageTime'], loadMessageAuthor: doc.data()['messageAuthor'], id: doc.id };
-        this.messages.push(loadMessage);
-        console.log(this.messages)
+      const unsubscribe = onSnapshot(messagesQ, (snapshot) => 
+      {  this.messages = [];
+        snapshot.forEach((change) => {
+          let loadMessage = { loadMessageText: change.data()['messageText'], loadMessageTime: change.data()['messageTime'], loadMessageServerTime: change.data()['messageServerTime'], loadMessageAuthor: change.data()['messageAuthor'], id: change.id };
+          this.messages.push(loadMessage);
+        });
       });
-
     } else {
       this.chatActive = true;
       for (let x = 0; x < this.room.length; x++) {
@@ -207,16 +209,8 @@ export class DialogCreateChatComponent implements OnInit {
         await setDoc(doc(this.db, "users", currentUserID, "chatids", this.roomid), { id: this.roomid });
       };
       await addDoc(collection(this.db, "chatrooms", this.roomid, "messages"), this.messageData);
-      alert('und')
     }
-
-
-
-  }
-
-  
-
-
+    }
 
   // AB  HIER NUR BEISPIELE
   async zeit() {
@@ -239,35 +233,5 @@ export class DialogCreateChatComponent implements OnInit {
   }
 
 
-  save() {
-    var arr = this.chatroom;
-    var arrayToString = JSON.stringify(Object.assign({}, arr));  // convert array to string
-    let dishesInChart = JSON.parse(arrayToString); //Strig to Json
 
-    this.chatID = this.firestore.createId();
-
-    this.firestore
-      .collection('chatrooms')
-      .doc(this.chatID).set(dishesInChart)
-
-    console.log(this.chatID)
-  }
-
-
-  addmessage() {
-
-    let hans = this.chatroomMessages
-    var arrayToString = JSON.stringify(Object.assign({}, hans));  // convert array to string
-    let dishesInChart2 = JSON.parse(arrayToString); //Strig to Json
-
-    this.chatroom.chatsss.push(dishesInChart2)
-
-    var arr = this.chatroom;
-    var arrayToString = JSON.stringify(Object.assign({}, arr));  // convert array to string
-    let dishesInChart = JSON.parse(arrayToString); //Strig to Json
-
-    this.firestore
-      .collection('chatrooms').doc(this.chatID)
-      .update(dishesInChart);
-  }
 }

@@ -4,6 +4,7 @@
         <div class="search-container">
             <p>To:</p>
             <button (click)="createChat()" [disabled]="usersWantToChat.length == 0">create Chat</button>
+            
 
         </div>
         <div class="search-container">
@@ -50,12 +51,19 @@
 
         <div class="active-chat-container">
             <div *ngFor="let message of messages">
-                <p>Message</p>
                 <p>{{ message['loadMessageText']}}</p>
+                <p>{{ message['loadMessageAuthor']}}</p>
+                <p>{{ message['loadMessageTime']}}</p>
+                <p>{{ message['loadMessageServerTime']}}</p>
             </div>
+
+        </div>
+        <div class="send-message-container">
+            <input #searchUserField placeholder="Search User" type="text" [(ngModel)]="textMessage">
+            <button (click)="addMessage(textMessage)" [disabled]="usersWantToChat.length == 0">add Chat</button>
+
 
         </div>
     </div>
 </div>
 
-<div mat-dialog-content class="mat-dialog-content">adsf</div>
