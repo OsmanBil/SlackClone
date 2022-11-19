@@ -48,7 +48,7 @@ export class AuthService {
     return this.afAuth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-        this.SetUserData(result.user);
+        this.SetUserData(result.user, name);
         this.afAuth.authState.subscribe((user) => {
           if (user) {
             this.router.navigate(['mainpage']);
@@ -62,14 +62,16 @@ export class AuthService {
 
 
   // Sign up with email/password
-  SignUp(email: string, password: string) {
+  SignUp(email: string, password: string, name: string) {
     return this.afAuth
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
+
         /* Call the SendVerificaitonMail() function when new user sign 
         up and returns promise */
         this.SendVerificationMail();
-        this.SetUserData(result.user);
+        this.SetUserData(result.user, name);
+        // this.setUsername(result)
       })
       .catch((error) => {
         window.alert(error.message);
@@ -109,9 +111,6 @@ export class AuthService {
 
   // Sign in with Google
   async GoogleAuth() {
-
-
-
     await this.AuthLogin(new auth.GoogleAuthProvider())
       .then((result: any) => {
         this.router.navigate(['mainpage']);
@@ -124,7 +123,7 @@ export class AuthService {
     await this.afAuth
       .signInWithPopup(provider)
       .then((result) => {
-        this.SetUserData(result.user);
+        this.SetUserData(result.user, name);
       })
       .catch((error) => {
         window.alert(error);
@@ -138,35 +137,64 @@ export class AuthService {
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  async SetUserData(user: any) {
+  async SetUserData(user: any, name: any) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     console.log('Testing:', user.photoURL);
 
-    let searchName = String(user.displayName);
-    let searchUserValue = '';
+
 
     this.firestore.collection(`users`).doc(user.uid).get().subscribe(ref => {
 
       if (!ref.exists) {
-        let userData: User = {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          emailVerified: user.emailVerified,
-          isOnline: true,
-          search: [],
-        };
 
-        for (let i = 0; i < searchName.length; i++) {
+        console.log('Name:', name)
+        if (name) {
+          let searchName = String(name);
+          let searchUserValue = '';
+          let userData: User = {
+            uid: user.uid,
+            email: user.email,
+            displayName: name,
+            photoURL: user.photoURL,
+            emailVerified: user.emailVerified,
+            isOnline: true,
+            search: [],
+          };
+
+          for (let i = 0; i < searchName.length; i++) {
             searchUserValue += searchName[i]
             userData.search.push(String(searchUserValue).toLowerCase())
-           }
+          }
+  
+          userRef.set(userData, {
+            merge: true,
+          });
+          this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
+  
+        }else{
+          let searchName = String(user.displayName);
+          let searchUserValue = '';
+          let userData: User = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            emailVerified: user.emailVerified,
+            isOnline: true,
+            search: [],
+          };
 
-        userRef.set(userData, {
-          merge: true,
-        });
-        this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
+          for (let i = 0; i < searchName.length; i++) {
+            searchUserValue += searchName[i]
+            userData.search.push(String(searchUserValue).toLowerCase())
+          }
+  
+          userRef.set(userData, {
+            merge: true,
+          });
+          this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
+  
+        }
 
 
       } else { }

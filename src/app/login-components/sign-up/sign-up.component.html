@@ -7,6 +7,17 @@
 
     <form class="login-form">
       <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Username</mat-label>
+        <input type="text" matInput [formControl]="userNameFormControl" #userName placeholder="z.B. Max Musterman">
+        <mat-error *ngIf="userNameFormControl.hasError('name') && !userNameFormControl.hasError('required')">
+          Please enter a username
+        </mat-error>
+        <mat-error *ngIf="userNameFormControl.hasError('required')">
+          Benutzername wird <strong>benötigt</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="fill">
         <mat-label>Email</mat-label>
         <input type="email" matInput [formControl]="emailFormControl" #userEmail placeholder="z.B. mail@example.com">
         <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
@@ -31,7 +42,7 @@
 
       </mat-form-field>
       <div class="center-container">
-        <button mat-raised-button color="primary" (click)="authService.SignUp(userEmail.value, userPwd.value)">Registrieren</button>
+        <button mat-raised-button color="primary" (click)="authService.SignUp(userEmail.value, userPwd.value, userName.value)">Registrieren</button>
       </div>
 
     </form>
