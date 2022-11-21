@@ -26,7 +26,7 @@ export class SidenavComponent implements OnInit {
   chatrooms = [];
   localUser;
 
-  constructor(public dialog: MatDialog, private firestore: AngularFirestore,) {}
+  constructor(public dialog: MatDialog, private firestore: AngularFirestore,) { }
 
 
   ngOnInit(): void {
@@ -35,35 +35,35 @@ export class SidenavComponent implements OnInit {
       .valueChanges({ idField: 'channelId' })
       .subscribe((changes: any) => {
         this.channels = changes;
-    })
+      })
     this.localUser = JSON.parse(localStorage.getItem('user'));
     this.loadChatrooms();
-   
+
   }
 
 
 
 
-  openDialogCreateChannel(){
+  openDialogCreateChannel() {
     this.dialog.open(DialogCreateChannelComponent);
   }
 
 
-  toggleChannelMenu(){
-    if(this.channelOpen){
+  toggleChannelMenu() {
+    if (this.channelOpen) {
       this.channelOpen = false;
     }
-    else{
+    else {
       this.channelOpen = true;
     }
   }
 
 
-  toggleMessageMenu(){
-    if(this.messageOpen){
+  toggleMessageMenu() {
+    if (this.messageOpen) {
       this.messageOpen = false;
     }
-    else{
+    else {
       this.messageOpen = true;
     }
   }
@@ -71,23 +71,27 @@ export class SidenavComponent implements OnInit {
   async loadChatrooms() {
     let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
     let querySnapshot = await getDocs(docRef);
-    let currentChatroom = { id: '', name: '', shownInSidebar: true, }
-    querySnapshot.forEach( async (doc) => {
+    let currentChatroom = { id: '', name: '', shownInSidebar: true, photoURL: '' }
+    this.channels = [];
+    querySnapshot.forEach(async (doc) => {
       let docRef2 = collection(this.db, "chatrooms", doc.id, "users");
       let querySnapshot2 = await getDocs(docRef2);
-    
+      
       querySnapshot2.forEach((doc2: any) => {
-        console.log('adsf' + doc2.data().name)
-        
-        if(doc2.data().name == this.localUser['displayName']) {
+        console.log(doc2.data().photoURL)
+
+        if (doc2.data().name == this.localUser['displayName']) {
           currentChatroom.shownInSidebar = doc2.data().shownInSidebar;
         }
         else {
           currentChatroom.name = doc2.data().name;
+          currentChatroom.photoURL = doc2.data().photoURL;
           currentChatroom.id = doc.id;
         }
+
       });
-  })
-  this.chatrooms.push(currentChatroom)
-}
+      this.chatrooms.push(currentChatroom)
+    })
+
+  }
 }
