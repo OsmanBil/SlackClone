@@ -11,7 +11,7 @@ import { map } from '@firebase/util';
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { checkActionCode, user } from '@angular/fire/auth';
-import { from, Observable, of } from 'rxjs';
+import { from, min, Observable, of } from 'rxjs';
 
 class City {
   name: any;
@@ -81,6 +81,13 @@ export class DialogCreateChatComponent implements OnInit {
       chatsss: []
     };
 
+  userData = {
+    name: '',
+    id: '',
+    photoURL: '',
+    shownInSidebar: true
+  };
+
   chatID: any;
   chatListener: [];
 
@@ -106,23 +113,28 @@ export class DialogCreateChatComponent implements OnInit {
     messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
     messageServerTime: serverTimestamp(),
     messageAuthor: 'server',
-    messageTime: Timestamp.fromDate(new Date())
+    messageTime: Timestamp.fromDate(new Date()),
+    messageAuthorImg: '',
   }
 
   @Input() public messages: any[] = [];
   textMessage;
+  localUserRef;
+  localUserSnap;
 
+  localUser: any;
   constructor(private firestore: AngularFirestore) { }
   ngOnInit(): void {
-
+    this.localUser = JSON.parse(localStorage.getItem('user'));
   }
 
   async addMessage(newValue) {
     const localUser: any = JSON.parse(localStorage.getItem('user'))
     this.messageData.messageText = newValue;
     this.messageData.messageServerTime = serverTimestamp(),
-    this.messageData.messageAuthor = localUser.displayName;
-    this.messageData.messageTime = Timestamp.fromDate(new Date())
+      this.messageData.messageAuthor = localUser.displayName;
+    this.messageData.messageTime = Timestamp.fromDate(new Date());
+    this.messageData.messageAuthorImg = localUser.photoURL;
     await addDoc(collection(this.db, "chatrooms", this.roomid, "messages"), this.messageData);
     console.log(this.messages)
   }
@@ -130,7 +142,7 @@ export class DialogCreateChatComponent implements OnInit {
   async valuechange(newValue) {
 
     this.mymodel = newValue;
-    let mymodelLength = String(this.mymodel).length;
+    let mymodelLength = this.mymodel.lenght
     let mymodelLengthLowerCase = String(this.mymodel).toLocaleLowerCase();
     const usersRef = collection(this.db, "users")
     const q = query(usersRef, where('search', 'array-contains', mymodelLengthLowerCase));
@@ -158,59 +170,121 @@ export class DialogCreateChatComponent implements OnInit {
     this.usersWantToChat.splice(i);
   }
 
-  async createChat() {
-    const localUser: any = JSON.parse(localStorage.getItem('user'))
-    this.chatActive = true;
-    this.room = [this.usersWantToChat[0].id, localUser.uid]
+
+
+  async setRoom() {
+    this.room = [this.localUser.uid];
+    for (let r1 = 0; r1 < this.usersWantToChat.length; r1++) {
+      this.room.push(this.usersWantToChat[r1].id)
+    };
     this.roomidsSort = this.room.sort();
     this.roomid = '';
     for (let r = 0; r < this.roomidsSort.length; r++) {
       this.roomid += this.roomidsSort[r]
     }
     await setDoc(doc(this.db, "chatrooms", this.roomid), this.chatroomData);
-    let userData = {
-      name: '',
-      id: '',
-      shownInSidebar: true
-    }
+  }
 
+  async setUsersForRoom() {
     for (let x = 0; x < this.room.length; x++) {
-      let currentUserID = this.room[x]
-
+      let currentUserID = this.room[x];
       let docRef = collection(this.db, "users");
       let q = query(docRef, where("uid", "==", currentUserID))
       let querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         let currentUser: any = doc.data();
-        userData.name = currentUser.displayName;
-        userData.id = currentUser.uid;
+        this.userData.name = currentUser.displayName;
+        this.userData.id = currentUser.uid;
+        this.userData.photoURL = currentUser.photoURL;
       });
-      await setDoc(doc(this.db, "chatrooms", this.roomid, "users", `${'user' + x}`), userData);
+      await setDoc(doc(this.db, "chatrooms", this.roomid, "users", `${'user' + x}`), this.userData);
+    }
+  }
+
+  loadMessages() {
+    const messagesRef = collection(this.db, "chatrooms", this.roomid, "messages");
+    const messagesQ = query(messagesRef, orderBy("messageServerTime"));
+    const unsubscribe = onSnapshot(messagesQ, (snapshot) => {
+      this.messages = [];
+      snapshot.forEach((change) => {
+        let loadMessage = { loadMessageText: change.data()['messageText'], loadMessageTime: change.data()['messageTime'], loadMessageServerTime: change.data()['messageServerTime'], loadMessageAuthor: change.data()['messageAuthor'], loadMessageAuthorImg: change.data()['messageAuthorImg'], id: change.id };
+        loadMessage.loadMessageTime = this.convertTimestamp(loadMessage.loadMessageTime);
+        this.messages.push(loadMessage);
+      });
+    });
+  }
+
+  async setFirstMessage() {
+    for (let x = 0; x < this.room.length; x++) {
+
+      let currentUserID = this.room[x];
+      
+      await setDoc(doc(this.db, "users", currentUserID, "chatids", this.roomid), { id: this.roomid, });
+
+    };
+
+    for (let x = 0; x < this.room.length; x++) {
+      let currentUserID = this.room[x];
+      let docRef = collection(this.db, "users");
+      let q = query(docRef, where("uid", "==", currentUserID))
+      let querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        let currentUser: any = doc.data();
+        this.userData.name = currentUser.displayName;
+        this.userData.id = currentUser.uid;
+      });
+      await setDoc(doc(this.db, "chatrooms", this.roomid, "users", `${'user' + x}`), this.userData);
     }
 
-    const localUserRef = doc(this.db, "users", localUser.uid, "chatids", this.roomid);
-    const localUserSnap = await getDoc(localUserRef);
 
-    if (localUserSnap.exists()) {
+
+
+    await addDoc(collection(this.db, "chatrooms", this.roomid, "messages"), this.messageData);
+  }
+
+  async createChat() {
+
+    this.chatActive = true;
+
+    this.setRoom();
+
+
+    this.localUserRef = doc(this.db, "users", this.localUser.uid, "chatids", this.roomid);
+    this.localUserSnap = await getDoc(this.localUserRef);
+
+    if (this.localUserSnap.exists()) {
       this.chatActive = true;
-      const messagesRef = collection(this.db, "chatrooms", this.roomid, "messages");
-      const messagesQ = query(messagesRef, orderBy("messageServerTime"));
-      const unsubscribe = onSnapshot(messagesQ, (snapshot) => 
-      {  this.messages = [];
-        snapshot.forEach((change) => {
-          let loadMessage = { loadMessageText: change.data()['messageText'], loadMessageTime: change.data()['messageTime'], loadMessageServerTime: change.data()['messageServerTime'], loadMessageAuthor: change.data()['messageAuthor'], id: change.id };
-          this.messages.push(loadMessage);
-        });
-      });
+      this.loadMessages();
+
     } else {
       this.chatActive = true;
-      for (let x = 0; x < this.room.length; x++) {
-        let currentUserID = this.room[x]
-        await setDoc(doc(this.db, "users", currentUserID, "chatids", this.roomid), { id: this.roomid });
-      };
-      await addDoc(collection(this.db, "chatrooms", this.roomid, "messages"), this.messageData);
+      this.setUsersForRoom();
+      this.setFirstMessage();
     }
+  }
+
+
+  convertTimestamp(timestamp) {
+    let date = timestamp.toDate();
+    let mm = date.getMonth();
+    let dd = date.getDate();
+    let yyyy = date.getFullYear();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let secondes = date.getSeconds();
+    console.log(minutes)
+    if (secondes.lenght < 2) {
+      secondes = 0 + secondes
     }
+    if (hours.lenght < 2) {
+      hours = 0 + hours
+    }
+    if (minutes.lenght < 2) {
+      minutes = 0 + minutes
+    }
+    date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
+    return date;
+  }
 
   // AB  HIER NUR BEISPIELE
   async zeit() {

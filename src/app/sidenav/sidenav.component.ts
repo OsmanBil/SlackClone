@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogCreateChannelComponent } from '../dialog-create-channel/dialog-create-channel.component';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { getFirestore } from '@firebase/firestore';
+import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 
 
 @Component({
@@ -20,6 +22,10 @@ export class SidenavComponent implements OnInit {
   channelOpen = true;
   messageOpen = false;
 
+  db = getFirestore();
+  chatrooms = [];
+  localUser;
+
   constructor(public dialog: MatDialog, private firestore: AngularFirestore,) {}
 
 
@@ -30,7 +36,8 @@ export class SidenavComponent implements OnInit {
       .subscribe((changes: any) => {
         this.channels = changes;
     })
-
+    this.localUser = JSON.parse(localStorage.getItem('user'));
+    this.loadChatrooms();
    
   }
 
@@ -60,4 +67,27 @@ export class SidenavComponent implements OnInit {
       this.messageOpen = true;
     }
   }
+
+  async loadChatrooms() {
+    let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
+    let querySnapshot = await getDocs(docRef);
+    let currentChatroom = { id: '', name: '', shownInSidebar: true, }
+    querySnapshot.forEach( async (doc) => {
+      let docRef2 = collection(this.db, "chatrooms", doc.id, "users");
+      let querySnapshot2 = await getDocs(docRef2);
+    
+      querySnapshot2.forEach((doc2: any) => {
+        console.log('adsf' + doc2.data().name)
+        
+        if(doc2.data().name == this.localUser['displayName']) {
+          currentChatroom.shownInSidebar = doc2.data().shownInSidebar;
+        }
+        else {
+          currentChatroom.name = doc2.data().name;
+          currentChatroom.id = doc.id;
+        }
+      });
+  })
+  this.chatrooms.push(currentChatroom)
+}
 }

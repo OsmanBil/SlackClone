@@ -5,6 +5,7 @@ import { DialogEditUserComponent } from '../dialog-edit-user/dialog-edit-user.co
 import { AuthService } from '../services/auth.service';
 import { User } from '../services/user';
 
+
 @Component({
   selector: 'app-mainpage',
   templateUrl: './mainpage.component.html',
@@ -12,10 +13,12 @@ import { User } from '../services/user';
 })
 export class MainpageComponent implements OnInit {
 
+  
   users = [];
   currentUserId = '';
   currentUser: User;
 
+ 
   constructor(public authService: AuthService, private firestore: AngularFirestore, private dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -26,31 +29,34 @@ export class MainpageComponent implements OnInit {
         this.users = users;
         this.getCurrentUserId();
       })
+     
   }
 
 
-  getCurrentUserId(){
-      let currentUser = localStorage.getItem('user');
-      currentUser = JSON.parse(currentUser);
-      if (currentUser == null){
-        // nothing happen
-    }else{
+  getCurrentUserId() {
+    let currentUser = localStorage.getItem('user');
+    currentUser = JSON.parse(currentUser);
+    if (currentUser == null) {
+      // nothing happen
+    } else {
       this.currentUserId = currentUser['uid'];
     }
 
-      this.setCurrentUser();
+    this.setCurrentUser();
   }
 
 
-  setCurrentUser(){
-    let currentUser = this.users.filter((user:any) => user['uid'] == this.currentUserId);
+  setCurrentUser() {
+    let currentUser = this.users.filter((user: any) => user['uid'] == this.currentUserId);
     this.currentUser = currentUser[0];
   }
 
 
-  openSettings(){
+  openSettings() {
     let dialog = this.dialog.open(DialogEditUserComponent);
     dialog.componentInstance.user = this.currentUser;
     dialog.componentInstance.userId = this.currentUserId;
   }
+
+  
 }

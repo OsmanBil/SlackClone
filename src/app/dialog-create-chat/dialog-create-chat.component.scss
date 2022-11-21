@@ -91,6 +91,7 @@
 
 .found-user-image{
     height: 24px;
+    width: 24px;
     margin-right: 10px;
     margin-left: 10px;
     border-radius: 5px;
@@ -118,6 +119,7 @@
         }    
         img{
             height: 24px;
+            width: 24px;
             margin-right: 10px;
             border-radius: 5px;
         }
@@ -138,5 +140,15 @@
         }
         background-color: rgb(164, 207, 220);
         cursor: pointer;
+    }
+}
+
+.one-message {
+    background-color: white;
+    border-radius: 5px;
+    img{
+        height: 30px;
+        width: 30px;
+        border-radius: 5px;
     }
 }
