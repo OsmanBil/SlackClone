@@ -9,6 +9,8 @@ import { VerifyEmailComponent } from './login-components/verify-email/verify-ema
 import { AuthGuard } from './shared/guard/auth.guard';
 import { DialogCreateChannelComponent } from './dialog-create-channel/dialog-create-channel.component';
 import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-chat.component';
+import { OpenChannelComponent } from './open-channel/open-channel.component';
+import { CommentBoxComponent } from './comment-box/comment-box.component';
 
 const routes: Routes = [
   // { path: '', component: MainpageComponent},
@@ -19,6 +21,11 @@ const routes: Routes = [
     children: [
       { path: '', component: DialogCreateChatComponent },
       { path: 'create-chanel', component: DialogCreateChatComponent },
+      {path: 'channel/:id', component: OpenChannelComponent,
+      children: [
+        {path: '', component: CommentBoxComponent},
+        {path: 'comment-box', component: CommentBoxComponent},
+      ]},
     ]
   },
   { path: 'register-user', component: SignUpComponent },

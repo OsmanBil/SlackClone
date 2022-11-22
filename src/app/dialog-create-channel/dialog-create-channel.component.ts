@@ -18,6 +18,10 @@ export class DialogCreateChannelComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<DialogCreateChannelComponent>, private firestore: AngularFirestore) { }
 
   ngOnInit(): void {
+    this.firestore
+    .collection('channels')
+    .valueChanges({ idField: 'channelId' })
+    .subscribe();
   }
 
   save(){

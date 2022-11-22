@@ -16,7 +16,7 @@
     <div class="channel" *ngFor="let channel of channels">
       <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
       <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
-      <span>{{ channel['channelName'] }}</span>
+      <span [routerLink]="['/mainpage/channel/' + channel.channelId]">{{ channel['channelName'] }}</span>
     </div>
   
   </div>

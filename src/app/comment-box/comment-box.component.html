@@ -1,0 +1,10 @@
+<form [formGroup]="form">
+    <quill-editor 
+        #editor 
+        class="content-editor" 
+        formControlName="editor" 
+        [placeholder]="''" 
+        [modules]="modules"
+        (onEditorChanged)="changedEditor($event)">
+    </quill-editor>
+</form>

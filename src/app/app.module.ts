@@ -21,6 +21,7 @@ import { MatInputModule } from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { QuillModule } from 'ngx-quill'
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MainpageComponent } from './mainpage/mainpage.component';
@@ -44,6 +45,8 @@ import { VerifyEmailComponent } from './login-components/verify-email/verify-ema
 import { AuthService } from "./services/auth.service";
 import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-chat.component';
 import { DialogEditUserComponent } from './dialog-edit-user/dialog-edit-user.component';
+import { OpenChannelComponent } from './open-channel/open-channel.component';
+import { CommentBoxComponent } from './comment-box/comment-box.component';
 
 
 //import { environment } from '../environments/environment';
@@ -61,7 +64,9 @@ import { DialogEditUserComponent } from './dialog-edit-user/dialog-edit-user.com
     ForgotPasswordComponent,
     VerifyEmailComponent,
     DialogCreateChatComponent,
-    DialogEditUserComponent
+    DialogEditUserComponent,
+    OpenChannelComponent,
+    CommentBoxComponent
   
   ],
   imports: [
@@ -82,6 +87,7 @@ import { DialogEditUserComponent } from './dialog-edit-user/dialog-edit-user.com
     MatMenuModule,
     MatCardModule,
     MatSlideToggleModule,
+    QuillModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebase),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),

@@ -35,10 +35,7 @@ export class SidenavComponent implements OnInit {
       .valueChanges({ idField: 'channelId' })
       .subscribe((changes: any) => {
         this.channels = changes;
-      })
-    this.localUser = JSON.parse(localStorage.getItem('user'));
-    this.loadChatrooms();
-
+    })
   }
 
 

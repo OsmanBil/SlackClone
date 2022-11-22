@@ -1,0 +1,8 @@
+.channel-page{
+    height: calc(100% - 64px);
+    width: calc(100% - 64px);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

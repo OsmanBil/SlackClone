@@ -22,6 +22,11 @@ export class MainpageComponent implements OnInit {
   constructor(public authService: AuthService, private firestore: AngularFirestore, private dialog: MatDialog) { }
 
   ngOnInit(): void {
+    this.getCurrentUser();
+  }
+
+
+  getCurrentUser(){
     this.firestore
       .collection('users')
       .valueChanges({ idField: 'userId' })
