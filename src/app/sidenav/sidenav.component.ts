@@ -107,6 +107,6 @@ export class SidenavComponent implements OnInit {
 
   openChatroom(chatroomID){
     console.log(chatroomID)
-    this.router.navigateByUrl('/mainpage/chatroom');
+    this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
   }
 }

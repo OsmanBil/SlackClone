@@ -38,7 +38,8 @@
   </div>
   <div class="container-channels" *ngIf="channelOpen">
     <div class="channel" *ngFor="let chatroom of chatrooms" ngClass="d-flex align-items-center">
-      <div [routerLink]="['/mainpage/chatroom/' + chatroom.id]"> 
+      <!-- <div (click)="openChatroom(chatroom.id)">  -->
+      <div [routerLink]="['/mainpage/chatroom/' + chatroom.id]">
         <img class="chatroom-img me-2" src="{{ chatroom.photoURL }}">
         <span>{{ chatroom.name }}</span>
       </div>

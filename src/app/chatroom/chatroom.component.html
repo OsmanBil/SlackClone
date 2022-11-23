@@ -1,1 +1,23 @@
-<p>chatroom works!</p>
+<div class="active-chat-container">
+    <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
+        <div>
+            <img class="one-message-img me-2" src="{{ message['loadMessageAuthorImg'] }}">
+        </div>
+        <div>
+            <div class="d-flex">
+                <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
+                <p>{{ message['loadMessageTime']}}</p>
+            </div>
+            <div>{{ message['loadMessageText']}}</div>
+        </div>
+
+    </div>
+
+</div>
+<div class="send-message-container">
+    <input #searchUserField placeholder="Search User" type="text" [(ngModel)]="textMessage">
+    <button (click)="addMessage(textMessage)" [disabled]="searchUserField.value == ''">add Chat</button>
+    <button routerLink="/mainpage/chatroom">LINK</button>
+
+
+</div>
