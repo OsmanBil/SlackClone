@@ -129,12 +129,11 @@ export class DialogCreateChatComponent implements OnInit {
   }
 
   async addMessage(newValue) {
-    const localUser: any = JSON.parse(localStorage.getItem('user'))
     this.messageData.messageText = newValue;
     this.messageData.messageServerTime = serverTimestamp(),
-      this.messageData.messageAuthor = localUser.displayName;
+      this.messageData.messageAuthor = this.localUser.displayName;
     this.messageData.messageTime = Timestamp.fromDate(new Date());
-    this.messageData.messageAuthorImg = localUser.photoURL;
+    this.messageData.messageAuthorImg = this.localUser.photoURL;
     await addDoc(collection(this.db, "chatrooms", this.roomid, "messages"), this.messageData);
     console.log(this.messages)
   }

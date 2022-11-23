@@ -6,6 +6,7 @@ import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Valida
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
+import { user } from '@angular/fire/auth';
 
 
 @Component({
@@ -36,6 +37,9 @@ export class SidenavComponent implements OnInit {
       .subscribe((changes: any) => {
         this.channels = changes;
     })
+    this.localUser = JSON.parse(localStorage.getItem('user'))
+    this.loadChatrooms();
+    console.log(this.localUser)
   }
 
 
