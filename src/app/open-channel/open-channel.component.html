@@ -1,8 +1,13 @@
 <div class="channel-page">
     <div>
-        <div>Channel Name</div>
+        <div>{{ channel.channelName }}</div>
 
-        <div>Posts</div>
+        <div *ngFor="let post of posts">
+            <img src=" {{ post.img }} ">
+            <p>{{ post['author'] }}</p>
+            <p>{{ post['time'] }}</p>
+            <p [innerHTML]="post.text"></p>
+        </div>
     </div>
 
     <router-outlet></router-outlet>
