@@ -61,6 +61,19 @@ export class AuthService {
   }
 
 
+  // Sign in with Google
+ async GoogleAuth() {
+    await this.AuthLogin(new auth.GoogleAuthProvider())
+      .then(async () => {
+         setTimeout(() => {this.router.navigate(['mainpage']) }, 500);
+        //await this.router.navigate(['mainpage']);
+      });
+
+
+  }
+
+
+
   // Sign up with email/password
   SignUp(email: string, password: string, name: string) {
     return this.afAuth
@@ -77,6 +90,9 @@ export class AuthService {
         window.alert(error.message);
       });
   }
+
+
+
 
 
   // Send email verfificaiton when new user sign up
@@ -109,13 +125,7 @@ export class AuthService {
   }
 
 
-  // Sign in with Google
-  async GoogleAuth() {
-    await this.AuthLogin(new auth.GoogleAuthProvider())
-      .then((result: any) => {
-        this.router.navigate(['mainpage']);
-      });
-  }
+
 
 
   // Auth logic to run auth providers
@@ -165,13 +175,13 @@ export class AuthService {
             searchUserValue += searchName[i]
             userData.search.push(String(searchUserValue).toLowerCase())
           }
-  
+
           userRef.set(userData, {
             merge: true,
           });
           this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
-  
-        }else{
+
+        } else {
           let searchName = String(user.displayName);
           let searchUserValue = '';
           let userData: User = {
@@ -188,12 +198,12 @@ export class AuthService {
             searchUserValue += searchName[i]
             userData.search.push(String(searchUserValue).toLowerCase())
           }
-  
+
           userRef.set(userData, {
             merge: true,
           });
           this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
-  
+
         }
 
 
