@@ -47,6 +47,7 @@ import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-ch
 import { DialogEditUserComponent } from './dialog-edit-user/dialog-edit-user.component';
 import { OpenChannelComponent } from './open-channel/open-channel.component';
 import { CommentBoxComponent } from './comment-box/comment-box.component';
+import { ChatroomComponent } from './chatroom/chatroom.component';
 
 
 //import { environment } from '../environments/environment';
@@ -66,7 +67,8 @@ import { CommentBoxComponent } from './comment-box/comment-box.component';
     DialogCreateChatComponent,
     DialogEditUserComponent,
     OpenChannelComponent,
-    CommentBoxComponent
+    CommentBoxComponent,
+    ChatroomComponent
   
   ],
   imports: [

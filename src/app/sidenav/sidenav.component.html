@@ -18,7 +18,7 @@
       <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
       <span [routerLink]="['/mainpage/channel/' + channel.channelId]">{{ channel['channelName'] }}</span>
     </div>
-  
+
   </div>
 
   <div class="add-channel">
@@ -32,15 +32,17 @@
     <div class="channel-menu">
       <mat-icon *ngIf="messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_drop_down"></mat-icon>
       <mat-icon *ngIf="!messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_right"></mat-icon>
-      <span (click)="loadChatrooms()">Personal message</span>
+      <span>Personal message</span>
     </div>
     <mat-icon fontIcon="add"></mat-icon>
   </div>
   <div class="container-channels" *ngIf="channelOpen">
     <div class="channel" *ngFor="let chatroom of chatrooms" ngClass="d-flex align-items-center">
-      <img class="chatroom-img me-2" src="{{ chatroom.photoURL }}">
-      <span>{{ chatroom.name }}</span>
+      <div (click)="openChatroom(chatroom.id)" chatroom.id> 
+        <img class="chatroom-img me-2" src="{{ chatroom.photoURL }}">
+        <span>{{ chatroom.name }}</span>
+      </div>
     </div>
-  
+
   </div>
 </div>

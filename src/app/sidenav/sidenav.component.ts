@@ -7,6 +7,7 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { user } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -27,26 +28,16 @@ export class SidenavComponent implements OnInit {
   chatrooms = [];
   localUser;
 
-  constructor(public dialog: MatDialog, private firestore: AngularFirestore,) { }
+  constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router) { }
 
 
   ngOnInit(): void {
-    this.loadUser();  
-    this.firestore
-      .collection('channels')
-      .valueChanges({ idField: 'channelId' })
-      .subscribe((changes: any) => {
-        this.channels = changes;
-    })
-   
-    
-  }
 
-  loadUser(){
-    this.localUser = JSON.parse(localStorage.getItem('user'))
+    
     this.loadChatrooms();
 
   }
+
 
 
   openDialogCreateChannel() {
@@ -82,9 +73,10 @@ export class SidenavComponent implements OnInit {
     querySnapshot.forEach(async (doc) => {
       let docRef2 = collection(this.db, "chatrooms", doc.id, "users");
       let querySnapshot2 = await getDocs(docRef2);
-      
-      querySnapshot2.forEach((doc2: any) => {
+      console.log(doc.id + 'adsfadfdfdsgasd')
 
+      querySnapshot2.forEach((doc2: any) => {
+        console.log('11111' + docRef2)
         if (doc2.data().name == this.localUser['displayName']) {
           currentChatroom.shownInSidebar = doc2.data().shownInSidebar;
         }
@@ -92,14 +84,29 @@ export class SidenavComponent implements OnInit {
           currentChatroom.name = doc2.data().name;
           currentChatroom.photoURL = doc2.data().photoURL;
           currentChatroom.id = doc.id;
-          this.chatrooms.push({name: currentChatroom.name, photoURL: currentChatroom.photoURL, id: doc.id})
+          this.chatrooms.push({ name: currentChatroom.name, photoURL: currentChatroom.photoURL, id: doc.id })
           console.log(doc2.data())
+
         }
 
 
       });
-      
-    })
 
+    })
+    console.log('läuft')
+    console.log(this.channels)
+    console.log(this.localUser['uid'])
+    this.firestore
+      .collection('channels')
+      .valueChanges({ idField: 'channelId' })
+      .subscribe((changes: any) => {
+        this.channels = changes;
+      })
+
+  }
+
+  openChatroom(chatroomID){
+    console.log(chatroomID)
+    this.router.navigateByUrl('/mainpage/chatroom');
   }
 }

@@ -68,6 +68,7 @@
         <div class="send-message-container">
             <input #searchUserField placeholder="Search User" type="text" [(ngModel)]="textMessage">
             <button (click)="addMessage(textMessage)" [disabled]="usersWantToChat.length == 0">add Chat</button>
+            <button routerLink="/mainpage/chatroom">LINK</button>
 
 
         </div>
