@@ -75,7 +75,6 @@ export class SidenavComponent implements OnInit {
       let querySnapshot2 = await getDocs(docRef2);
       
       querySnapshot2.forEach((doc2: any) => {
-        console.log(doc2.data().photoURL)
 
         if (doc2.data().name == this.localUser['displayName']) {
           currentChatroom.shownInSidebar = doc2.data().shownInSidebar;
