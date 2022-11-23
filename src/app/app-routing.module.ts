@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: 'sign-in', component: SignInComponent },
   {
-    path: 'mainpage', component: MainpageComponent,
+    path: 'mainpage', component: MainpageComponent, canActivate: [AuthGuard],
     children: [
       { path: '', component: DialogCreateChatComponent },
       { path: 'create-chanel', component: DialogCreateChatComponent },

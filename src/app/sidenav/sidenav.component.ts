@@ -31,18 +31,22 @@ export class SidenavComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.loadUser();  
     this.firestore
       .collection('channels')
       .valueChanges({ idField: 'channelId' })
       .subscribe((changes: any) => {
         this.channels = changes;
     })
-    this.localUser = JSON.parse(localStorage.getItem('user'))
-    this.loadChatrooms();
-    console.log(this.localUser)
+   
+    
   }
 
+  loadUser(){
+    this.localUser = JSON.parse(localStorage.getItem('user'))
+    this.loadChatrooms();
 
+  }
 
 
   openDialogCreateChannel() {
@@ -70,6 +74,7 @@ export class SidenavComponent implements OnInit {
   }
 
   async loadChatrooms() {
+    this.localUser = JSON.parse(localStorage.getItem('user'))
     let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
     let querySnapshot = await getDocs(docRef);
     let currentChatroom = { id: '', name: '', shownInSidebar: true, photoURL: '' }
@@ -87,10 +92,13 @@ export class SidenavComponent implements OnInit {
           currentChatroom.name = doc2.data().name;
           currentChatroom.photoURL = doc2.data().photoURL;
           currentChatroom.id = doc.id;
+          this.chatrooms.push({name: currentChatroom.name, photoURL: currentChatroom.photoURL, id: doc.id})
+          console.log(doc2.data())
         }
 
+
       });
-      this.chatrooms.push(currentChatroom)
+      
     })
 
   }

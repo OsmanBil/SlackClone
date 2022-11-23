@@ -32,7 +32,7 @@
     <div class="channel-menu">
       <mat-icon *ngIf="messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_drop_down"></mat-icon>
       <mat-icon *ngIf="!messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_right"></mat-icon>
-      <span>Personal message</span>
+      <span (click)="loadChatrooms()">Personal message</span>
     </div>
     <mat-icon fontIcon="add"></mat-icon>
   </div>
