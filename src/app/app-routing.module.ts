@@ -22,7 +22,7 @@ const routes: Routes = [
     children: [
       { path: '', component: DialogCreateChatComponent },
       { path: 'create-chanel', component: DialogCreateChatComponent },
-      { path: 'chatroom', component: ChatroomComponent },
+      { path: 'chatroom/:id', component: ChatroomComponent },
       { path: 'channel/:id', component: OpenChannelComponent,
       children: [
         {path: '', component: CommentBoxComponent},

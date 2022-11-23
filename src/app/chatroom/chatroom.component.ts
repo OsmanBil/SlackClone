@@ -10,6 +10,8 @@ export class ChatroomComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    const was = window.location.pathname.split('/').pop()
+    console.log(was)
   }
 
 }
