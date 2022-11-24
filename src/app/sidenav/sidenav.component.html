@@ -34,7 +34,7 @@
       <mat-icon *ngIf="!messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_right"></mat-icon>
       <span>Personal message</span>
     </div>
-    <mat-icon fontIcon="add"></mat-icon>
+    <mat-icon fontIcon="add" [routerLink]="['/mainpage/']"></mat-icon>
   </div>
   <div class="container-channels" *ngIf="channelOpen">
     <div class="channel" *ngFor="let chatroom of chatrooms" ngClass="d-flex align-items-center">

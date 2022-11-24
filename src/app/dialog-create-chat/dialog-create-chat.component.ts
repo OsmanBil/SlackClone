@@ -271,14 +271,14 @@ export class DialogCreateChatComponent implements OnInit {
     let hours = date.getHours();
     let minutes = date.getMinutes();
     let secondes = date.getSeconds();
-    if (secondes.lenght < 2) {
-      secondes = 0 + secondes
+    if (secondes < 10) {
+      secondes = '0' + secondes
     }
-    if (hours.lenght < 2) {
-      hours = 0 + hours
+    if (hours < 10) {
+      hours = '0' + hours
     }
-    if (minutes.lenght < 2) {
-      minutes = 0 + minutes
+    if (minutes.lenght < 10) {
+      minutes = '0' + minutes
     }
     date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
     return date;

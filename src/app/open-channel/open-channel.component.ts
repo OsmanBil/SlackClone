@@ -63,10 +63,10 @@ export class OpenChannelComponent implements OnInit {
     let hours = date.getHours();
     let minutes = date.getMinutes();
     let secondes = date.getSeconds();
-    if (secondes.lenght < 10) {
+    if (secondes < 10) {
       secondes = '0' + secondes
     }
-    if (hours.lenght < 10) {
+    if (hours < 10) {
       hours = '0' + hours
     }
     if (minutes < 10) {

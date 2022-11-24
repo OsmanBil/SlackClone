@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
-
+import { Observable } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/compat/firestore'; 
 
 @Component({
   selector: 'app-chatroom',
@@ -11,9 +13,9 @@ import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTim
 export class ChatroomComponent implements OnInit {
   db = getFirestore();
   currentChatroomID;
-  messages;
+  @Input() public messages: any[] = [];
   textMessage;
-localUser;
+  localUser;
 
   messageData = {
     messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
@@ -23,12 +25,22 @@ localUser;
     messageAuthorImg: '',
   }
 
-  constructor() { }
+  constructor(  private route: ActivatedRoute, private firestore: AngularFirestore,) {
+  
+   }
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
-    this.currentChatroomID = window.location.pathname.split('/').pop()
-    this.loadMessages();
+      this.route.paramMap.subscribe(paramMap => {
+      this.currentChatroomID = paramMap.get('id');
+      this.firestore
+      .collection('channels')
+      .doc(this.currentChatroomID)
+      .valueChanges()
+      .subscribe(() => {
+        this.loadMessages();
+      })
+    })
   }
 
   loadMessages() {
@@ -53,14 +65,14 @@ localUser;
     let hours = date.getHours();
     let minutes = date.getMinutes();
     let secondes = date.getSeconds();
-    if (secondes.lenght < 2) {
-      secondes = 0 + secondes
+    if (secondes < 10) {
+      secondes = '0' + secondes
     }
-    if (hours.lenght < 2) {
-      hours = 0 + hours
+    if (hours < 10) {
+      hours = '0' + hours
     }
-    if (minutes.lenght < 2) {
-      minutes = 0 + minutes
+    if (minutes.lenght < 10) {
+      minutes = '0' + minutes
     }
     date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
     return date;
@@ -73,7 +85,6 @@ localUser;
     this.messageData.messageTime = Timestamp.fromDate(new Date());
     this.messageData.messageAuthorImg = this.localUser.photoURL;
     await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
-    console.log(this.messages)
   }
 
 }
