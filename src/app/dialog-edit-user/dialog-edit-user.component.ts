@@ -30,15 +30,14 @@ export class DialogEditUserComponent implements OnInit {
     private afStorage: AngularFireStorage) { }
 
 
-  ngOnInit(): void 
-  {}
+  ngOnInit(): void { }
 
 
   upload = (event) => {
     const randomId = Math.random().toString(36).substring(2);
     this.ref = this.afStorage.ref('/images/' + randomId);
     this.task = this.ref.put(event.target.files[0]);
-    
+
     // observe upload progress
     this.uploadProgress = this.task.percentageChanges();
     // get notified when the download URL is available
@@ -50,30 +49,35 @@ export class DialogEditUserComponent implements OnInit {
             this.imageURL = url;
             this.uploadState = null;
           }
-      });
-    })
+        });
+      })
     )
-    .subscribe();
+      .subscribe();
     this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
   }
 
 
-  discardUpload(){
+  discardUpload() {
     this.ref.delete();
     this.resetUpload();
   }
 
 
-  changePicture(){
-    let currentImageURL = this.afStorage.refFromURL(this.user['photoURL']);
-    currentImageURL.delete();
+  changePicture() {
+    try {
+      this.afStorage.storage.refFromURL(this.user['photoURL']).delete()
+    }
+    catch (err) {
+      console.log("Error ", err);
+    }
+
     this.user['photoURL'] = this.imageURL;
     this.resetUpload();
     this.saveWithoutClose();
   }
 
 
-  resetUpload(){
+  resetUpload() {
     this.downloadURL = null;
     this.uploadState = null;
     this.ref = null;
@@ -81,28 +85,28 @@ export class DialogEditUserComponent implements OnInit {
   }
 
 
-  saveWithoutClose(){
+  saveWithoutClose() {
     this.loading = true;
     this.firestore
-    .collection('users')
-    .doc(this.userId)
-    .update(this.user)
-    .then(() =>{
-      this.loading = false;
-    });
+      .collection('users')
+      .doc(this.userId)
+      .update(this.user)
+      .then(() => {
+        this.loading = false;
+      });
   }
 
 
   save() {
     this.loading = true;
     this.firestore
-    .collection('users')
-    .doc(this.userId)
-    .update(this.user)
-    .then(() =>{
-      this.loading = false;
-      this.dialogRef.close();
-    });
+      .collection('users')
+      .doc(this.userId)
+      .update(this.user)
+      .then(() => {
+        this.loading = false;
+        this.dialogRef.close();
+      });
   }
 
 }

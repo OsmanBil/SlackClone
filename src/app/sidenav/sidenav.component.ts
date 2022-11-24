@@ -33,7 +33,7 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit(): void {
 
-    
+
     this.loadChatrooms();
 
   }
@@ -73,10 +73,9 @@ export class SidenavComponent implements OnInit {
     querySnapshot.forEach(async (doc) => {
       let docRef2 = collection(this.db, "chatrooms", doc.id, "users");
       let querySnapshot2 = await getDocs(docRef2);
-      console.log(doc.id + 'adsfadfdfdsgasd')
+    
 
       querySnapshot2.forEach((doc2: any) => {
-        console.log('11111' + docRef2)
         if (doc2.data().name == this.localUser['displayName']) {
           currentChatroom.shownInSidebar = doc2.data().shownInSidebar;
         }
@@ -105,7 +104,7 @@ export class SidenavComponent implements OnInit {
 
   }
 
-  openChatroom(chatroomID){
+  openChatroom(chatroomID) {
     console.log(chatroomID)
     this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
   }

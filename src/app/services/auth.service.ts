@@ -149,7 +149,7 @@ export class AuthService {
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
   async SetUserData(user: any, name: any) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-    console.log('Testing:', user.photoURL);
+   // console.log('Testing:', user.photoURL);
 
 
 
@@ -157,7 +157,7 @@ export class AuthService {
 
       if (!ref.exists) {
 
-        console.log('Name:', name)
+        //console.log('Name:', name)
         if (name) {
           let searchName = String(name);
           let searchUserValue = '';
