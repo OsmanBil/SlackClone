@@ -14,6 +14,7 @@ export class ChatroomComponent implements OnInit {
   db = getFirestore();
   currentChatroomID;
   @Input() public messages: any[] = [];
+  @Input() public chatusers: any[] = [];
   textMessage;
   localUser;
 
@@ -33,14 +34,10 @@ export class ChatroomComponent implements OnInit {
     this.localUser = JSON.parse(localStorage.getItem('user'));
       this.route.paramMap.subscribe(paramMap => {
       this.currentChatroomID = paramMap.get('id');
-      this.firestore
-      .collection('channels')
-      .doc(this.currentChatroomID)
-      .valueChanges()
-      .subscribe(() => {
         this.loadMessages();
-      })
+        this.loadUsers();
     })
+    
   }
 
   loadMessages() {
@@ -56,6 +53,16 @@ export class ChatroomComponent implements OnInit {
     });
   }
 
+  async loadUsers(){
+    const q = collection(this.db, "chatrooms", this.currentChatroomID, "users")
+    const querySnapshotsUsers = await getDocs(q);
+    this.chatusers = [];
+    querySnapshotsUsers.forEach((doc: any) => {
+      if(doc.data().id !== this.localUser.uid){
+        this.chatusers.push({id: doc.data().id, name: doc.data().name, photoURL: doc.data().photoURL, student: 'student'})
+      }
+    });
+  }
   
   convertTimestamp(timestamp) {
     let date = timestamp.toDate();

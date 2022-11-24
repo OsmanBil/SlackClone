@@ -1,11 +1,20 @@
 <div class="active-chat-container">
+    <div *ngFor="let chatuser of chatusers" class="one-message my-2 p-2 d-flex align-items-start">
+        <div class="d-flex align-items-start">
+            <img src="{{ chatuser['photoURL'] }}" class="user-img me-2">
+            <div>
+            <p class="fw-bold fs-6">{{ chatuser.name }}</p>
+            <p class="fw-light"><i>{{ chatuser.student }}</i></p>
+            </div>
+        </div>
+    </div>
     <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
         <div>
-            <img class="one-message-img me-2" src="{{ message['loadMessageAuthorImg'] }}">
+            <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2" src="{{ message['loadMessageAuthorImg'] }}">
         </div>
-        <div>
-            <div class="d-flex">
-                <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
+        <div [ngClass]="{'server-message' : message['loadMessageAuthor'] == 'server'}">
+            <div class="d-flex align-items-start" *ngIf="message['loadMessageAuthor'] !== 'server'">
+                <p class="me-1" ><b>{{ message['loadMessageAuthor']}}</b></p>
                 <p>{{ message['loadMessageTime']}}</p>
             </div>
             <div>{{ message['loadMessageText']}}</div>
