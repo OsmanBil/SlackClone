@@ -38,19 +38,28 @@ export class OpenChannelComponent implements OnInit {
 
 
   loadMessages() {
-    const ref = collection(this.db, "channels", this.channelId, "posts");
-    const q = query(ref, orderBy("time"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    let ref = collection(this.db, "channels", this.channelId, "posts");
+    let q = query(ref, orderBy("time"));
+    let unsubscribe = onSnapshot(q, (snapshot) => {
       this.posts = [];
-      snapshot.forEach((doc) => {
-        let post = { 
-          text: doc.data()['text'], 
-          time: this.convertTimestamp(doc.data()['time']), 
-          author: doc.data()['author'], 
-          img: doc.data()['img'],
-          id: doc.id };
-        this.posts.push(post);
+      snapshot.forEach((postDoc) => {
+        this.loadAuthor(postDoc);
       });
+    });
+  }
+
+
+  async loadAuthor(postDoc){
+    let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data()['userId']));
+    let querySnapshot = await getDocs(user);
+    querySnapshot.forEach((userDoc) => {
+      let post = { 
+        text: postDoc.data()['text'], 
+        time: this.convertTimestamp(postDoc.data()['time']), 
+        author: userDoc.data()['displayName'],
+        img: userDoc.data()['photoURL'],
+        id: postDoc.id };
+      this.posts.push(post);
     });
   }
 

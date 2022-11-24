@@ -35,9 +35,7 @@ export class CommentBoxComponent implements OnInit {
   data = {
     text: '',
     time: Timestamp.fromDate(new Date()),
-    author: '',
     userId: '',
-    img: ''
   }
 
   text: string;
@@ -73,9 +71,7 @@ export class CommentBoxComponent implements OnInit {
 
 
   setData(){
-    this.data.author = this.currentUser['displayName'];
     this.data.userId = this.currentUser['uid'];
-    this.data.img = this.currentUser['photoURL'];
     this.data.text = this.text;
     this.data.time = Timestamp.fromDate(new Date());
     this.sendData();
