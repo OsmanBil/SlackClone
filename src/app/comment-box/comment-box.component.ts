@@ -80,5 +80,6 @@ export class CommentBoxComponent implements OnInit {
 
   async sendData(){
     await addDoc(collection(this.db, "channels", this.channelId, "posts"), this.data);
+    this.form.reset();
   }
 }
