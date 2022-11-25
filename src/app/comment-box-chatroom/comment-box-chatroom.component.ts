@@ -5,6 +5,11 @@ import { EditorChangeContent, EditorChangeSelection, QuillEditorComponent } from
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 
+import Quill from 'quill';
+import { VideoHandler, ImageHandler, Options } from 'ngx-quill-upload';
+
+Quill.register('modules/imageHandler', ImageHandler);
+Quill.register('modules/videoHandler', VideoHandler);
 
 @Component({
   selector: 'app-comment-box-chatroom',
@@ -28,8 +33,20 @@ export class CommentBoxChatroomComponent implements OnInit {
       ['blockquote', 'code-block'],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
       ['link'],
-      ['image'],
+      ['image', 'video'],
     ],
+    imageHandler: {
+      upload: (file) => {
+       return // your uploaded image URL as Promise<string>
+      },
+      accepts: ['png', 'jpg', 'jpeg', 'jfif'] // Extensions to allow for images (Optional) | Default - ['jpg', 'jpeg', 'png']
+    } as Options,
+    videoHandler: {
+      upload: (file) => {
+        return // your uploaded video URL as Promise<string>
+      },
+      accepts: ['mpeg', 'avi']  // Extensions to allow for videos (Optional) | Default - ['mp4', 'webm']
+    } as Options
   }
 
   data = {
