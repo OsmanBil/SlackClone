@@ -115,6 +115,7 @@ export class DialogCreateChatComponent implements OnInit {
     messageAuthor: 'server',
     messageTime: Timestamp.fromDate(new Date()),
     messageAuthorImg: '',
+    messageAuthorID: 'server',
   }
 
   @Input() public messages: any[] = [];
