@@ -3,7 +3,7 @@
         <div>{{ channel.channelName }}</div>
 
         <div *ngFor="let post of posts">
-            <img src=" {{ post.img }} ">
+            <img src="{{ post.img }}">
             <p>{{ post['author'] }}</p>
             <p>{{ post['time'] }}</p>
             <p [innerHTML]="post.text"></p>
