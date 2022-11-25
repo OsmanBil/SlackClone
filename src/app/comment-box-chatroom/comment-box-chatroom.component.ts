@@ -75,9 +75,9 @@ export class CommentBoxChatroomComponent implements OnInit {
     }
   }
 
-  async addMessage(newValue) {
+  async addMessage() {
     const unsub = onSnapshot(doc(this.db, "users", this.localUser.uid), async (doc: any) => {
-      this.messageData.messageText = newValue;
+      this.messageData.messageText = this.text;
       this.messageData.messageServerTime = serverTimestamp(),
         this.messageData.messageAuthor = doc.data().displayName;
       this.messageData.messageAuthorID = this.localUser.uid;
@@ -89,9 +89,7 @@ export class CommentBoxChatroomComponent implements OnInit {
       })
 
       await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
-      let versuch = document.getElementsByClassName('ql-editor').length 
-      
-      console.log(versuch)
+      this.form.reset();
     });
   }
 

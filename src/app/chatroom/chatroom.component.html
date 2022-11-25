@@ -20,13 +20,16 @@
                 <p class="me-1" ><b>{{ message['loadMessageAuthor']}}</b></p>
                 <p>{{ message['loadMessageTime']}}</p>
             </div>
-            <div>{{ message['loadMessageText']}}</div>
+            <div [innerHTML]="message['loadMessageText']" class="message-text">
+                
+            </div>
+            <!-- <img class="profile-img" src="{{ post.img }}"> -->
         </div>
 
     </div>
 
 </div>
-<router-outlet></router-outlet>
+<app-comment-box-chatroom>
 <div class="send-message-container">
     <input #searchUserField placeholder="Search User" type="text" [(ngModel)]="textMessage">
     <button (click)="addMessage(textMessage)" [disabled]="searchUserField.value == ''">add Chat</button>
