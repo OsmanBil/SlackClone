@@ -77,6 +77,15 @@ export class SidenavComponent implements OnInit {
       let docRef2 = collection(this.db, "chatrooms", doc.id, "users");
       let querySnapshot2 = await getDocs(docRef2);
 
+
+
+      // querySnapshot2.forEach(async (doc2: any) => {
+      //   if (doc2.data().id !== this.localUser['uid']) {
+      //     currentChatroom.id = doc2.data().id;
+      //     this.chatrooms.push({ name: doc2.data().name, photoURL: doc2.data().photoURL, id: doc.id, shownInSidebar: '' })
+      //   }
+
+
       querySnapshot2.forEach((doc2: any) => {
         if (doc2.data().name == this.localUser['displayName']) {
           currentChatroom.shownInSidebar = doc2.data().shownInSidebar;
@@ -86,7 +95,6 @@ export class SidenavComponent implements OnInit {
           currentChatroom.photoURL = doc2.data().photoURL;
           currentChatroom.id = doc.id;
           this.chatrooms.push({ name: currentChatroom.name, photoURL: currentChatroom.photoURL, id: doc.id })
-
         }
       })
     })
