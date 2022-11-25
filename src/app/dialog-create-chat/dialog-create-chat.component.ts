@@ -239,7 +239,7 @@ export class DialogCreateChatComponent implements OnInit {
 
 
 
-    await addDoc(collection(this.db, "chatrooms", this.roomid, "messages"), this.messageData);
+    // await addDoc(collection(this.db, "chatrooms", this.roomid, "messages"), this.messageData);
   }
 
   async createChat() {
@@ -285,26 +285,7 @@ export class DialogCreateChatComponent implements OnInit {
     return date;
   }
 
-  // AB  HIER NUR BEISPIELE
-  async zeit() {
-    const docData = {
-      stringExample: "Hello world!",
-      booleanExample: true,
-      numberExample: 3.14159265,
-      dateExample: Timestamp.fromDate(new Date()),
-      arrayExample: [5, true, "hello"],
-      nullExample: null,
-      objectExample: {
-        a: 5,
-        b: {
-          nested: "foo"
-        }
-      }
-    };
-    await setDoc(doc(this.db, "data", "one"), docData);
-
-  }
-
+ 
 
 
 }

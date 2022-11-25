@@ -1,0 +1,17 @@
+quill-editor{
+    width: 100%;
+}
+
+form{
+    position: relative;
+}
+
+.send-icon{
+    position: absolute;
+    right: 12px;
+    top: 8px;
+
+    &:hover{
+        color: #A161A3;
+    }
+}

@@ -6,7 +6,8 @@
         [placeholder]="''" 
         [modules]="modules"
         (onEditorChanged)="changedEditor($event)">
-       
+        
     </quill-editor>
-    <i class="material-icons send-icon" matTooltip="Post" (click)="postToChannel()">send</i>
+   
+    <i class="material-icons send-icon" matTooltip="Post" (click)="addMessage('df')">send</i>
 </form>
