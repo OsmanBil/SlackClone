@@ -2,6 +2,19 @@
   Developer Akademie
 </div>
 
+
+<div class="container">
+  <div class="container-head">
+  </div>
+  <div class="container-channels" >
+    <div class="channel" >
+      <mat-icon fontIcon="comment"></mat-icon>
+      <span [routerLink]="['/mainpage/threads/']">Threads</span>
+    </div>
+  </div>
+
+</div>
+
 <div class="container">
   <div class="container-head">
     <div class="channel-menu">
@@ -11,7 +24,6 @@
     </div>
     <mat-icon fontIcon="add" (click)="openDialogCreateChannel()"></mat-icon>
   </div>
-
   <div class="container-channels" *ngIf="channelOpen">
     <div class="channel" *ngFor="let channel of channels">
       <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
