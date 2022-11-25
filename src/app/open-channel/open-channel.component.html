@@ -7,10 +7,10 @@
             </div>
             <div>
                 <div>
-                    <p class="me-1"><b>{{ post.author }}</b></p>
+                    <p><b>{{ post.author }}</b></p>
                     <p>{{ post.time }}</p>
                 </div>
-                <div>
+                <div class="post">
                     <p [innerHTML]="post.text"></p>
                 </div>
             </div>

@@ -40,4 +40,21 @@ p {
 .ql-editor{
     min-height: 80px;
     max-height: 30vh;
+
+    img{
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+}
+
+.post{
+    p{
+        img{
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+    }
+
 }
