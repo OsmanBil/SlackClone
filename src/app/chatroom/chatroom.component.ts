@@ -47,75 +47,78 @@ export class ChatroomComponent implements OnInit {
     const messagesQ = query(messagesRef, orderBy("messageServerTime"));
     const unsubscribe = onSnapshot(messagesQ, async (snapshot) => {
       this.messages = [];
-      snapshot.forEach(async (change: any) => {
+      snapshot.forEach((postDoc: any) => {
         let loadMessage = {
-          loadMessageText: change.data()['messageText'], loadMessageTime: change.data()['messageTime'], loadMessageServerTime: change.data()['messageServerTime'],
-          loadMessageAuthor: change.data().messageAuthorID, loadMessageAuthorID: change.data().messageAuthorID, loadMessageAuthorImg: change.data()['messageAuthorImg'], id: change.id
+          loadMessageText: postDoc.data()['messageText'], loadMessageTime: postDoc.data()['messageTime'],
+          loadMessageServerTime: postDoc.data()['messageServerTime'],
+          loadMessageAuthor: postDoc.data().messageAuthor, loadMessageAuthorImg: postDoc.data().messageAuthorImg,
+          loadMessageAuthorID: postDoc.data().messageAuthorID, id: postDoc.id
         };
         loadMessage.loadMessageTime = this.convertTimestamp(loadMessage.loadMessageTime);
-        const docRef = doc(this.db, "users", change.data().messageAuthorID);
-        const docSnap: any = await getDoc(docRef);
-
-        console.log(docSnap.id)
-        console.log(docSnap)
-        console.log(docSnap.data()['displayName'])
-
-        this.messages.push(loadMessage);
+        this.messages.push(loadMessage)
+        // this.loadAuthor(postDoc);
       });
-      console.log(this.messages)
-      console.log(this.messages.length)
-      for (let x = 0; x < this.messages.length; x++) {
-        const docRef = doc(this.db, "users", this.messages[x].loadMessageAuthorID);
-        const docSnap = await getDoc(docRef);
-        console.log(docRef)
-        console.log()
-        console.log()
+    });
+  }
+  async loadAuthor(postDoc) {
+    let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data().messageAuthorID));
+    let querySnapshot = await getDocs(user);
+    querySnapshot.forEach((userDoc) => {
+      let post = {
+        loadMessageAuthor: postDoc.data().messageAuthor,
+        loadMessageAuthorImg: postDoc.data().messageAuthorImg,
+        loadMessageAuthorID: postDoc.data().messageAuthorID,
+        loadMessageText: postDoc.data().messageText,
+        loadMessageTime: this.convertTimestamp(postDoc.data().messageTime),
 
+      };
+      this.messages.push(post);
+    });
+  }
+
+
+  async loadUsers() {
+    const q = collection(this.db, "chatrooms", this.currentChatroomID, "users")
+    const querySnapshotsUsers = await getDocs(q);
+    this.chatusers = [];
+    querySnapshotsUsers.forEach((doc: any) => {
+      if (doc.data().id !== this.localUser.uid) {
+        this.chatusers.push({ id: doc.data().id, name: doc.data().name, photoURL: doc.data().photoURL, student: 'student' })
       }
+    });
+  }
 
-  });
-}
-
-  async loadUsers(){
-  const q = collection(this.db, "chatrooms", this.currentChatroomID, "users")
-  const querySnapshotsUsers = await getDocs(q);
-  this.chatusers = [];
-  querySnapshotsUsers.forEach((doc: any) => {
-    if (doc.data().id !== this.localUser.uid) {
-      this.chatusers.push({ id: doc.data().id, name: doc.data().name, photoURL: doc.data().photoURL, student: 'student' })
+  convertTimestamp(timestamp) {
+    let date = timestamp.toDate();
+    let mm = date.getMonth();
+    let dd = date.getDate();
+    let yyyy = date.getFullYear();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let secondes = date.getSeconds();
+    if (secondes < 10) {
+      secondes = '0' + secondes
     }
-  });
-}
-
-convertTimestamp(timestamp) {
-  let date = timestamp.toDate();
-  let mm = date.getMonth();
-  let dd = date.getDate();
-  let yyyy = date.getFullYear();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let secondes = date.getSeconds();
-  if (secondes < 10) {
-    secondes = '0' + secondes
+    if (hours < 10) {
+      hours = '0' + hours
+    }
+    if (minutes < 10) {
+      minutes = '0' + minutes
+    }
+    date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
+    return date;
   }
-  if (hours < 10) {
-    hours = '0' + hours
-  }
-  if (minutes < 10) {
-    minutes = '0' + minutes
-  }
-  date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
-  return date;
-}
 
   async addMessage(newValue) {
-  this.messageData.messageText = newValue;
-  this.messageData.messageServerTime = serverTimestamp(),
-    this.messageData.messageAuthor = this.localUser.displayName;
-  this.messageData.messageAuthorID = this.localUser.uid;
-  this.messageData.messageTime = Timestamp.fromDate(new Date());
-  this.messageData.messageAuthorImg = this.localUser.photoURL;
-  await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
-}
+    const unsub = onSnapshot(doc(this.db, "users", this.localUser.uid), async (doc: any) => {
+      this.messageData.messageText = newValue;
+      this.messageData.messageServerTime = serverTimestamp(),
+        this.messageData.messageAuthor = doc.data().displayName;
+      this.messageData.messageAuthorID = this.localUser.uid;
+      this.messageData.messageTime = Timestamp.fromDate(new Date());
+      this.messageData.messageAuthorImg = doc.data().photoURL;
+      await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
+    });
+  }
 
 }

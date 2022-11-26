@@ -16,3 +16,8 @@
     height: 50px!important;
     width: 50px!important;
 }
+
+.message-text{
+    display: flex;
+    flex-direction: column;
+}

@@ -49,6 +49,8 @@ import { OpenChannelComponent } from './open-channel/open-channel.component';
 import { CommentBoxComponent } from './comment-box/comment-box.component';
 import { ChatroomComponent } from './chatroom/chatroom.component';
 import { ThreadsComponent } from './threads/threads.component';
+import { CommentBoxChatroomComponent } from './comment-box-chatroom/comment-box-chatroom.component';
+
 
 
 //import { environment } from '../environments/environment';
@@ -70,7 +72,9 @@ import { ThreadsComponent } from './threads/threads.component';
     OpenChannelComponent,
     CommentBoxComponent,
     ChatroomComponent,
-    ThreadsComponent
+    ThreadsComponent,
+    CommentBoxChatroomComponent
+
   
   ],
   imports: [

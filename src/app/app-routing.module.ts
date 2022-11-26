@@ -12,7 +12,11 @@ import { DialogCreateChatComponent } from './dialog-create-chat/dialog-create-ch
 import { ChatroomComponent } from './chatroom/chatroom.component';
 import { OpenChannelComponent } from './open-channel/open-channel.component';
 import { CommentBoxComponent } from './comment-box/comment-box.component';
+
 import { ThreadsComponent } from './threads/threads.component';
+
+import { CommentBoxChatroomComponent } from './comment-box-chatroom/comment-box-chatroom.component';
+
 
 const routes: Routes = [
   // { path: '', component: MainpageComponent},
@@ -25,11 +29,7 @@ const routes: Routes = [
       { path: 'create-chanel', component: DialogCreateChatComponent },
       { path: 'threads', component: ThreadsComponent },
       { path: 'chatroom/:id', component: ChatroomComponent },
-      { path: 'channel/:id', component: OpenChannelComponent,
-      children: [
-        {path: '', component: CommentBoxComponent},
-        {path: 'comment-box', component: CommentBoxComponent},
-      ]},
+      { path: 'channel/:id', component: OpenChannelComponent},
     ]
   },
   { path: 'register-user', component: SignUpComponent },

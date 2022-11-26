@@ -7,8 +7,23 @@
             <p>{{ post['author'] }}</p>
             <p>{{ post['time'] }}</p>
             <p [innerHTML]="post.text"></p>
+        <h2>{{ channel.channelName }}</h2>
+        <div class="posts" *ngFor="let post of posts">
+            <div>
+                <img class="profile-img" src="{{ post.img }}">
+            </div>
+            <div>
+                <div>
+                    <p><b>{{ post.author }}</b></p>
+                    <p>{{ post.time }}</p>
+                </div>
+                <div class="post">
+                    <p [innerHTML]="post.text"></p>
+                </div>
+            </div>
         </div>
+
     </div>
 
-    <router-outlet></router-outlet>
+    <app-comment-box></app-comment-box>
 </div>

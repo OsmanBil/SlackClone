@@ -16,49 +16,58 @@ export class OpenChannelComponent implements OnInit {
   channelId = '';
   channel: Channel = new Channel();
   posts = [];
+  post: any;
+  user = [];
 
   constructor(
     private route: ActivatedRoute,
     private firestore: AngularFirestore,
   ) { }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(paramMap => {
-      this.channelId = paramMap.get('id');
-      this.firestore
-      .collection('channels')
-      .doc(this.channelId)
-      .valueChanges()
-      .subscribe((channel: any) => {
-        this.channel = new Channel(channel);
-        this.loadMessages();
-      })
+  async ngOnInit(): Promise<void> {
+    this.posts = [];
+    this.route.paramMap.subscribe(async paramMap => {
+    this.channelId = paramMap.get('id');
+    this.loadChannel();
+    this.loadMessages();
+    })
+  }
+
+
+  loadChannel(){
+    this.firestore
+    .collection('channels')
+    .doc(this.channelId)
+    .valueChanges()
+    .subscribe((channel: any) => {
+      this.channel = new Channel(channel);
     })
   }
 
 
   loadMessages() {
-    let ref = collection(this.db, "channels", this.channelId, "posts");
-    let q = query(ref, orderBy("time"));
+    let postRef = collection(this.db, "channels", this.channelId, "posts");
+    let q = query(postRef, orderBy("time"));
     let unsubscribe = onSnapshot(q, (snapshot) => {
       this.posts = [];
-      snapshot.forEach((postDoc) => {
+      snapshot.forEach(async (postDoc) => {
         this.loadAuthor(postDoc);
       });
     });
   }
 
 
-  async loadAuthor(postDoc){
+  async loadAuthor(postDoc) {
     let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data()['userId']));
     let querySnapshot = await getDocs(user);
     querySnapshot.forEach((userDoc) => {
-      let post = { 
-        text: postDoc.data()['text'], 
-        time: this.convertTimestamp(postDoc.data()['time']), 
+      let post = {
+        text: postDoc.data()['text'],
+        time: this.convertTimestamp(postDoc.data()['time']),
         author: userDoc.data()['displayName'],
         img: userDoc.data()['photoURL'],
-        id: postDoc.id };
+        id: postDoc.id
+      };
       this.posts.push(post);
     });
   }

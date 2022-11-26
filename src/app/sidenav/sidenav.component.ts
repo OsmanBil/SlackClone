@@ -76,12 +76,27 @@ export class SidenavComponent implements OnInit {
     querySnapshot.forEach(async (doc) => {
       let docRef2 = collection(this.db, "chatrooms", doc.id, "users");
       let querySnapshot2 = await getDocs(docRef2);
+
+
+
       querySnapshot2.forEach(async (doc2: any) => {
         if (doc2.data().id !== this.localUser['uid']) {
           currentChatroom.id = doc2.data().id;
           this.chatrooms.push({ name: doc2.data().name, photoURL: doc2.data().photoURL, id: doc.id, shownInSidebar: '' })
         }
-      })
+
+
+      // querySnapshot2.forEach((doc2: any) => {
+      //   if (doc2.data().name == this.localUser['displayName']) {
+      //     currentChatroom.shownInSidebar = doc2.data().shownInSidebar;
+      //   }
+      //   else {
+      //     currentChatroom.name = doc2.data().name;
+      //     currentChatroom.photoURL = doc2.data().photoURL;
+      //     currentChatroom.id = doc.id;
+      //     this.chatrooms.push({ name: currentChatroom.name, photoURL: currentChatroom.photoURL, id: doc.id })
+      //   }
+     })
     })
     this.firestore
       .collection('channels')
@@ -91,47 +106,7 @@ export class SidenavComponent implements OnInit {
       })
   }
 
-checkShownInSidebar(){
-
-
-
-
-}
-
-  //   async aaaadsf(){
-  //     querySnapshot2.forEach( async (doc2: any) => {
-  //       if (doc2.data().id == this.localUser['uid']) {
-  //         currentChatroom.shownInSidebar = doc2.data().shownInSidebar;
-  //       }
-  //       else {
-  //         currentChatroom.id = doc2.data().id;
-  //       }
-  //       const userQ = query(collection(this.db, 'users'), where(doc2.data().id, "==", "uid"));
-  //       const userSnapQ = await getDocs(userQ);
-  //       querySnapshot.forEach((doc3: any) => {
-  //         this.bla = doc3.id;
-  //         currentChatroom.photoURL = doc3.data().photoURL;
-  //         console.log(this.bla)
-  //       });
-  //     });
-  //     console.log(this.bla)
-  //     this.chatrooms.push({ name: this.bla, photoURL: currentChatroom.photoURL, id: doc.id })
-  //   })
-  //   console.log(this.chatrooms)
-
-
-  //   this.firestore
-  //     .collection('channels')
-  //     .valueChanges({ idField: 'channelId' })
-  //     .subscribe((changes: any) => {
-  //       this.channels = changes;
-  //     })
-  //   }
-
-  // }
-
-  openChatroom(chatroomID) {
-    console.log(chatroomID)
+  openChatroom(chatroomID){
     this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
   }
 }
