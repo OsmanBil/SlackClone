@@ -3,7 +3,7 @@
         <div class="d-flex align-items-center">
             <div class="header-img-container"> 
                 <img src="{{ chatuser['photoURL'] }}" class="header-user-img">
-                <div [ngClass]="{'header-icon-online' : chatuser['isOnline'] == true}"></div>
+                <div [ngClass]="{'header-icon-online' : chatuser.isOnline == true}"></div>
             </div>
             <div>
                 <p class="header-user-name ps-2">{{ chatuser.name }}</p>

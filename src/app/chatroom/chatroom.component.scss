@@ -6,7 +6,7 @@
 
 .header-container{
     background-color: white;
-    border-bottom: 2px solid lightgrey;
+    border-bottom: 1.5px solid lightgrey;
 }
 
 .header-img-container{
@@ -29,8 +29,9 @@
     }
 }
 
-.header-online.icon{
-    background-color: green!important;
+.header-icon-online{
+    background-color: rgb(46, 187, 46)!important;
+    border: 1.5px solid black!important;
 }
 
 .header-user-name {

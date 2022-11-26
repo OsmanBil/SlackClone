@@ -35,6 +35,7 @@ export class ChatroomComponent implements OnInit {
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
+    this.chatusersID = [];
     this.route.paramMap.subscribe(paramMap => {
       this.currentChatroomID = paramMap.get('id');
       this.loadMessages();
@@ -87,16 +88,17 @@ export class ChatroomComponent implements OnInit {
       if (doc.data().id !== this.localUser.uid) {      
           this.chatusersID.push({
             id: doc.data().id, })
-          console.log(this.chatusersID);
       }
     })
+    this.chatusers = [];
     for(let i = 0; i < this.chatusersID.length; i++){
-      console.log(this.chatusersID[i].id)
        const unsub = onSnapshot(doc(this.db, "users", this.chatusersID[i].id), {includeMetadataChanges: true}, 
        (doc: any) => {
-          this.chatusers.push({ id: doc.data().id, name: doc.data().displayName, photoURL: doc.data().photoURL,
-           isOnline: doc.data().isOnline, student: 'student',  })
-         console.log('this id' + doc.id)
+        this.chatusers = [];
+          let chatuserData = { id: doc.data().id, name: doc.data().displayName, photoURL: doc.data().photoURL,
+            isOnline: doc.data().isOnline, student: 'student',  }
+          this.chatusers.push(chatuserData)
+         
        })
     }
   }
