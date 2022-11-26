@@ -46,7 +46,8 @@ export class CommentBoxChatroomComponent implements OnInit {
         return // your uploaded video URL as Promise<string>
       },
       accepts: ['mpeg', 'avi']  // Extensions to allow for videos (Optional) | Default - ['mp4', 'webm']
-    } as Options
+    } as Options,
+    
   }
 
   data = {
@@ -85,6 +86,7 @@ export class CommentBoxChatroomComponent implements OnInit {
     this.localUser = JSON.parse(localStorage.getItem('user'));
   }
 
+  
 
   changedEditor(event: EditorChangeContent | EditorChangeSelection) {
     if (event['event'] == 'text-change') {
@@ -93,6 +95,8 @@ export class CommentBoxChatroomComponent implements OnInit {
   }
 
   async addMessage() {
+
+    
     const unsub = onSnapshot(doc(this.db, "users", this.localUser.uid), async (doc: any) => {
       this.messageData.messageText = this.text;
       this.messageData.messageServerTime = serverTimestamp(),
