@@ -2,29 +2,30 @@
 
 
 <div *ngFor="let thread of allThreads;let i=index" class="dish-container">
-   test
-</div>
-
-
-
-<div class="channel-page">
-    <div>
-        <div>{{ channel.channelName }}</div>
-        <div class="posts" *ngFor="let post of posts">
-            <div>
-                <img class="profile-img" src="{{ post.img }}">
-            </div>
-            <div>
+    <div class="channel-page">
+        <div>
+            <div>{{ channel.channelName }}</div>
+            <div class="posts" *ngFor="let post of thread.content">
                 <div>
-                    <p><b>{{ post.author }}</b></p>
-                    <p>{{ post.time }}</p>
+                    <img class="profile-img" src="{{ post.img }}">
                 </div>
-                <div class="post">
-                    <p [innerHTML]="post.text"></p>
+                <div>
+                    <div>
+                        <p><b>{{ post.author }}</b></p>
+                        <p>{{ post.time }}</p>
+                    </div>
+                    <div class="post">
+                        <p [innerHTML]="post.text"></p>
+                    </div>
                 </div>
+                
             </div>
+            <app-comment-box></app-comment-box>
         </div>
-        <app-comment-box></app-comment-box>
     </div>
+    
 </div>
+
+
+
 

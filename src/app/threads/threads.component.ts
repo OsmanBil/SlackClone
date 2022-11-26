@@ -31,7 +31,7 @@ export class ThreadsComponent implements OnInit {
   channel: Channel = new Channel();
   posts = [];
   allThreads = [];
-
+  counter = 0;
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, public fr: Firestore) { }
 
@@ -45,13 +45,17 @@ export class ThreadsComponent implements OnInit {
 
 
   async loadThreads() {
+
     let querySnapshot = await getDocs(collection(this.fr, "users/Crq65CZbkqVw2UOOCitlq2zCbyD2/threads"));
+    this.allThreads = [];
+    this.counter = -1;
     querySnapshot.forEach(async (doc) => {
+      this.counter++;
       // console.log(doc.id)
       this.channelId = doc.id;
       // console.log("channelId:", this.channelId)
-      this.allThreads.push(this.channelId);
-      await this.loadChannel(this.channelId)
+      this.allThreads.push({id: this.channelId, content : [] });
+      this.loadMessages(this.counter);
       
 
     })
@@ -59,32 +63,35 @@ export class ThreadsComponent implements OnInit {
     console.log("allThreads:",  this.allThreads)
   }
 
-  async loadChannel(test) {
-    this.firestore
-      .collection('channels')
-      .doc(test)
-      .valueChanges()
-      .subscribe((channel: any) => {
-        test = new Channel(channel);
-        this.loadMessages();
-      })
+  // async loadChannel(test) {
+  //   this.firestore
+  //     .collection('channels')
+  //     .doc(test)
+  //     .valueChanges()
+  //     .subscribe((channel: any) => {
+  //       test = new Channel(channel);
+        
+  //     })
 
-  }
+  // }
 
 
-  loadMessages() {
+  loadMessages(counter) {
     let ref = collection(this.db, "channels", this.channelId, "posts");
     let q = query(ref, orderBy("time"));
     let unsubscribe = onSnapshot(q, (snapshot) => {
-      this.posts = [];
+      this.allThreads[counter].content = []
+      // this.posts = [];
       snapshot.forEach((postDoc) => {
-        this.loadAuthor(postDoc);
+        this.loadAuthor(postDoc, counter);
+
+        
       });
     });
   }
 
 
-  async loadAuthor(postDoc) {
+  async loadAuthor(postDoc, counter) {
     let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data()['userId']));
     let querySnapshot = await getDocs(user);
     querySnapshot.forEach((userDoc) => {
@@ -95,7 +102,8 @@ export class ThreadsComponent implements OnInit {
         img: userDoc.data()['photoURL'],
         id: postDoc.id
       };
-      this.posts.push(post);
+      this.allThreads[counter].content.push(post);
+  
     });
   }
 
