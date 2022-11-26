@@ -92,6 +92,7 @@ export class DialogEditUserComponent implements OnInit {
       .doc(this.userId)
       .update(this.user)
       .then(() => {
+        this.saveLocalStoragePhoto(this.user);
         this.loading = false;
       });
   }
@@ -104,9 +105,27 @@ export class DialogEditUserComponent implements OnInit {
       .doc(this.userId)
       .update(this.user)
       .then(() => {
+        this.saveLocalStoragePhoto(this.user);
         this.loading = false;
         this.dialogRef.close();
       });
+  }
+
+
+  saveLocalStoragePhoto(user){
+  // Get the existing data
+  var existing = localStorage.getItem('user');
+
+  // If no existing data, create an array
+  // Otherwise, convert the localStorage string to an array
+  existing = existing ? JSON.parse(existing) : {};
+
+  // Add new data to localStorage Array
+  existing['photoURL'] = user.photoURL;
+
+  // Save back to localStorage
+  localStorage.setItem('user', JSON.stringify(existing));
+
   }
 
 }

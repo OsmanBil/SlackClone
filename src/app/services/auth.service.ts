@@ -32,9 +32,14 @@ export class AuthService {
     logged in and setting up null when logged out */
     this.afAuth.authState.subscribe((user) => {
       if (user) {
-        this.userData = user;
-        localStorage.setItem('user', JSON.stringify(this.userData));
-        JSON.parse(localStorage.getItem('user')!);
+
+        //if user us true -> load from database and set new local storage
+        this.firestore.collection(`users`).doc(user.uid).get().subscribe(ref => {
+          this.userData = ref.data();
+          localStorage.setItem('user', JSON.stringify(this.userData));
+          JSON.parse(localStorage.getItem('user')!);
+        });
+
       } else {
         localStorage.setItem('user', 'null');
         JSON.parse(localStorage.getItem('user')!);
@@ -62,10 +67,10 @@ export class AuthService {
 
 
   // Sign in with Google
- async GoogleAuth() {
+  async GoogleAuth() {
     await this.AuthLogin(new auth.GoogleAuthProvider())
       .then(async () => {
-         setTimeout(() => {this.router.navigate(['mainpage']) }, 500);
+        setTimeout(() => { this.router.navigate(['mainpage']) }, 500);
         //await this.router.navigate(['mainpage']);
       });
 
@@ -147,11 +152,9 @@ export class AuthService {
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
+
   async SetUserData(user: any, name: any) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-   // console.log('Testing:', user.photoURL);
-
-
 
     this.firestore.collection(`users`).doc(user.uid).get().subscribe(ref => {
 
@@ -207,7 +210,60 @@ export class AuthService {
         }
 
 
-      } else { }
+      } else {
+        this.firestore.collection(`users`).doc(user.uid).get().subscribe(async ref => {
+          const doc: any = ref.data();
+          let searchName = String(user.displayName);
+          let searchUserValue = '';
+          let userData: User = {
+            uid: doc.uid,
+            email: doc.email,
+            displayName: doc.displayName,
+            photoURL: doc.photoURL,
+            emailVerified: doc.emailVerified,
+            isOnline: true,
+            search: [],
+          };
+
+
+          for (let i = 0; i < searchName.length; i++) {
+            searchUserValue += searchName[i]
+            userData.search.push(String(searchUserValue).toLowerCase())
+          }
+
+          userRef.set(userData, {
+            merge: true,
+          });
+          this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
+
+
+          this.firestore
+            .collection('users')
+            .doc(doc.uid)
+            .update(userData);
+
+
+
+
+
+          // Get the existing data
+          var existing = localStorage.getItem('user');
+
+          // If no existing data, create an array
+          // Otherwise, convert the localStorage string to an array
+          existing = existing ? JSON.parse(existing) : {};
+
+          // Add new data to localStorage Array
+          existing['isOnline'] = true;
+
+          // Save back to localStorage
+          localStorage.setItem('user', JSON.stringify(existing));
+
+
+        });
+
+
+      }
 
     });
 
@@ -238,9 +294,67 @@ export class AuthService {
   // Sign out
   async SignOut() {
     return this.afAuth.signOut()
-      .then(() => localStorage.removeItem('user'))
+      .then(() => this.logOut())
       .finally(() => this.router.navigate(['sign-in']));
     // window.location.reload();
+
+  }
+
+
+  logOut() {
+  
+    // Get the existing data
+    var existing = localStorage.getItem('user');
+
+    // If no existing data, create an array
+    // Otherwise, convert the localStorage string to an array
+    existing = existing ? JSON.parse(existing) : {};
+
+    // Add new data to localStorage Array
+    existing['isOnline'] = false;
+
+    // Save back to localStorage
+    localStorage.setItem('user', JSON.stringify(existing));
+
+    console.log('String?', existing['uid'])
+
+    let userID = existing['uid']
+
+  
+    this.firestore.collection(`users`).doc(userID).get().subscribe(async ref => {
+      const doc: any = ref.data();
+      let searchName = String(doc.displayName);
+      let searchUserValue = '';
+
+      const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${doc.uid}`);
+      let userData: User = {
+        uid: doc.uid,
+        email: doc.email,
+        displayName: doc.displayName,
+        photoURL: doc.photoURL,
+        emailVerified: doc.emailVerified,
+        isOnline: false,
+        search: [],
+      };
+
+      
+      for (let i = 0; i < searchName.length; i++) {
+        searchUserValue += searchName[i]
+        userData.search.push(String(searchUserValue).toLowerCase())
+      }
+
+      userRef.set(userData, {
+        merge: true,
+      });
+      this.firestore.collection('users').doc(doc.uid).collection('chatids').add({});
+
+      this.firestore
+        .collection('users')
+        .doc(doc.uid)
+        .update(userData);
+
+    });
+    localStorage.removeItem('user')
 
   }
 }
