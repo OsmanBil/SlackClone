@@ -1,39 +1,52 @@
 <div class="active-chat-container">
-    <div *ngFor="let chatuser of chatusers" class="one-message my-2 p-2 d-flex align-items-start">
+    <div *ngFor="let chatuser of chatusers" class="header-container p-2 d-flex align-items-center">
+        <div class="d-flex align-items-center">
+            <div class="header-img-container"> 
+                <img src="{{ chatuser['photoURL'] }}" class="header-user-img">
+                <div [ngClass]="{'header-icon-online' : chatuser.isOnline == true}"></div>
+            </div>
+            <div>
+                <p class="header-user-name ps-2">{{ chatuser.name }}</p>
+            </div>
+        </div>
+    </div>
+    <div *ngFor="let chatuser of chatusers" class="one-message p-2 d-flex align-items-start">
         <div class="d-flex align-items-start">
             <img src="{{ chatuser['photoURL'] }}" class="user-img me-2">
             <div>
-            <p class="fw-bold fs-6">{{ chatuser.name }}</p>
-            <p class="fw-light"><i>{{ chatuser.student }}</i></p>
+                <p class="first-message-user-name">{{ chatuser.name }}</p>
+                <p class="fw-light"><i>{{ chatuser.student }}</i></p>
             </div>
         </div>
     </div>
     <div *ngFor="let chatuser of chatusers" class="ms-2 text-secondary">
-        This conversation is just between the two of you. Here you can send messages and share files with <b>{{ chatuser.name }}</b>
+        This conversation is just between the two of you. Here you can send messages and share files with <b>{{
+            chatuser.name }}</b>
     </div>
     <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
         <div>
-            <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2" src="{{ message['loadMessageAuthorImg'] }}">
+            <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
+                src="{{ message['loadMessageAuthorImg'] }}">
         </div>
         <div [ngClass]="{'server-message' : message['loadMessageAuthor'] == 'server'}">
             <div class="d-flex align-items-start" *ngIf="message['loadMessageAuthor'] !== 'server'">
-                <p class="me-1" ><b>{{ message['loadMessageAuthor']}}</b></p>
+                <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
                 <p>{{ message['loadMessageTime']}}</p>
             </div>
             <div [innerHTML]="message['loadMessageText']" class="message-text">
-                
+
             </div>
             <!-- <img class="profile-img" src="{{ post.img }}"> -->
         </div>
 
     </div>
-
+    <app-comment-box-chatroom></app-comment-box-chatroom>
 </div>
-<app-comment-box-chatroom>
-<div class="send-message-container">
+
+<!-- <div class="send-message-container">
     <input #searchUserField placeholder="Search User" type="text" [(ngModel)]="textMessage">
     <button (click)="addMessage(textMessage)" [disabled]="searchUserField.value == ''">add Chat</button>
     <button routerLink="/mainpage/chatroom">LINK</button>
 
 
-</div>
+</div> -->

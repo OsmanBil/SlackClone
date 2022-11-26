@@ -15,3 +15,10 @@ form{
         color: #A161A3;
     }
 }
+
+.form-container{
+    position: absolute;
+    width: calc(70% - 60px);
+    left: 30px;
+    bottom: 20px;
+}

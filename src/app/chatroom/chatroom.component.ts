@@ -15,6 +15,7 @@ export class ChatroomComponent implements OnInit {
   currentChatroomID;
   @Input() public messages: any[] = [];
   @Input() public chatusers: any[] = [];
+  @Input() public chatusersID: any[] = [];
   textMessage;
   localUser;
 
@@ -34,6 +35,7 @@ export class ChatroomComponent implements OnInit {
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
+    this.chatusersID = [];
     this.route.paramMap.subscribe(paramMap => {
       this.currentChatroomID = paramMap.get('id');
       this.loadMessages();
@@ -79,13 +81,26 @@ export class ChatroomComponent implements OnInit {
 
   async loadUsers() {
     const q = collection(this.db, "chatrooms", this.currentChatroomID, "users")
-    const querySnapshotsUsers = await getDocs(q);
+    const querySnapshotsUsersID = await getDocs(q);
     this.chatusers = [];
-    querySnapshotsUsers.forEach((doc: any) => {
-      if (doc.data().id !== this.localUser.uid) {
-        this.chatusers.push({ id: doc.data().id, name: doc.data().name, photoURL: doc.data().photoURL, student: 'student' })
+    this.chatusersID = [];
+    querySnapshotsUsersID.forEach((doc: any) => {
+      if (doc.data().id !== this.localUser.uid) {      
+          this.chatusersID.push({
+            id: doc.data().id, })
       }
-    });
+    })
+    this.chatusers = [];
+    for(let i = 0; i < this.chatusersID.length; i++){
+       const unsub = onSnapshot(doc(this.db, "users", this.chatusersID[i].id), {includeMetadataChanges: true}, 
+       (doc: any) => {
+        this.chatusers = [];
+          let chatuserData = { id: doc.data().id, name: doc.data().displayName, photoURL: doc.data().photoURL,
+            isOnline: doc.data().isOnline, student: 'student',  }
+          this.chatusers.push(chatuserData)
+         
+       })
+    }
   }
 
   convertTimestamp(timestamp) {
@@ -109,16 +124,6 @@ export class ChatroomComponent implements OnInit {
     return date;
   }
 
-  async addMessage(newValue) {
-    const unsub = onSnapshot(doc(this.db, "users", this.localUser.uid), async (doc: any) => {
-      this.messageData.messageText = newValue;
-      this.messageData.messageServerTime = serverTimestamp(),
-        this.messageData.messageAuthor = doc.data().displayName;
-      this.messageData.messageAuthorID = this.localUser.uid;
-      this.messageData.messageTime = Timestamp.fromDate(new Date());
-      this.messageData.messageAuthorImg = doc.data().photoURL;
-      await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
-    });
-  }
+
 
 }

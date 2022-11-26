@@ -1,3 +1,44 @@
+.active-chat-container{
+    height: calc(100vh - 50px);
+    width: 70%;
+    border-right: 1px solid gray;
+}
+
+.header-container{
+    background-color: white;
+    border-bottom: 1.5px solid lightgrey;
+}
+
+.header-img-container{
+    position: relative;
+    img{
+        height: 30px;
+        width: 30px;
+        border-radius: 5px;
+       
+    }
+    div{
+        position: absolute;
+        height: 11px;
+        width: 11px;
+        background-color: white;
+        border: 2px solid gray;
+        right: -3px;
+        bottom: -3px;
+        border-radius: 100%;
+    }
+}
+
+.header-icon-online{
+    background-color: rgb(46, 187, 46)!important;
+    border: 1.5px solid black!important;
+}
+
+.header-user-name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
 .one-message {
     background-color: white;
     border-radius: 5px;
