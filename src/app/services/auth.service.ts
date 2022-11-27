@@ -159,8 +159,7 @@ export class AuthService {
     this.firestore.collection(`users`).doc(user.uid).get().subscribe(ref => {
 
       if (!ref.exists) {
-
-        //console.log('Name:', name)
+   
         if (name) {
           let searchName = String(name);
           let searchUserValue = '';
@@ -205,7 +204,8 @@ export class AuthService {
           userRef.set(userData, {
             merge: true,
           });
-        
+          this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
+         // this.firestore.collection('users').doc(user.uid).collection('threads').add({});
 
         }
 
@@ -234,7 +234,7 @@ export class AuthService {
           userRef.set(userData, {
             merge: true,
           });
-        
+         
 
 
           this.firestore
@@ -346,7 +346,7 @@ export class AuthService {
       userRef.set(userData, {
         merge: true,
       });
-      this.firestore.collection('users').doc(doc.uid).collection('chatids').add({});
+   
 
       this.firestore
         .collection('users')
