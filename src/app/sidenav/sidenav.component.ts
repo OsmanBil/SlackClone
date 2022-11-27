@@ -69,6 +69,29 @@ export class SidenavComponent implements OnInit {
     }
   }
 
+  
+
+  async loadChatrooms() {
+    this.localUser = JSON.parse(localStorage.getItem('user'))
+    // LOAD USER FROM CHATROOM
+    let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
+    const unsubscribe = onSnapshot(docRef, async (querySnapshot) => {
+      this.chatIDs = [];
+      querySnapshot.forEach(async (doc) => {
+        this.chatIDs.push(doc.id)
+      })
+      await this.loadChatIDs();
+      await this.loadChatroomUserData();
+      
+    })
+    this.firestore
+      .collection('channels')
+      .valueChanges({ idField: 'channelId' })
+      .subscribe((changes: any) => {
+        this.channels = changes;
+      })
+  }
+
   async loadChatIDs() {
     this.chatUserIDs = [];
     for (let x = 0; x < this.chatIDs.length; x++) {
@@ -77,7 +100,6 @@ export class SidenavComponent implements OnInit {
       querySnapshot2.forEach(async (doc2: any) => {
         if (doc2.data().id !== this.localUser['uid']) {
           this.chatUserIDs.push({ userID: doc2.data().id, name: doc2.data().name, chatID: this.chatIDs[x] })
-          console.log(this.chatUserIDs)
         }
       })
     }
@@ -90,42 +112,15 @@ export class SidenavComponent implements OnInit {
           (doc: any) => {
             let chatrommUser = {
               userID: doc.data().id, chatroomID: this.chatUserIDs[i].chatID, name: doc.data().displayName,
-              isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i
+              isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i+1
             }
             if (this.chatrooms[chatrommUser.localIndex]) {
               this.chatrooms[chatrommUser.localIndex] = chatrommUser
             }
-            else {
+            if (this.chatrooms.length < this.chatUserIDs.length) {
               this.chatrooms.push(chatrommUser)
-            }
+          }
           })
       }
-  }
-
-  async loadChatrooms() {
-    this.localUser = JSON.parse(localStorage.getItem('user'))
-    // LOAD USER FROM CHATROOM
-    let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
-    const unsubscribe = onSnapshot(docRef, async (querySnapshot) => {
-      this.chatIDs = [];
-      querySnapshot.forEach(async (doc) => {
-        this.chatIDs.push(doc.id)
-        console.log(this.chatIDs)
-      })
-      await this.loadChatIDs();
-      await this.loadChatroomUserData();
-      
-    })
-    this.firestore
-      .collection('channels')
-      .valueChanges({ idField: 'channelId' })
-      .subscribe((changes: any) => {
-        this.channels = changes;
-      })
-    console.log(this.chatrooms)
-  }
-
-  openChatroom(chatroomID) {
-    this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
   }
 }
