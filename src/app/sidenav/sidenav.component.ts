@@ -103,9 +103,13 @@ export class SidenavComponent implements OnInit {
         const unsub = onSnapshot(doc(this.db, "users", this.chatUserIDs[i].userID), {includeMetadataChanges: true}, 
         (doc: any) => {
            let chatrommUser = { userID: doc.data().id, chatroomID: this.chatUserIDs[i].chatID,  name: doc.data().displayName,
-             isOnline: doc.data().isOnline, photoURL: doc.data().photoURL}
+             isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i}
+            if(this.chatrooms[chatrommUser.localIndex]) {
+              this.chatrooms[chatrommUser.localIndex] = chatrommUser
+            }
+            else {
            this.chatrooms.push(chatrommUser)
-            console.log(doc.data().chatID)
+            }
         })
       }
 
