@@ -6,8 +6,8 @@
 <div class="container">
   <div class="container-head">
   </div>
-  <div class="container-channels" >
-    <div class="channel" >
+  <div class="container-channels">
+    <div class="channel">
       <mat-icon fontIcon="comment"></mat-icon>
       <span [routerLink]="['/mainpage/threads/']">Threads</span>
     </div>
@@ -49,10 +49,13 @@
     <mat-icon fontIcon="add" [routerLink]="['/mainpage/']"></mat-icon>
   </div>
   <div class="container-channels" *ngIf="channelOpen">
-    <div class="channel" *ngFor="let chatroom of chatrooms" ngClass="d-flex align-items-center">
+    <div class="" *ngFor="let chatroom of chatrooms" class="">
       <!-- <div (click)="openChatroom(chatroom.id)">  -->
-      <div [routerLink]="['/mainpage/chatroom/' + chatroom.id]">
-        <img class="chatroom-img me-2" src="{{ chatroom.photoURL }}">
+      <div [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]" class="channel d-flex align-items-end">
+        <div class="header-img-container">
+          <img class="chatroom-img me-2" src="{{ chatroom.photoURL }}">
+          <div [ngClass]="{'header-icon-online' : chatroom.isOnline == true}"></div>
+        </div>
         <span>{{ chatroom.name }}</span>
       </div>
     </div>

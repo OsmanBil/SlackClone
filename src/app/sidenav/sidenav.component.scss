@@ -79,3 +79,28 @@ mat-icon{
     object-fit: contain;
     border-radius: 2px;
 }
+
+.header-img-container{
+    position: relative;
+    img{
+        height: 30px;
+        width: 30px;
+        border-radius: 5px;
+       
+    }
+    div{
+        position: absolute;
+        height: 11px;
+        width: 11px;
+        background-color: white;
+        border: 2px solid gray;
+        right: 3px;
+        bottom: -3px;
+        border-radius: 100%;
+    }
+}
+
+.header-icon-online{
+    background-color: rgb(46, 187, 46)!important;
+    border: 1.5px solid black!important;
+}

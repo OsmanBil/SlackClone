@@ -30,6 +30,9 @@ export class SidenavComponent implements OnInit {
 
   bla = '';
 
+  chatIDs = [];
+  chatUserIDs = [];
+
   constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router) { }
 
 
@@ -68,22 +71,57 @@ export class SidenavComponent implements OnInit {
 
   async loadChatrooms() {
     this.localUser = JSON.parse(localStorage.getItem('user'))
-    // load chatrooms from user
+    // LOAD USER FROM CHATROOM
     let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
-    let querySnapshot = await getDocs(docRef);
-    let currentChatroom = { id: '', name: '', shownInSidebar: true, photoURL: '' }
-    this.channels = [];
-    querySnapshot.forEach(async (doc) => {
-      let docRef2 = collection(this.db, "chatrooms", doc.id, "users");
-      let querySnapshot2 = await getDocs(docRef2);
+
+    // let querySnapshot = await getDocs(docRef);
+    const unsubscribe = onSnapshot(docRef, async (querySnapshot) => {
+      this.chatIDs = [];
+      querySnapshot.forEach(async (doc) => {
+        // let docRef2 = collection(this.db, "chatrooms", doc.id, "users");
+        // let querySnapshot2 = await getDocs(docRef2);
+        this.chatIDs.push(doc.id)
+        console.log(this.chatIDs)
+      })
+      this.chatUserIDs = [];
+      for (let x = 0; x < this.chatIDs.length; x++) {
+        let docRef2 = collection(this.db, "chatrooms", this.chatIDs[x], "users");
+        let querySnapshot2 = await getDocs(docRef2);
+        querySnapshot2.forEach(async (doc2: any) => {
+          if (doc2.data().id !== this.localUser['uid']) {
+            // currentChatroom.id = doc2.data().id;
+            // this.chatrooms.push({ name: doc2.data().name, photoURL: doc2.data().photoURL, id: doc.id, shownInSidebar: '' })
+            this.chatUserIDs.push({ userID: doc2.data().id, name: doc2.data().name, chatID: this.chatIDs[x] })
+            console.log(this.chatUserIDs)
+          }
+        })
+
+      }
+
+      this.chatrooms = [];
+      for(let i = 0; i < this.chatUserIDs.length; i++){
+        const unsub = onSnapshot(doc(this.db, "users", this.chatUserIDs[i].userID), {includeMetadataChanges: true}, 
+        (doc: any) => {
+           let chatrommUser = { userID: doc.data().id, chatroomID: this.chatUserIDs[i].chatID,  name: doc.data().displayName,
+             isOnline: doc.data().isOnline, photoURL: doc.data().photoURL}
+           this.chatrooms.push(chatrommUser)
+            console.log(doc.data().chatID)
+        })
+      }
 
 
 
-      querySnapshot2.forEach(async (doc2: any) => {
-        if (doc2.data().id !== this.localUser['uid']) {
-          currentChatroom.id = doc2.data().id;
-          this.chatrooms.push({ name: doc2.data().name, photoURL: doc2.data().photoURL, id: doc.id, shownInSidebar: '' })
-        }
+      // this.chatrooms = [];
+      // const unsubscribe2 = onSnapshot(docRef2, (querySnapshot2) => {
+      // querySnapshot2.forEach(async (doc2: any) => {
+      //   if (doc2.data().id !== this.localUser['uid']) {
+      //     // currentChatroom.id = doc2.data().id;
+      //     // this.chatrooms.push({ name: doc2.data().name, photoURL: doc2.data().photoURL, id: doc.id, shownInSidebar: '' })
+      //     this.chatrooms.push({ userID: doc2.data().id, chatroomID: doc.id,  name: doc2.data().name,})
+      //   }
+
+      // })
+      // })
 
 
       // querySnapshot2.forEach((doc2: any) => {
@@ -96,7 +134,7 @@ export class SidenavComponent implements OnInit {
       //     currentChatroom.id = doc.id;
       //     this.chatrooms.push({ name: currentChatroom.name, photoURL: currentChatroom.photoURL, id: doc.id })
       //   }
-     })
+      //})
     })
     this.firestore
       .collection('channels')
@@ -104,9 +142,10 @@ export class SidenavComponent implements OnInit {
       .subscribe((changes: any) => {
         this.channels = changes;
       })
+    console.log(this.chatrooms)
   }
 
-  openChatroom(chatroomID){
+  openChatroom(chatroomID) {
     this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
   }
 }
