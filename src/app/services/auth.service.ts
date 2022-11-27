@@ -182,7 +182,7 @@ export class AuthService {
           userRef.set(userData, {
             merge: true,
           });
-          this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
+          
 
         } else {
           let searchName = String(user.displayName);
@@ -205,7 +205,7 @@ export class AuthService {
           userRef.set(userData, {
             merge: true,
           });
-          this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
+        
 
         }
 
@@ -234,7 +234,7 @@ export class AuthService {
           userRef.set(userData, {
             merge: true,
           });
-          this.firestore.collection('users').doc(user.uid).collection('chatids').add({});
+        
 
 
           this.firestore

@@ -4,7 +4,7 @@
 <div *ngFor="let thread of allThreads;let i=index" class="dish-container">
     <div class="channel-page">
         <div>
-            <div>{{ channel.channelName }}</div>
+            <div>Channel Name: {{ thread.channelName}}</div>
             <div class="posts" *ngFor="let post of thread.content">
                 <div>
                     <img class="profile-img" src="{{ post.img }}">
