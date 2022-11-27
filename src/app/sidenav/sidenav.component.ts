@@ -8,6 +8,7 @@ import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { user } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -33,7 +34,7 @@ export class SidenavComponent implements OnInit {
   chatIDs = [];
   chatUserIDs = [];
 
-  constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router) { }
+  constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute) { }
 
 
   ngOnInit(): void {
@@ -122,5 +123,13 @@ export class SidenavComponent implements OnInit {
           }
           })
       }
+  }
+
+ 
+
+  openChatroom(chatroomID) {
+    this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
+
+    
   }
 }

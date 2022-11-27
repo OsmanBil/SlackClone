@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
@@ -10,9 +10,9 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
   templateUrl: './chatroom.component.html',
   styleUrls: ['./chatroom.component.scss']
 })
-export class ChatroomComponent implements OnInit {
+export class ChatroomComponent implements OnInit, AfterViewChecked {
   db = getFirestore();
-  currentChatroomID;
+  @Input() currentChatroomID;
   @Input() public messages: any[] = [];
   @Input() public chatusers: any[] = [];
   @Input() public chatusersID: any[] = [];
@@ -29,6 +29,8 @@ export class ChatroomComponent implements OnInit {
 
   }
 
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+
   constructor(private route: ActivatedRoute, private firestore: AngularFirestore,) {
 
   }
@@ -41,7 +43,17 @@ export class ChatroomComponent implements OnInit {
       this.loadMessages();
       this.loadUsers();
     })
+    this.scrollToBottom();
+  }
 
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) { }
   }
 
   loadMessages() {
@@ -85,21 +97,24 @@ export class ChatroomComponent implements OnInit {
     this.chatusers = [];
     this.chatusersID = [];
     querySnapshotsUsersID.forEach((doc: any) => {
-      if (doc.data().id !== this.localUser.uid) {      
-          this.chatusersID.push({
-            id: doc.data().id, })
+      if (doc.data().id !== this.localUser.uid) {
+        this.chatusersID.push({
+          id: doc.data().id,
+        })
       }
     })
     this.chatusers = [];
-    for(let i = 0; i < this.chatusersID.length; i++){
-       const unsub = onSnapshot(doc(this.db, "users", this.chatusersID[i].id), {includeMetadataChanges: true}, 
-       (doc: any) => {
-        this.chatusers = [];
-          let chatuserData = { id: doc.data().id, name: doc.data().displayName, photoURL: doc.data().photoURL,
-            isOnline: doc.data().isOnline, student: 'student',  }
+    for (let i = 0; i < this.chatusersID.length; i++) {
+      const unsub = onSnapshot(doc(this.db, "users", this.chatusersID[i].id), { includeMetadataChanges: true },
+        (doc: any) => {
+          this.chatusers = [];
+          let chatuserData = {
+            id: doc.data().id, name: doc.data().displayName, photoURL: doc.data().photoURL,
+            isOnline: doc.data().isOnline, student: 'student',
+          }
           this.chatusers.push(chatuserData)
-         
-       })
+
+        })
     }
   }
 
@@ -124,6 +139,9 @@ export class ChatroomComponent implements OnInit {
     return date;
   }
 
+  alertlist(){
+    alert('Ist auf der To-Do Liste ;)')
+  }
 
 
 }
