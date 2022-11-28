@@ -78,8 +78,6 @@ export class SidenavComponent implements OnInit {
     let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
     const unsubscribe = onSnapshot(docRef, async (querySnapshot) => {
       this.chatIDs = [];
-      this.chatUserIDs = [];
-      this.chatrooms = [];
       querySnapshot.forEach(async (doc) => {
         
         this.chatIDs.push(doc.id)
@@ -118,12 +116,12 @@ export class SidenavComponent implements OnInit {
         (doc: any) => {
           let chatrommUser = {
             userID: doc.data().id, chatroomID: this.chatUserIDs[i].chatID, name: doc.data().displayName,
-            isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i + 1
+            isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i
           }
           if (this.chatrooms[chatrommUser.localIndex]) {
             this.chatrooms[chatrommUser.localIndex] = chatrommUser
           }
-          if (this.chatrooms.length < this.chatUserIDs.length) {
+          else {
             this.chatrooms.push(chatrommUser)
           }
         })
