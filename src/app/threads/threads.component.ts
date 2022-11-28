@@ -26,18 +26,25 @@ export class ThreadsComponent implements OnInit {
   testVar: any = "";
 
 
+
   db = getFirestore();
   channelId = '';
   channel: Channel = new Channel();
   posts = [];
+
+
   allThreads = [];
+
+  localUser;
   counter = 0;
+  userId = '';
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, public fr: Firestore) { }
 
   async ngOnInit(): Promise<void> {
+    await this.loadUser()
     await this.loadThreads();
-
+   
   }
 
 
@@ -45,22 +52,26 @@ export class ThreadsComponent implements OnInit {
 
 
   async loadThreads() {
+    
 
-    let querySnapshot = await getDocs(collection(this.fr, "users/Crq65CZbkqVw2UOOCitlq2zCbyD2/threads"));
+    let querySnapshot = await getDocs(collection(this.fr, `users/${this.userId}/threads`));
     this.allThreads = [];
     this.counter = -1;
+    console.log("userId:", this.userId)
+
     querySnapshot.forEach(async (doc) => {
       this.counter++;
-      // console.log(doc.id)
+      console.log("docID:", doc.id)
       this.channelId = doc.id;
       // console.log("channelId:", this.channelId)
-      this.allThreads.push({id: this.channelId, content : [] });
-      this.loadMessages(this.counter);
-      
+      console.log("counter:", this.counter)
 
+      this.loadMessages(this.counter);
+      this.loadChannelNames(this.counter)
+      this.allThreads.push({ id: this.channelId, content: []});
     })
 
-    console.log("allThreads:",  this.allThreads)
+    console.log("allThreads:", this.allThreads)
   }
 
   // async loadChannel(test) {
@@ -70,10 +81,31 @@ export class ThreadsComponent implements OnInit {
   //     .valueChanges()
   //     .subscribe((channel: any) => {
   //       test = new Channel(channel);
-        
+
   //     })
 
   // }
+
+  loadUser() {
+    // Get the existing data
+    var existing = localStorage.getItem('user');
+
+    // If no existing data, create an array
+    // Otherwise, convert the localStorage string to an array
+    existing = existing ? JSON.parse(existing) : {};
+
+    this.userId = existing['uid'];
+    // console.log('USER: ', existing['uid'])
+  }
+
+  loadChannelNames(counter) {
+    this.firestore.collection(`channels`).doc(this.channelId).get().subscribe(async ref => {
+      // const doc: any = ref.data();
+      this.testVar = ref.data()
+      this.allThreads[counter].channelName = this.testVar.channelName;
+      // this.testArray.push({ channelName: this.testVar.channelName })
+    });
+  }
 
 
   loadMessages(counter) {
@@ -85,7 +117,7 @@ export class ThreadsComponent implements OnInit {
       snapshot.forEach((postDoc) => {
         this.loadAuthor(postDoc, counter);
 
-        
+
       });
     });
   }
@@ -103,7 +135,7 @@ export class ThreadsComponent implements OnInit {
         id: postDoc.id
       };
       this.allThreads[counter].content.push(post);
-  
+
     });
   }
 
@@ -128,6 +160,5 @@ export class ThreadsComponent implements OnInit {
     date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
     return date;
   }
-
 
 }
