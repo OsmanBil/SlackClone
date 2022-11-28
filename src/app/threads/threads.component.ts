@@ -8,7 +8,7 @@ import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Valida
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { getFirestore } from '@firebase/firestore';
 
-import { Firestore, CollectionReference, collectionData, docData, collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from '@angular/fire/firestore';
+import { Firestore, CollectionReference, collectionData, docData, collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where, limit, limitToLast } from '@angular/fire/firestore';
 import { user } from '@angular/fire/auth';
 
 import * as firebase from "firebase/app";
@@ -32,6 +32,7 @@ export class ThreadsComponent implements OnInit {
   channel: Channel = new Channel();
   posts = [];
 
+  varTest = 'Hallo'
 
   allThreads = [];
 
@@ -44,34 +45,36 @@ export class ThreadsComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     await this.loadUser()
     await this.loadThreads();
-   
+
   }
 
 
 
-
-
   async loadThreads() {
-    
+
 
     let querySnapshot = await getDocs(collection(this.fr, `users/${this.userId}/threads`));
     this.allThreads = [];
     this.counter = -1;
-    console.log("userId:", this.userId)
+    //console.log("userId:", this.userId)
 
     querySnapshot.forEach(async (doc) => {
       this.counter++;
-      console.log("docID:", doc.id)
+      //console.log("docID:", doc.id)
       this.channelId = doc.id;
       // console.log("channelId:", this.channelId)
-      console.log("counter:", this.counter)
+      //console.log("counter:", this.counter)
 
+
+      this.loadFirstMessage(this.counter);
       this.loadMessages(this.counter);
       this.loadChannelNames(this.counter)
-      this.allThreads.push({ id: this.channelId, content: []});
+      this.allThreads.push({ id: this.channelId, content: [] });
+
     })
 
     console.log("allThreads:", this.allThreads)
+
   }
 
   // async loadChannel(test) {
@@ -105,12 +108,13 @@ export class ThreadsComponent implements OnInit {
       this.allThreads[counter].channelName = this.testVar.channelName;
       // this.testArray.push({ channelName: this.testVar.channelName })
     });
+
   }
 
 
   loadMessages(counter) {
     let ref = collection(this.db, "channels", this.channelId, "posts");
-    let q = query(ref, orderBy("time"));
+    let q = query(ref, orderBy("time", "asc"), limitToLast(3));
     let unsubscribe = onSnapshot(q, (snapshot) => {
       this.allThreads[counter].content = []
       // this.posts = [];
@@ -118,6 +122,19 @@ export class ThreadsComponent implements OnInit {
         this.loadAuthor(postDoc, counter);
 
 
+      });
+    });
+  }
+
+
+  loadFirstMessage(counter) {
+    let ref = collection(this.db, "channels", this.channelId, "posts");
+    let y = query(ref, orderBy("time"), limit(1));
+    let unsubscribe = onSnapshot(y, (snapshot) => {
+      this.allThreads[counter].content = []
+      // this.posts = [];
+      snapshot.forEach((postDoc) => {
+        this.loadAuthor(postDoc, counter);
       });
     });
   }
