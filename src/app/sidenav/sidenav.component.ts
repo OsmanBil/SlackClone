@@ -23,7 +23,7 @@ export class SidenavComponent implements OnInit {
   channels = [];
 
   channelOpen = true;
-  messageOpen = false;
+  messageOpen = true;
 
   db = getFirestore();
   chatrooms = [];

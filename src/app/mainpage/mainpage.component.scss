@@ -6,6 +6,26 @@
     align-items: center;
     background-color: #350D36;
     color: white;
+    &::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px transparent; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: gray; 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgb(164, 164, 164); 
+  }
 }
 
 .toolbar-left{
@@ -63,11 +83,25 @@
 .drawer-container {
     width: 100vw;
     max-width: 100%;
-    height: calc(100vh - 50px);
-}
+    min-height: calc(100vh - 50px);
+    max-height: calc(100vh - 50px);
 
-.sidenav{
-    width: 200px;
-    background-color: #3F0E40;
-    color: white;
+    // STYLE SCROLLBAR FUNKTIONIERT NICHT
+    /* Track */
+    &::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px transparent; 
+        border-radius: 10px;
+      }
+       
+      /* Handle */
+      &::-webkit-scrollbar-thumb {
+        background: green; 
+        border-radius: 10px;
+      }
+      
+      /* Handle on hover */
+      &::-webkit-scrollbar-thumb:hover {
+        background: rgb(164, 164, 164); 
+      }
+    
 }
