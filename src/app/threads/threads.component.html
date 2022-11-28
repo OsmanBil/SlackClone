@@ -5,10 +5,10 @@
     <div class="channel-page">
         <div>
             <div>Channel Name: {{ thread.channelName}}</div>
-            <div class="posts" *ngFor="let post of thread.content">
+            <div class="posts" *ngFor="let post of thread.content let first=first;">
                 <div>
                     <img class="profile-img" src="{{ post.img }}">
-                </div>
+                   </div>
                 <div>
                     <div>
                         <p><b>{{ post.author }}</b></p>
@@ -18,9 +18,14 @@
                         <p [innerHTML]="post.text"></p>
                     </div>
                 </div>
-                
+                <div *ngIf="first" >
+                    <br>
+                    .<br>
+                    .<br>
+                    .
+                </div>    
             </div>
-            <app-comment-box></app-comment-box>
+            <!-- <app-comment-box></app-comment-box> -->
         </div>
     </div>
     
