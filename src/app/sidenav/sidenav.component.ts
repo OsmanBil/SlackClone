@@ -70,7 +70,7 @@ export class SidenavComponent implements OnInit {
     }
   }
 
-  
+
 
   async loadChatrooms() {
     this.localUser = JSON.parse(localStorage.getItem('user'))
@@ -78,12 +78,17 @@ export class SidenavComponent implements OnInit {
     let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
     const unsubscribe = onSnapshot(docRef, async (querySnapshot) => {
       this.chatIDs = [];
+      this.chatUserIDs = [];
+      this.chatrooms = [];
       querySnapshot.forEach(async (doc) => {
+        
         this.chatIDs.push(doc.id)
+        console.log(this.chatIDs)
+      
       })
       await this.loadChatIDs();
       await this.loadChatroomUserData();
-      
+
     })
     this.firestore
       .collection('channels')
@@ -106,30 +111,27 @@ export class SidenavComponent implements OnInit {
     }
   };
 
-  async loadChatroomUserData(){
+  async loadChatroomUserData() {
     this.chatrooms = [];
-      for (let i = 0; i < this.chatUserIDs.length; i++) {
-        const unsub = onSnapshot(doc(this.db, "users", this.chatUserIDs[i].userID), { includeMetadataChanges: true },
-          (doc: any) => {
-            let chatrommUser = {
-              userID: doc.data().id, chatroomID: this.chatUserIDs[i].chatID, name: doc.data().displayName,
-              isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i+1
-            }
-            if (this.chatrooms[chatrommUser.localIndex]) {
-              this.chatrooms[chatrommUser.localIndex] = chatrommUser
-            }
-            if (this.chatrooms.length < this.chatUserIDs.length) {
-              this.chatrooms.push(chatrommUser)
+    for (let i = 0; i < this.chatUserIDs.length; i++) {
+      const unsub = onSnapshot(doc(this.db, "users", this.chatUserIDs[i].userID), { includeMetadataChanges: true },
+        (doc: any) => {
+          let chatrommUser = {
+            userID: doc.data().id, chatroomID: this.chatUserIDs[i].chatID, name: doc.data().displayName,
+            isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i + 1
           }
-          })
-      }
+          if (this.chatrooms[chatrommUser.localIndex]) {
+            this.chatrooms[chatrommUser.localIndex] = chatrommUser
+          }
+          if (this.chatrooms.length < this.chatUserIDs.length) {
+            this.chatrooms.push(chatrommUser)
+          }
+        })
+    }
+    
   }
-
- 
 
   openChatroom(chatroomID) {
     this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
-
-    
   }
 }
