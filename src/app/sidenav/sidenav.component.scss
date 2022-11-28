@@ -1,7 +1,12 @@
+.sidenave{
+    width: auto;
+    overflow-x: hidden;
+}
+
 .container-workspace{
     display:flex;
     align-items: center;
-    padding: 12px;
+
     font-weight: 500;
     font-size: 18px;
     border-top: 1px solid #522653;
@@ -13,8 +18,7 @@ mat-icon{
 
 .container{
     margin-bottom: 12px;
-    margin-left: 8px;
-    margin-right: 8px;
+   
     border-top: 1px solid #522653;
 
     .container-head{
@@ -36,7 +40,7 @@ mat-icon{
 
     .container-channels{
         margin-top: 12px;
-        margin-left: 4px;
+        padding-left: 4px;
 
         .channel{
             display: flex;
@@ -106,5 +110,7 @@ mat-icon{
 }
 
 .active-chatroom{
-    background-color: green!important;
+    background-color: #a161a3;
+    color: black;
+    font-weight: bold;
 }

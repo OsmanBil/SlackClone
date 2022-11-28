@@ -1,64 +1,70 @@
-<div class="container-workspace">
-  Developer Akademie
-</div>
-
-
-<div class="container">
-  <div class="container-head">
+<div class="sidenave">
+  <div class="container-workspace">
+    Developer Akademie
   </div>
-  <div class="container-channels">
-    <div class="channel">
-      <mat-icon fontIcon="comment"></mat-icon>
-      <span [routerLink]="['/mainpage/threads/']">Threads</span>
+
+
+  <div class="container">
+    <div class="container-head">
     </div>
-  </div>
-
-</div>
-
-<div class="container">
-  <div class="container-head">
-    <div class="channel-menu">
-      <mat-icon *ngIf="channelOpen" (click)="toggleChannelMenu()" fontIcon="arrow_drop_down"></mat-icon>
-      <mat-icon *ngIf="!channelOpen" (click)="toggleChannelMenu()" fontIcon="arrow_right"></mat-icon>
-      <span>Channels</span>
-    </div>
-    <mat-icon fontIcon="add" (click)="openDialogCreateChannel()"></mat-icon>
-  </div>
-  <div class="container-channels" *ngIf="channelOpen">
-    <div class="channel" *ngFor="let channel of channels">
-      <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
-      <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
-      <span [routerLink]="['/mainpage/channel/' + channel.channelId]">{{ channel['channelName'] }}</span>
-    </div>
-
-  </div>
-
-  <div class="add-channel">
-    <mat-icon fontIcon="add_circle" (click)="openDialogCreateChannel()"></mat-icon>
-    <span>Create new Channel</span>
-  </div>
-</div>
-
-<div class="container">
-  <div class="container-head">
-    <div class="channel-menu">
-      <mat-icon *ngIf="messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_drop_down"></mat-icon>
-      <mat-icon *ngIf="!messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_right"></mat-icon>
-      <span>Personal message</span>
-    </div>
-    <mat-icon fontIcon="add" [routerLink]="['/mainpage/']"></mat-icon>
-  </div>
-  <div class="container-channels" *ngIf="channelOpen">
-    <div class="" *ngFor="let chatroom of chatrooms" class="">
-      <!-- <div (click)="openChatroom(chatroom.id)">  -->
-      <div [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]" class="channel d-flex align-items-end">
-        <div class="header-img-container">
-          <img class="chatroom-img me-2" src="{{ chatroom.photoURL }}">
-          <div [ngClass]="{'header-icon-online' : chatroom.isOnline == true}"></div>
-        </div>
-        <span>{{ chatroom.name }}</span>
+    <div class="container-channels">
+      <div class="channel">
+        <mat-icon fontIcon="comment"></mat-icon>
+        <span [routerLink]="['/mainpage/threads/']">Threads</span>
       </div>
     </div>
 
+  </div>
+
+  <div class="container">
+    <div class="container-head">
+      <div class="channel-menu">
+        <mat-icon *ngIf="channelOpen" (click)="toggleChannelMenu()" fontIcon="arrow_drop_down"></mat-icon>
+        <mat-icon *ngIf="!channelOpen" (click)="toggleChannelMenu()" fontIcon="arrow_right"></mat-icon>
+        <span>Channels</span>
+      </div>
+      <mat-icon fontIcon="add" (click)="openDialogCreateChannel()"></mat-icon>
+    </div>
+    <div class="container-channels" *ngIf="channelOpen">
+      <div class="channel" *ngFor="let channel of channels, let i = index">
+        <div class="d-flex" [ngClass]="{'active-chatroom' : activeChatChannel == ('channel' + i) }"
+          (click)="showActive('channel' + i)">
+          <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
+          <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
+          <span [routerLink]="['/mainpage/channel/' + channel.channelId]">{{ channel['channelName'] }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="add-channel">
+      <mat-icon fontIcon="add_circle" (click)="openDialogCreateChannel()"></mat-icon>
+      <span>Create new Channel</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="container-head">
+      <div class="channel-menu">
+        <mat-icon *ngIf="messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_drop_down"></mat-icon>
+        <mat-icon *ngIf="!messageOpen" (click)="toggleMessageMenu()" fontIcon="arrow_right"></mat-icon>
+        <span>Personal message</span>
+      </div>
+      <mat-icon fontIcon="add" [routerLink]="['/mainpage/']"></mat-icon>
+    </div>
+    <div class="container-channels" *ngIf="channelOpen">
+      <div class="" *ngFor="let chatroom of chatrooms; let i = index" class="">
+        <!-- <div (click)="openChatroom(chatroom.id)">  -->
+        <div [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]" class="channel d-flex align-items-end"
+          [ngClass]="{'active-chatroom' : activeChatChannel == ('chatroom' + i) }" (click)="showActive('chatroom' + i)">
+          <div class="header-img-container">
+            <img class="chatroom-img me-2" src="{{ chatroom.photoURL }}">
+            <div [ngClass]="{'header-icon-online' : chatroom.isOnline == true}"></div>
+          </div>
+          <span>{{ chatroom.name }}</span>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>

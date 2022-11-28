@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCreateChannelComponent } from '../dialog-create-channel/dialog-create-channel.component';
@@ -33,6 +33,7 @@ export class SidenavComponent implements OnInit {
 
   chatIDs = [];
   chatUserIDs = [];
+  @Input() activeChatChannel;
 
   constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute) { }
 
@@ -81,7 +82,6 @@ export class SidenavComponent implements OnInit {
       querySnapshot.forEach(async (doc) => {
         
         this.chatIDs.push(doc.id)
-        console.log(this.chatIDs)
       
       })
       await this.loadChatIDs();
@@ -118,7 +118,7 @@ export class SidenavComponent implements OnInit {
             userID: doc.data().id, chatroomID: this.chatUserIDs[i].chatID, name: doc.data().displayName,
             isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i
           }
-          if (this.chatrooms[chatrommUser.localIndex]) {
+          if (this.chatrooms.length == this.chatIDs.length) {
             this.chatrooms[chatrommUser.localIndex] = chatrommUser
           }
           else {
@@ -127,6 +127,11 @@ export class SidenavComponent implements OnInit {
         })
     }
     
+  }
+
+  showActive(value){
+    this.activeChatChannel = value;
+    console.log(value)
   }
 
   openChatroom(chatroomID) {
