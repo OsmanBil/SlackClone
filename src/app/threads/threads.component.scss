@@ -1,31 +1,71 @@
-.channel-page{
-    height: 100%;
-    width: 100%;
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.thread-container{
+    .channel-page{
+        height: 100%;
+        width: auto;
+        margin: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: rgb(236, 233, 233);
+        border-radius: 5px;
+
+        .channel-inner-page{
+            padding-top: 16px;
+            padding-left: 16px;
+
+        }
+    }
 }
 
-app-comment-box{
-    position: sticky;
-    bottom: 32px;
-    right: 0;
-    left: 0;
-    z-index: 10;
-}
+
+
 
 .profile-img{
     width: 40px;
     height: 40px;
     object-fit: cover;
     border-radius: 15px;
+    
 }
 
+
+.posts-container{
+    margin-bottom: 16px;
+    margin-right: 16px;
+    width: auto;
+    background-color: white;
+
+    border-left: 1px solid rgb(209, 207, 207);
+    border-right: 1px solid rgb(209, 207, 207);
+    border-top: 1px solid rgb(209, 207, 207);
+    border-bottom: 1px solid rgb(209, 207, 207);
+    border-radius: 15px;
+
+}
+
+.pd-left{
+    padding-left: 16px;
+}
+
+
+
 .posts{
+    padding-top: 8px;
+    padding-bottom: 16px;
+    width: 100%;
+    background-color: rgb(236, 233, 233);
+
+
+    &:first-child{
+        background-color: white;
+        border-top: 1px solid rgb(209, 207, 207);
+        border-radius: 15px;
+    }
+    
 
     &:last-child{
-        margin-bottom: 60px !important;
+        margin-bottom: 10px !important;
+        background-color: white;
     }
 }
 
