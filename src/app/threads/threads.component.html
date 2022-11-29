@@ -1,36 +1,36 @@
-<p>threads works!</p>
-
-
-<div *ngFor="let thread of allThreads;let i=index" class="dish-container">
+<div *ngFor="let thread of allThreads;let i=index" class="thread-container">
     <div class="channel-page">
-        <div>
-            <div>Channel Name: {{ thread.channelName}}</div>
-            <div class="posts" *ngFor="let post of thread.content let first=first;">
-                <div>
-                    <img class="profile-img" src="{{ post.img }}">
-                   </div>
-                <div>
-                    <div>
-                        <p><b>{{ post.author }}</b></p>
-                        <p>{{ post.time }}</p>
+        <div [routerLink]="['/mainpage/channel/' + thread.id]" class="channel-inner-page">
+            <div># {{ thread.channelName}}</div>
+            <div class="posts-container">
+                <div class="posts" *ngFor="let post of thread.content let first=first;">
+                    <div class="pd-left">
+                        <img class="profile-img" src="{{ post.img }}">
                     </div>
-                    <div class="post">
-                        <p [innerHTML]="post.text"></p>
+                    <div>
+                        <div class="pd-left">
+                            <p><b>{{ post.author }}</b></p>
+                            <p>{{ post.time }}</p>
+                        </div>
+                        <div class="post pd-left">
+                            <p [innerHTML]="post.text"></p>
+                        </div>
+                    </div>
+                    <div *ngIf="first">
+                        <br>
+                        .<br>
+                        .
                     </div>
                 </div>
-                <div *ngIf="first" >
-                    <br>
-                    .<br>
-                    .<br>
-                    .
-                </div>    
+
             </div>
+
             <!-- <app-comment-box></app-comment-box> -->
         </div>
     </div>
-    
+    <div>
+        <br>
+        <br>
+    </div>
+
 </div>
-
-
-
-

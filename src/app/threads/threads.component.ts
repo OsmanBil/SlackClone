@@ -114,7 +114,7 @@ export class ThreadsComponent implements OnInit {
 
   loadMessages(counter) {
     let ref = collection(this.db, "channels", this.channelId, "posts");
-    let q = query(ref, orderBy("time", "asc"), limitToLast(3));
+    let q = query(ref, orderBy("time", "asc"), limitToLast(2));
     let unsubscribe = onSnapshot(q, (snapshot) => {
       this.allThreads[counter].content = []
       // this.posts = [];
