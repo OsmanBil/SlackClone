@@ -1,14 +1,16 @@
-<div class="center-container">
-  <mat-card class="login-card">
-    <mat-card-title>Registrierung</mat-card-title>
-    <mat-card-subtitle>Registrierung mit E-mail Adresse </mat-card-subtitle>
-    <mat-card-content>
+<div class="center-container background-color">
+
+  <mat-card class="mat-elevation-z0 login-card background-color">
+    <img src="../../assets/images/slack-clone-icon.jpg">
+    <mat-card-title  class="background-color">Registrierung</mat-card-title>
+    <mat-card-subtitle  class="background-color">Registrierung mit E-mail Adresse </mat-card-subtitle>
+    <mat-card-content class="background-color">
     </mat-card-content>
 
-    <form class="login-form">
+    <form class="login-form background-color" >
       <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Username</mat-label>
-        <input type="text" matInput [formControl]="userNameFormControl" #userName placeholder="z.B. Max Musterman">
+        <mat-label class="color-white">Username</mat-label>
+        <input  class="color-white" type="text" matInput [formControl]="userNameFormControl" #userName placeholder="z.B. Max Musterman">
         <mat-error *ngIf="userNameFormControl.hasError('name') && !userNameFormControl.hasError('required')">
           Please enter a username
         </mat-error>
@@ -18,8 +20,8 @@
       </mat-form-field>
 
       <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Email</mat-label>
-        <input type="email" matInput [formControl]="emailFormControl" #userEmail placeholder="z.B. mail@example.com">
+        <mat-label class="color-white">Email</mat-label>
+        <input  class="color-white" type="email" matInput [formControl]="emailFormControl" #userEmail placeholder="z.B. mail@example.com">
         <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
           Please enter a valid email address
         </mat-error>
@@ -29,10 +31,10 @@
       </mat-form-field>
 
       <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Passwort</mat-label>
-        <input matInput matInput [formControl]="passwordFormControl" #userPwd placeholder="z.B. Password"
+        <mat-label class="color-white">Passwort</mat-label>
+        <input  class="color-white" matInput matInput [formControl]="passwordFormControl" #userPwd placeholder="z.B. Password"
           [type]="hide ? 'password' : 'text'">
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+        <button class="background-color-green" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
@@ -42,7 +44,8 @@
 
       </mat-form-field>
       <div class="center-container">
-        <button mat-raised-button color="primary" (click)="authService.SignUp(userEmail.value, userPwd.value, userName.value)">Registrieren</button>
+        <button mat-raised-button class="background-color-green"
+          (click)="authService.SignUp(userEmail.value, userPwd.value, userName.value)">Registrieren</button>
       </div>
 
     </form>

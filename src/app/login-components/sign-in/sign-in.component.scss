@@ -11,7 +11,11 @@ img{
   color: white;
 }
 
-
+span{
+  cursor: pointer;
+  padding-left: 8px;
+  padding-right: 8px;
+}
 
 .mat-input-element::placeholder {
   color: white;

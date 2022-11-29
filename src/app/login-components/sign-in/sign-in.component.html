@@ -1,8 +1,6 @@
 <div class="center-container background-color">
   <mat-card class="mat-elevation-z0 login-card background-color">
-    <!-- <img [src]="../../assets/slack-clone-icon.png">  -->
     <img src="../../assets/images/slack-clone-icon.jpg"> 
-
 
     <mat-card-title class="background-color">Login</mat-card-title>
     <mat-card-subtitle class="background-color">Login mit E-mail oder mit Google Account möglich </mat-card-subtitle>
@@ -12,7 +10,7 @@
     <form class="login-form background-color">
       <mat-form-field class="full-width " appearance="fill">
         <mat-label class="color-white">Email</mat-label>
-        <input type="email"  matInput [formControl]="emailFormControl" #userName placeholder="z.B. mail@example.com" >
+        <input type="email" class="color-white"  matInput [formControl]="emailFormControl" #userName placeholder="z.B. mail@example.com" >
         <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
           Please enter a valid email address
         </mat-error>
@@ -23,7 +21,7 @@
 
       <mat-form-field class="full-width" appearance="fill">
         <mat-label class="color-white">Passwort</mat-label>
-        <input matInput matInput [formControl]="passwordFormControl" #userPassword placeholder="z.B. Password"
+        <input  class="color-white" matInput matInput [formControl]="passwordFormControl" #userPassword placeholder="z.B. Password"
           [type]="hide ? 'password' : 'text'">
         <button class="background-color-green" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hide">
