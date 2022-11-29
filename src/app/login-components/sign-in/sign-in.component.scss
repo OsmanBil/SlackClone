@@ -1,21 +1,66 @@
+.mat-card-title {
+  color: white;
+}
+
+img{
+  height: 100px;
+  width: 500px;
+}
+
+.mat-card-subtitle {
+  color: white;
+}
+
+
+
+.mat-input-element::placeholder {
+  color: white;
+
+}
+
+::ng-deep .mat-form-field-required-marker {
+  color: white
+}
+
+
+
+
+.color-white {
+  color: white;
+}
+
 .center-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
+  color: white;
+}
+
+.background-color {
+  background-color: #4a154b;
+}
+
+.background-color-green {
+  color: white;
+  background-color: #007a5a;
+  border: none;
+  border-radius: 4px;
 }
 
 .login-form {
   min-width: 150px;
   max-width: 500px;
   width: 100%;
+  background-color: #4a154b;
+
 }
 
-.padding-top{
+.padding-top {
   padding-top: 16px;
 }
 
-.padding-bottom{
+.padding-bottom {
   padding-bottom: 16px
 }
 
