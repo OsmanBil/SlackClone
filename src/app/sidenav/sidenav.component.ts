@@ -5,7 +5,7 @@ import { DialogCreateChannelComponent } from '../dialog-create-channel/dialog-cr
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { getFirestore } from '@firebase/firestore';
-import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, addDoc, limit, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { user } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -39,12 +39,9 @@ export class SidenavComponent implements OnInit {
 
 
   ngOnInit(): void {
-
-
     this.loadChatrooms();
 
   }
-
 
 
   openDialogCreateChannel() {
@@ -79,13 +76,37 @@ export class SidenavComponent implements OnInit {
     let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
     const unsubscribe = onSnapshot(docRef, async (querySnapshot) => {
       this.chatIDs = [];
+      this.chatUserIDs = [];
+      this.chatrooms = [];
       querySnapshot.forEach(async (doc) => {
-        
+
         this.chatIDs.push(doc.id)
       
       })
       await this.loadChatIDs();
       await this.loadChatroomUserData();
+      console.log(this.chatIDs[0])
+
+      let docRef2 = collection(this.db, "chatrooms", this.chatIDs[1], "messages");
+
+      const q = query(docRef2, orderBy("messageTime", "desc"), limit(1));
+
+      const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+        const cities = [];
+        querySnapshot.forEach((doc: any) => {
+          cities.push(doc.data().messageTime);
+        });
+        console.log("Current cities in CA: ", cities);
+        const washingtonRef = doc(this.db, "chatrooms", this.chatIDs[1], "lastMessage", "lastMessage");
+
+        // Set the "capital" field of the city 'DC'
+        console.log(cities[0])
+        // await updateDoc(washingtonRef, {
+        //   authorID: this.localUser.uid,
+        //   time: cities[0]
+        // });
+
+      });
 
     })
     this.firestore
@@ -94,6 +115,7 @@ export class SidenavComponent implements OnInit {
       .subscribe((changes: any) => {
         this.channels = changes;
       })
+
   }
 
   async loadChatIDs() {
@@ -126,10 +148,10 @@ export class SidenavComponent implements OnInit {
           }
         })
     }
-    
+
   }
 
-  showActive(value){
+  showActive(value) {
     this.activeChatChannel = value;
     console.log(value)
   }

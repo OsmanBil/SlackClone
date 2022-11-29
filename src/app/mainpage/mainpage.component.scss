@@ -83,8 +83,7 @@
 .drawer-container {
     width: 100vw;
     max-width: 100%;
-    min-height: calc(100vh - 50px);
-    max-height: calc(100vh - 50px);
+    height: calc(100vh - 50px);
 
     // STYLE SCROLLBAR FUNKTIONIERT NICHT
     /* Track */

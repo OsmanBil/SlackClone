@@ -85,6 +85,7 @@ export class DialogCreateChatComponent implements OnInit {
     name: '',
     id: '',
     photoURL: '',
+    newMessage: 0, 
     shownInSidebar: true
   };
 
@@ -197,7 +198,8 @@ export class DialogCreateChatComponent implements OnInit {
         this.userData.id = currentUser.uid;
         this.userData.photoURL = currentUser.photoURL;
       });
-      await setDoc(doc(this.db, "chatrooms", this.roomid, "users", `${'user' + x}`), this.userData);
+      console.log(this.userData.id)
+      await setDoc(doc(this.db, "chatrooms", this.roomid, "users", this.userData.id), this.userData);
     }
   }
 
@@ -223,18 +225,18 @@ export class DialogCreateChatComponent implements OnInit {
 
     };
 
-    for (let x = 0; x < this.room.length; x++) {
-      let currentUserID = this.room[x];
-      let docRef = collection(this.db, "users");
-      let q = query(docRef, where("uid", "==", currentUserID))
-      let querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        let currentUser: any = doc.data();
-        this.userData.name = currentUser.displayName;
-        this.userData.id = currentUser.uid;
-      });
-      await setDoc(doc(this.db, "chatrooms", this.roomid, "users", `${'user' + x}`), this.userData);
-    }
+    // for (let x = 0; x < this.room.length; x++) {
+    //   let currentUserID = this.room[x];
+    //   let docRef = collection(this.db, "users");
+    //   let q = query(docRef, where("uid", "==", currentUserID))
+    //   let querySnapshot = await getDocs(q);
+    //   querySnapshot.forEach((doc) => {
+    //     let currentUser: any = doc.data();
+    //     this.userData.name = currentUser.displayName;
+    //     this.userData.id = currentUser.uid;
+    //   });
+    //   await setDoc(doc(this.db, "chatrooms", this.roomid, "users", `${'user' + x}`), this.userData);
+    //}
 
 
 

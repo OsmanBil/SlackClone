@@ -4,7 +4,8 @@
     width: 220px;
     min-height: calc(100vh - 50px);
     background-color: #3F0E40;
-    color: lightgray; 
+    color: rgb(230, 226, 226); 
+    letter-spacing: 0.5px;
     &::-webkit-scrollbar {
         width: 10px;
       }
@@ -27,29 +28,16 @@
       }
 }
 
-.container-threads{
-    display: flex;
-    align-items: center;
-    padding: 6px 0;
-    padding-left: 12px;
-    mat-icon{
-        font-size: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-}
-
 .container-workspace{
-    display:flex;
+    display: flex;
     align-items: center;
     font-weight: 600;
     font-size: 16px;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     border-top: 1px solid #522653;
     border-bottom: 1px solid #522653;
     padding: 12px 0;
-    padding-left: 12px;
+    padding-left: 20px;
     color: white;
 }
 
@@ -73,6 +61,21 @@ mat-icon{
 }
 }
 
+// THREADS
+.container-threads{
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+    padding-left: 12px;
+    mat-icon{
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+// CHANNELS
 .container2{
     margin-bottom: 6px;
     border-top: 1px solid #522653;
@@ -106,12 +109,6 @@ mat-icon{
     }
 }
 
-.message-menu{
-    display: flex;
-    align-items: center;
- 
-}
-
 .add-channel{
     display: flex;
     align-items: center;
@@ -121,6 +118,14 @@ mat-icon{
         margin-right: 4px;
         color: #a161a3;
     }
+}
+
+
+// CHAT
+
+.message-menu{
+    display: flex;
+    align-items: center;
 }
 
 .chatroom-img{

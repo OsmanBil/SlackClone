@@ -18,6 +18,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   @Input() public chatusersID: any[] = [];
   textMessage;
   localUser;
+  otherUserID;
 
   messageData = {
     messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
@@ -101,6 +102,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
         this.chatusersID.push({
           id: doc.data().id,
         })
+        this.otherUserID = doc.data().id;
       }
     })
     this.chatusers = [];
