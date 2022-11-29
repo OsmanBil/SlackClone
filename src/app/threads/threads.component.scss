@@ -47,11 +47,24 @@
     padding-left: 16px;
 }
 
+.pd-left-s{
+    padding-left: 4px;
+}
+
+.pd-top{
+    margin-top: 8px;
+}
+
+.display-row{
+    display: flex;
+    flex-direction: row;
+}
+
 
 
 .posts{
     padding-top: 8px;
-    padding-bottom: 16px;
+    padding-bottom: 8px;
     width: 100%;
     background-color: rgb(236, 233, 233);
 
