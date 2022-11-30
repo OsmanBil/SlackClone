@@ -37,7 +37,7 @@ export class DialogEditUserComponent implements OnInit {
     const randomId = Math.random().toString(36).substring(2);
     this.ref = this.afStorage.ref('/images/' + randomId);
     this.task = this.ref.put(event.target.files[0]);
-
+    console.log(event)
     // observe upload progress
     this.uploadProgress = this.task.percentageChanges();
     // get notified when the download URL is available
@@ -48,6 +48,7 @@ export class DialogEditUserComponent implements OnInit {
           if (url) {
             this.imageURL = url;
             this.uploadState = null;
+            console.log(this.imageURL)
           }
         });
       })

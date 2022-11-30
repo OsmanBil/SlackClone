@@ -7,6 +7,12 @@ import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTim
 
 import Quill from 'quill';
 import { VideoHandler, ImageHandler, Options } from 'ngx-quill-upload';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/compat/storage';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { finalize, map } from 'rxjs/operators';
+import { increment } from '@angular/fire/firestore';
 
 Quill.register('modules/imageHandler', ImageHandler);
 Quill.register('modules/videoHandler', VideoHandler);
@@ -22,6 +28,15 @@ export class CommentBoxChatroomComponent implements OnInit {
   form: FormGroup;
   db = getFirestore();
 
+  ref: AngularFireStorageReference;
+  task: AngularFireUploadTask;
+  uploadProgress: Observable<number>;
+  uploadState: Observable<string>;
+  downloadURL: Observable<string>;
+  imageURL: string;
+
+  @Input() otherUserID = '';
+
   @ViewChild('editor', {
     static: true
   }) editor: QuillEditorComponent
@@ -35,19 +50,8 @@ export class CommentBoxChatroomComponent implements OnInit {
       ['link'],
       ['image', 'video'],
     ],
-    imageHandler: {
-      upload: (file) => {
-       return // your uploaded image URL as Promise<string>
-      },
-      accepts: ['png', 'jpg', 'jpeg', 'jfif'] // Extensions to allow for images (Optional) | Default - ['jpg', 'jpeg', 'png']
-    } as Options,
-    videoHandler: {
-      upload: (file) => {
-        return // your uploaded video URL as Promise<string>
-      },
-      accepts: ['mpeg', 'avi']  // Extensions to allow for videos (Optional) | Default - ['mp4', 'webm']
-    } as Options,
     
+   
   }
 
   data = {
@@ -75,7 +79,9 @@ export class CommentBoxChatroomComponent implements OnInit {
   localUser;
   currentChatroomID;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private firestore: AngularFirestore,
+    private afStorage: AngularFireStorage, private route: ActivatedRoute) {
     this.form = new FormGroup({
       'editor': new FormControl()
     });
@@ -84,6 +90,7 @@ export class CommentBoxChatroomComponent implements OnInit {
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
+    console.log(this.otherUserID)
   }
 
   
@@ -94,13 +101,24 @@ export class CommentBoxChatroomComponent implements OnInit {
     }
   }
 
+  async setnewMessage(){
+    const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID);
+     await updateDoc(otherUserRef, {
+       newMessage: 0,
+     });
+     const otherUserRef2 = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.localUser.uid);
+     await updateDoc(otherUserRef2, {
+       newMessage: increment(1),
+     });
+  }
+
   async addMessage() {
 
     
     const unsub = onSnapshot(doc(this.db, "users", this.localUser.uid), async (doc: any) => {
       this.messageData.messageText = this.text;
       this.messageData.messageServerTime = serverTimestamp(),
-        this.messageData.messageAuthor = doc.data().displayName;
+      this.messageData.messageAuthor = doc.data().displayName;
       this.messageData.messageAuthorID = this.localUser.uid;
       this.messageData.messageTime = Timestamp.fromDate(new Date());
       this.messageData.messageAuthorImg = doc.data().photoURL;
@@ -110,8 +128,11 @@ export class CommentBoxChatroomComponent implements OnInit {
       })
 
       await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
+
+      this.setnewMessage();
       this.form.reset();
     });
+   
   }
 
   // postToChannel(){

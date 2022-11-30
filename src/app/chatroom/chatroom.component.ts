@@ -43,8 +43,10 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
       this.currentChatroomID = paramMap.get('id');
       this.loadMessages();
       this.loadUsers();
+     
     })
     this.scrollToBottom();
+   
   }
 
   ngAfterViewChecked() {
@@ -103,6 +105,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
           id: doc.data().id,
         })
         this.otherUserID = doc.data().id;
+        console.log(this.otherUserID)
       }
     })
     this.chatusers = [];
@@ -118,6 +121,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
 
         })
     }
+    
   }
 
   convertTimestamp(timestamp) {
