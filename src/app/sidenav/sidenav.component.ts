@@ -21,6 +21,7 @@ import { ActivatedRoute } from '@angular/router';
 export class SidenavComponent implements OnInit {
 
   channels = [];
+  versuchArray = [];
 
   channelOpen = true;
   messageOpen = true;
@@ -35,12 +36,14 @@ export class SidenavComponent implements OnInit {
   chatUserIDs = [];
   @Input() activeChatChannel;
 
+
+  otherUserID = '';
   constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute) { }
 
 
   ngOnInit(): void {
-    this.loadChatrooms();
-
+    // this.loadChatrooms();
+    this.versuch();
   }
 
 
@@ -81,7 +84,7 @@ export class SidenavComponent implements OnInit {
       querySnapshot.forEach(async (doc) => {
 
         this.chatIDs.push(doc.id)
-      
+
       })
       await this.loadChatIDs();
       await this.loadChatroomUserData();
@@ -118,6 +121,61 @@ export class SidenavComponent implements OnInit {
 
   }
 
+  versuch() {
+    this.localUser = JSON.parse(localStorage.getItem('user'))
+    let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
+    const unsubscribe = onSnapshot(docRef, async (querySnapshot) => {
+      this.versuchArray = [];
+      querySnapshot.forEach(async (doc) => {
+        let neededData = {
+          chatroomID: '',
+          userID: '',
+          userImg: '',
+          userIsOnline: '',
+          userName: '',
+          newMessageforOtherUser: '',
+        }
+        neededData.chatroomID = doc.id;
+
+        const x1 = query(collection(this.db, "chatrooms", doc.id, "users"), where("id", "!=", this.localUser.uid));
+        const s1 = onSnapshot(x1, async (querySnapshot) => {
+        querySnapshot.forEach(async (doc2: any) => {
+          for (let x = 0; x < this.versuchArray.length; x++) {
+            if (this.versuchArray[x].userID == doc2.uid) {
+              this.versuchArray[x].newMessageforOtherUser = doc2.data().newMessage}
+              else {
+                neededData.newMessageforOtherUser = doc2.data().newMessage
+              }
+          }
+          const x2 = query(collection(this.db, "users"), where("uid", "==", doc2.id));
+          const s2 = onSnapshot(x2, async (querySnapshot) => {
+            querySnapshot.forEach(async (doc3: any) => {
+              for (let x = 0; x < this.versuchArray.length; x++) {
+                if (this.versuchArray[x].userID == doc3.data().uid) {
+                  this.versuchArray[x].userID = doc3.data().uid
+                  this.versuchArray[x].userImg = doc3.data().photoURL;
+                  this.versuchArray[x].userName = doc3.data().displayName;
+                  this.versuchArray[x].userIsOnline = doc3.data().isOnline;
+                } else {
+                  neededData.userID = doc3.data().uid
+                  neededData.userImg = doc3.data().photoURL;
+                  neededData.userName = doc3.data().displayName;
+                  neededData.userIsOnline = doc3.data().isOnline;
+                }
+              }
+            })
+          })
+          })
+        })
+        this.versuchArray.push(neededData);
+        console.log(this.versuchArray)
+      })
+
+    })
+
+
+  }
+ 
   async loadChatIDs() {
     this.chatUserIDs = [];
     for (let x = 0; x < this.chatIDs.length; x++) {
@@ -136,15 +194,15 @@ export class SidenavComponent implements OnInit {
     for (let i = 0; i < this.chatUserIDs.length; i++) {
       const unsub = onSnapshot(doc(this.db, "users", this.chatUserIDs[i].userID), { includeMetadataChanges: true },
         (doc: any) => {
-          let chatrommUser = {
+          let chatroomUser = {
             userID: doc.data().id, chatroomID: this.chatUserIDs[i].chatID, name: doc.data().displayName,
             isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i
           }
           if (this.chatrooms.length == this.chatIDs.length) {
-            this.chatrooms[chatrommUser.localIndex] = chatrommUser
+            this.chatrooms[chatroomUser.localIndex] = chatroomUser
           }
           else {
-            this.chatrooms.push(chatrommUser)
+            this.chatrooms.push(chatroomUser)
           }
         })
     }
