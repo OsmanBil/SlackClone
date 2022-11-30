@@ -1,9 +1,11 @@
 import { Component, OnInit, Input, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { getFirestore } from '@firebase/firestore';
-import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, addDoc, Unsubscribe, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { Observable } from 'rxjs';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, } from '@angular/fire/compat/firestore';
+import { Router } from '@angular/router';
+import { ChatroomsService } from '../services/chatrooms.service';
 
 @Component({
   selector: 'app-chatroom',
@@ -13,13 +15,16 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 export class ChatroomComponent implements OnInit, AfterViewChecked {
   db = getFirestore();
   @Input() currentChatroomID;
+  @Input() currentChatroomID2;
   @Input() public messages: any[] = [];
   @Input() public chatusers: any[] = [];
   @Input() public chatusersID: any[] = [];
   textMessage;
   localUser;
   otherUserID;
+  @Input() activeChatroomID = '';
 
+  counter = 0;
   messageData = {
     messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
     messageServerTime: serverTimestamp(),
@@ -32,15 +37,20 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
-  constructor(private route: ActivatedRoute, private firestore: AngularFirestore,) {
+  constructor(private route: ActivatedRoute, private firestore: AngularFirestore, private router: Router,
+    public chatroomService: ChatroomsService) {
 
   }
+  
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
     this.chatusersID = [];
-    this.route.paramMap.subscribe(paramMap => {
-      this.currentChatroomID = paramMap.get('id');
+     this.route.paramMap.subscribe(paramMap => {
+       this.currentChatroomID = paramMap.get('id');
+      
+      this.counter++
+
       this.loadMessages();
       this.loadUsers();
      
@@ -60,9 +70,17 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   }
 
   loadMessages() {
+    const versuch = this.currentChatroomID
+    console.log('versuch', versuch)
     const messagesRef = collection(this.db, "chatrooms", this.currentChatroomID, "messages");
     const messagesQ = query(messagesRef, orderBy("messageServerTime"));
+    this.activeChatroomID = this.chatroomService.mainActiveChat;
     const unsubscribe = onSnapshot(messagesQ, async (snapshot) => {
+      
+      console.log(this.activeChatroomID)
+      console.log(this.currentChatroomID)
+       if(versuch == this.activeChatroomID){
+         unsubscribe()}
       this.messages = [];
       snapshot.forEach((postDoc: any) => {
         let loadMessage = {
@@ -75,7 +93,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
         this.messages.push(loadMessage)
         // this.loadAuthor(postDoc);
       });
-    });
+    }); 
   }
   async loadAuthor(postDoc) {
     let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data().messageAuthorID));
@@ -105,7 +123,6 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
           id: doc.data().id,
         })
         this.otherUserID = doc.data().id;
-        console.log(this.otherUserID)
       }
     })
     this.chatusers = [];

@@ -9,6 +9,7 @@ import { collection, addDoc, limit, getDocs, doc, orderBy, Timestamp, setDoc, se
 import { user } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { ChatroomsService } from '../services/chatrooms.service';
 
 
 @Component({
@@ -29,11 +30,12 @@ export class SidenavComponent implements OnInit {
   chatrooms = [];
   localUser;
 
-  @Input() activeChatChannel;
+  activeChatChannel = 'adsf';
 
 
   otherUserID = '';
-  constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute) { }
+  constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute,
+    public chatroomService: ChatroomsService) { }
 
 
   ngOnInit(): void {
@@ -132,14 +134,15 @@ export class SidenavComponent implements OnInit {
 
   async showActiveChat(value, positionInArray) {
     this.activeChatChannel = value;
-    console.log(this.chatrooms[positionInArray].userID)
     const otherUserRef = doc(this.db, "chatrooms", this.chatrooms[positionInArray].chatroomID, "users", this.chatrooms[positionInArray].userID);
     await updateDoc(otherUserRef, {
       newMessage: 0,
     });
   }
 
-  openChatroom(chatroomID) {
+  async openChatroom(chatroomID) {
+    this.chatroomService.mainActiveChat = chatroomID;
+    console.log(this.chatroomService.mainActiveChat)
     this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
   }
 

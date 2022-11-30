@@ -52,8 +52,8 @@
     <div class="container-channels" *ngIf="messageOpen">
 
       <div class="" *ngFor="let chatroom of chatrooms; let i = index" class="">
-        <!-- <div (click)="openChatroom(chatroom.id)">  -->
-        <div [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]" class="chat d-flex align-items-center"
+        <!-- <div [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]" >  -->
+        <div (click)="openChatroom(chatroom.chatroomID)" class="chat d-flex align-items-center"
           [ngClass]="{'active-chatroom' : activeChatChannel == ('chatroom' + i) }" (click)="showActiveChat('chatroom' + i, i)">
           <div class="header-img-container">
             <img class="chatroom-img me-2" src="{{ chatroom.userImg }}">
