@@ -172,6 +172,12 @@ export class SidenavComponent implements OnInit {
       })
 
     })
+    this.firestore
+    .collection('channels')
+    .valueChanges({ idField: 'channelId' })
+    .subscribe((changes: any) => {
+      this.channels = changes;
+    })
 
 
   }
