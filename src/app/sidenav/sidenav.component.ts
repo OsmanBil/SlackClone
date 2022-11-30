@@ -146,7 +146,9 @@ export class SidenavComponent implements OnInit {
     this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
   }
 
-
+  closeMist(){
+    
+  }
 
 
 

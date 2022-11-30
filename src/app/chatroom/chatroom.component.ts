@@ -48,8 +48,6 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     this.chatusersID = [];
      this.route.paramMap.subscribe(paramMap => {
        this.currentChatroomID = paramMap.get('id');
-      
-      this.counter++
 
       this.loadMessages();
       this.loadUsers();
@@ -69,18 +67,31 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     } catch (err) { }
   }
 
+  addnumber1(a){
+    
+    console.log(a)
+  }
+
+  
+  addnumber2(a){
+    
+    console.log(a)
+  }
+
   loadMessages() {
-    const versuch = this.currentChatroomID
-    console.log('versuch', versuch)
+   
+
     const messagesRef = collection(this.db, "chatrooms", this.currentChatroomID, "messages");
     const messagesQ = query(messagesRef, orderBy("messageServerTime"));
     this.activeChatroomID = this.chatroomService.mainActiveChat;
     const unsubscribe = onSnapshot(messagesQ, async (snapshot) => {
-      
-      console.log(this.activeChatroomID)
-      console.log(this.currentChatroomID)
-       if(versuch == this.activeChatroomID){
+      setInterval(this.addnumber1, 8000, this.chatroomService.mainActiveChat)
+      setInterval(this.addnumber2, 8000, this.currentChatroomID)
+
+       if(this.currentChatroomID == this.activeChatroomID){
          unsubscribe()}
+
+
       this.messages = [];
       snapshot.forEach((postDoc: any) => {
         let loadMessage = {
