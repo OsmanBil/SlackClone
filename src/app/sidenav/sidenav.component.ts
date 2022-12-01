@@ -141,13 +141,11 @@ export class SidenavComponent implements OnInit {
   }
 
   async openChatroom(chatroomID) {
-    this.chatroomService.mainActiveChat = chatroomID;
-    console.log(this.chatroomService.mainActiveChat)
     this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
   }
 
   closeMist(){
-    
+
   }
 
 

@@ -90,7 +90,6 @@ export class CommentBoxChatroomComponent implements OnInit {
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
-    console.log(this.otherUserID)
   }
 
   
@@ -125,10 +124,8 @@ export class CommentBoxChatroomComponent implements OnInit {
 
       this.route.paramMap.subscribe(paramMap => {
         this.currentChatroomID = paramMap.get('id');
-      })
-
+      });
       await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
-
       this.setnewMessage();
       this.form.reset();
     });

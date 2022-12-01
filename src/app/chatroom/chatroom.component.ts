@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { getFirestore } from '@firebase/firestore';
-import { collection, addDoc, Unsubscribe, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, addDoc, increment, Unsubscribe, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { Observable } from 'rxjs';
 import { AngularFirestore, } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
@@ -41,20 +41,19 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     public chatroomService: ChatroomsService) {
 
   }
-  
+
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
     this.chatusersID = [];
-     this.route.paramMap.subscribe(paramMap => {
-       this.currentChatroomID = paramMap.get('id');
-
+    this.route.paramMap.subscribe(paramMap => {
+      this.currentChatroomID = paramMap.get('id');
       this.loadMessages();
       this.loadUsers();
-     
+
     })
     this.scrollToBottom();
-   
+
   }
 
   ngAfterViewChecked() {
@@ -67,44 +66,32 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     } catch (err) { }
   }
 
-  addnumber1(a){
-    
-    console.log(a)
-  }
-
-  
-  addnumber2(a){
-    
-    console.log(a)
-  }
-
   loadMessages() {
-   
-
     const messagesRef = collection(this.db, "chatrooms", this.currentChatroomID, "messages");
     const messagesQ = query(messagesRef, orderBy("messageServerTime"));
-    this.activeChatroomID = this.chatroomService.mainActiveChat;
+
+    const loadedChatID = this.currentChatroomID;
     const unsubscribe = onSnapshot(messagesQ, async (snapshot) => {
-      setInterval(this.addnumber1, 8000, this.chatroomService.mainActiveChat)
-      setInterval(this.addnumber2, 8000, this.currentChatroomID)
 
-       if(this.currentChatroomID == this.activeChatroomID){
-         unsubscribe()}
+      if (loadedChatID != this.currentChatroomID) {
+        unsubscribe()
+      }
+      else {
+        this.messages = [];
+        snapshot.forEach((postDoc: any) => {
 
-
-      this.messages = [];
-      snapshot.forEach((postDoc: any) => {
-        let loadMessage = {
-          loadMessageText: postDoc.data()['messageText'], loadMessageTime: postDoc.data()['messageTime'],
-          loadMessageServerTime: postDoc.data()['messageServerTime'],
-          loadMessageAuthor: postDoc.data().messageAuthor, loadMessageAuthorImg: postDoc.data().messageAuthorImg,
-          loadMessageAuthorID: postDoc.data().messageAuthorID, id: postDoc.id
-        };
-        loadMessage.loadMessageTime = this.convertTimestamp(loadMessage.loadMessageTime);
-        this.messages.push(loadMessage)
-        // this.loadAuthor(postDoc);
-      });
-    }); 
+          let loadMessage = {
+            loadMessageText: postDoc.data()['messageText'], loadMessageTime: postDoc.data()['messageTime'],
+            loadMessageServerTime: postDoc.data()['messageServerTime'],
+            loadMessageAuthor: postDoc.data().messageAuthor, loadMessageAuthorImg: postDoc.data().messageAuthorImg,
+            loadMessageAuthorID: postDoc.data().messageAuthorID, id: postDoc.id
+          };
+          loadMessage.loadMessageTime = this.convertTimestamp(loadMessage.loadMessageTime);
+          this.messages.push(loadMessage)
+          // this.loadAuthor(postDoc);
+        });
+      }
+    });
   }
   async loadAuthor(postDoc) {
     let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data().messageAuthorID));
@@ -129,6 +116,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     this.chatusers = [];
     this.chatusersID = [];
     querySnapshotsUsersID.forEach((doc: any) => {
+
       if (doc.data().id !== this.localUser.uid) {
         this.chatusersID.push({
           id: doc.data().id,
@@ -137,19 +125,23 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
       }
     })
     this.chatusers = [];
+    const loadedChatID = this.currentChatroomID;
     for (let i = 0; i < this.chatusersID.length; i++) {
       const unsub = onSnapshot(doc(this.db, "users", this.chatusersID[i].id), { includeMetadataChanges: true },
         (doc: any) => {
-          this.chatusers = [];
-          let chatuserData = {
-            id: doc.data().id, name: doc.data().displayName, photoURL: doc.data().photoURL,
-            isOnline: doc.data().isOnline, student: 'student',
+          if (loadedChatID != this.currentChatroomID) {
+            unsub()
           }
-          this.chatusers.push(chatuserData)
-
+          else {
+            this.chatusers = [];
+            let chatuserData = {
+              id: doc.data().id, name: doc.data().displayName, photoURL: doc.data().photoURL,
+              isOnline: doc.data().isOnline, student: 'student',
+            }
+            this.chatusers.push(chatuserData)
+          }
         })
     }
-    
   }
 
   convertTimestamp(timestamp) {
@@ -173,7 +165,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     return date;
   }
 
-  alertlist(){
+  alertlist() {
     alert('Ist auf der To-Do Liste ;)')
   }
 
