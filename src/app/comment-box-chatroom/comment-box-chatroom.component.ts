@@ -125,31 +125,11 @@ export class CommentBoxChatroomComponent implements OnInit {
       this.route.paramMap.subscribe(paramMap => {
         this.currentChatroomID = paramMap.get('id');
       });
-      await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
+     
+    });
+    await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
       this.setnewMessage();
       this.form.reset();
-    });
-   
   }
 
-  // postToChannel(){
-  //   this.currentUser = JSON.parse(localStorage.getItem('user'));
-  //   this.route.paramMap.subscribe(paramMap => {
-  //     this.channelId = paramMap.get('id');
-  //   })
-  //   this.setData();
-  // }
-
-
-  // setData(){
-  //   this.data.userId = this.currentUser['uid'];
-  //   this.data.text = this.text;
-  //   this.data.time = Timestamp.fromDate(new Date());
-  //   this.sendData();
-  // }
-
-
-  // async sendData(){
-  //   await addDoc(collection(this.db, "channels", this.channelId, "posts"), this.data);
-  // }
 }

@@ -48,7 +48,6 @@ export class DialogEditUserComponent implements OnInit {
           if (url) {
             this.imageURL = url;
             this.uploadState = null;
-            console.log(this.imageURL)
           }
         });
       })
