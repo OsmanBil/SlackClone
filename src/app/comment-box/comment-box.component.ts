@@ -22,7 +22,10 @@ export class CommentBoxComponent implements OnInit {
     static: true
   }) editor: QuillEditorComponent
 
+  @Input() location: string;
+  @Input() postId = '';
 
+  
   modules = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],
@@ -33,11 +36,21 @@ export class CommentBoxComponent implements OnInit {
     ],
   }
 
-  data = {
+  post = {
     text: '',
     time: Timestamp.fromDate(new Date()),
     userId: '',
+    channelId: '',
   }
+
+  thread = {
+    text: '',
+    time: Timestamp.fromDate(new Date()),
+    userId: '',
+    postId: '',
+  }
+
+  data = {};
 
   text: string;
 
@@ -73,15 +86,34 @@ export class CommentBoxComponent implements OnInit {
 
 
   setData() {
-    this.data.userId = this.currentUser['uid'];
-    this.data.text = this.text;
-    this.data.time = Timestamp.fromDate(new Date());
-    this.sendData();
+    if(this.location == 'posts'){
+      this.post.userId = this.currentUser['uid'];
+      this.post.text = this.text;
+      this.post.time = Timestamp.fromDate(new Date());
+      this.post.channelId = this.channelId;
+      this.data = this.post;
+      this.sendDataToPost();
+    }
+    if(this.location == 'comments'){
+      this.thread.userId = this.currentUser['uid'];
+      this.thread.text = this.text;
+      this.thread.time = Timestamp.fromDate(new Date());
+      this.thread.postId = this.postId;
+      this.data = this.thread;
+      this.sendDataToComments();
+    }
+
   }
 
 
-  async sendData() {
+  async sendDataToPost() {
     await addDoc(collection(this.db, "channels", this.channelId, "posts"), this.data);
+    this.form.reset();
+  }
+
+
+  async sendDataToComments(){
+    await addDoc(collection(this.db, "channels", this.channelId, "posts", this.postId, "comments"), this.data);
     this.form.reset();
   }
 

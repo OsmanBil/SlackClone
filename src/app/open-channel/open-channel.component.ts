@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { Channel } from 'src/models/channel.class';
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-open-channel',
@@ -12,36 +14,40 @@ import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTim
 })
 export class OpenChannelComponent implements OnInit {
 
+
   db = getFirestore();
   channelId = '';
   channel: Channel = new Channel();
   posts = [];
   post: any;
   user = [];
+  thread = [];
+  
 
   constructor(
     private route: ActivatedRoute,
     private firestore: AngularFirestore,
   ) { }
 
-  async ngOnInit(): Promise<void> {
+
+  ngOnInit(): void {
     this.posts = [];
-    this.route.paramMap.subscribe(async paramMap => {
-    this.channelId = paramMap.get('id');
-    this.loadChannel();
-    this.loadMessages();
+    this.route.paramMap.subscribe(paramMap => {
+      this.channelId = paramMap.get('id');
+      this.loadChannel();
+      this.loadMessages();
     })
   }
 
 
-  loadChannel(){
+  loadChannel() {
     this.firestore
-    .collection('channels')
-    .doc(this.channelId)
-    .valueChanges()
-    .subscribe((channel: any) => {
-      this.channel = new Channel(channel);
-    })
+      .collection('channels')
+      .doc(this.channelId)
+      .valueChanges()
+      .subscribe((channel: any) => {
+        this.channel = new Channel(channel);
+      })
   }
 
 
@@ -66,7 +72,8 @@ export class OpenChannelComponent implements OnInit {
         time: this.convertTimestamp(postDoc.data()['time']),
         author: userDoc.data()['displayName'],
         img: userDoc.data()['photoURL'],
-        id: postDoc.id
+        id: postDoc.id,
+        channelId: postDoc.data()['channelId']
       };
       this.posts.push(post);
     });
@@ -92,6 +99,16 @@ export class OpenChannelComponent implements OnInit {
     }
     date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
     return date;
+  }
+
+
+  openComments(post){
+    this.thread = post;
+  }
+
+
+  trackByFn(item) {
+    return item.id;
   }
 
 }
