@@ -1,6 +1,7 @@
 <mat-drawer-container class="drawer-container" autosize>
 
     <mat-drawer #drawer class="example-sidenav" mode="side" position="end">
+        <i (click)="drawer.close()"  class="material-icons">close</i>
         <app-thread [post]="thread"></app-thread>
     </mat-drawer>
 
@@ -22,7 +23,7 @@
                         <p [innerHTML]="post.text"></p>
                     </div>
 
-                    <div (click)="drawer.toggle();" class="open-thread">
+                    <div (click)="drawer.open()" class="open-thread">
                         <p (click)="openComments(post)">Comments</p>
                     </div>
                 </div>
