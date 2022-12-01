@@ -32,8 +32,17 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     messageTime: Timestamp.fromDate(new Date()),
     messageAuthorImg: '',
     messageAuthorID: '',
-
   }
+
+  loadMessageData = {
+    loadMessageText: '',
+    loadMessageTime: Timestamp,
+    loadMessageServerTime: Timestamp,
+    loadMessageAuthor: '', 
+    loadMessageAuthorImg: '',
+    loadMessageAuthorID: '', 
+    messageID: ''
+  };
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
@@ -81,34 +90,29 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
         snapshot.forEach((postDoc: any) => {
 
           let loadMessage = {
-            loadMessageText: postDoc.data()['messageText'], loadMessageTime: postDoc.data()['messageTime'],
+            loadMessageText: postDoc.data()['messageText'],
+            loadMessageTime: postDoc.data()['messageTime'],
             loadMessageServerTime: postDoc.data()['messageServerTime'],
-            loadMessageAuthor: postDoc.data().messageAuthor, loadMessageAuthorImg: postDoc.data().messageAuthorImg,
-            loadMessageAuthorID: postDoc.data().messageAuthorID, id: postDoc.id
+            loadMessageAuthor: postDoc.data().messageAuthor, 
+            loadMessageAuthorImg: postDoc.data().messageAuthorImg,
+            loadMessageAuthorID: postDoc.data().messageAuthorID, 
+            id: postDoc.id
           };
           loadMessage.loadMessageTime = this.convertTimestamp(loadMessage.loadMessageTime);
-          this.messages.push(loadMessage)
-          // this.loadAuthor(postDoc);
+
+          // LOAD AUTHOR
+          const authorRef = query(collection(this.db, "users"), where("uid", "==", loadMessage.loadMessageAuthorID));
+          const unsubscribe2 = onSnapshot(authorRef, async (snapshot2) => {
+            snapshot2.forEach((postDoc2: any) => {
+             loadMessage.loadMessageAuthor = postDoc2.data().displayName;
+             loadMessage.loadMessageAuthorImg = postDoc2.data().photoURL;
+          })
+        })
+        this.messages.push(loadMessage)
         });
       }
     });
   }
-  async loadAuthor(postDoc) {
-    let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data().messageAuthorID));
-    let querySnapshot = await getDocs(user);
-    querySnapshot.forEach((userDoc) => {
-      let post = {
-        loadMessageAuthor: postDoc.data().messageAuthor,
-        loadMessageAuthorImg: postDoc.data().messageAuthorImg,
-        loadMessageAuthorID: postDoc.data().messageAuthorID,
-        loadMessageText: postDoc.data().messageText,
-        loadMessageTime: this.convertTimestamp(postDoc.data().messageTime),
-
-      };
-      this.messages.push(post);
-    });
-  }
-
 
   async loadUsers() {
     const q = collection(this.db, "chatrooms", this.currentChatroomID, "users")

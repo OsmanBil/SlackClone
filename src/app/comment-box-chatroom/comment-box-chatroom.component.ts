@@ -111,25 +111,20 @@ export class CommentBoxChatroomComponent implements OnInit {
      });
   }
 
-  async addMessage() {
-
-    
+  async addMessage() {    
     const unsub = onSnapshot(doc(this.db, "users", this.localUser.uid), async (doc: any) => {
       this.messageData.messageText = this.text;
       this.messageData.messageServerTime = serverTimestamp(),
-      this.messageData.messageAuthor = doc.data().displayName;
       this.messageData.messageAuthorID = this.localUser.uid;
       this.messageData.messageTime = Timestamp.fromDate(new Date());
-      this.messageData.messageAuthorImg = doc.data().photoURL;
-
-      this.route.paramMap.subscribe(paramMap => {
+        this.route.paramMap.subscribe(paramMap => {
         this.currentChatroomID = paramMap.get('id');
       });
-     
-    });
-    await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
+      await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
       this.setnewMessage();
       this.form.reset();
+    });
+ 
   }
 
 }
