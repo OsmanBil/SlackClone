@@ -1,0 +1,33 @@
+<div class="thread">
+    <div>
+        <div class="posts">
+            <img class="profile-img" src="{{ post.img }}">
+    
+            <div>
+                <div class="general-info-line">
+                    <p><b>{{ post.author }}</b></p>
+                    <span>{{ post.time }}</span>
+                </div>
+                <div class="post">
+                    <p [innerHTML]="post.text"></p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="posts" *ngFor="let comment of comments">
+            <img class="profile-img" src="{{ comment.img }}">
+    
+            <div>
+                <div class="general-info-line">
+                    <p><b>{{ comment.author }}</b></p>
+                    <span>{{ comment.time }}</span>
+                </div>
+                <div class="post">
+                    <p [innerHTML]="comment.text"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-comment-box [postId]="post.id" location="comments"></app-comment-box>
+</div>
