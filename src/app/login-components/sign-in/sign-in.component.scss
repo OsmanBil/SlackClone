@@ -3,13 +3,13 @@
   padding-bottom: 20px;
 }
 
-.align-item-center{
+.align-item-center {
   display: flex;
   align-items: center;
   flex-direction: column;
 }
 
-img{
+img {
   margin-bottom: 24px;
   height: 50px;
 }
@@ -18,7 +18,7 @@ img{
   color: white;
 }
 
-span{
+span {
   cursor: pointer;
   padding-left: 8px;
   padding-right: 8px;
@@ -26,15 +26,11 @@ span{
 
 .mat-input-element::placeholder {
   color: white;
-
 }
 
 ::ng-deep .mat-form-field-required-marker {
   color: white
 }
-
-
-
 
 .color-white {
   color: white;
@@ -64,7 +60,6 @@ span{
   max-width: 500px;
   width: 100%;
   background-color: #4a154b;
-
 }
 
 .padding-top {

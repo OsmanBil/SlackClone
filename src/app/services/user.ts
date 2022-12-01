@@ -8,5 +8,4 @@ export interface User {
     emailVerified: boolean;
     isOnline: boolean;
     search: string[];
-
  }
