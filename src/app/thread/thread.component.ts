@@ -23,11 +23,9 @@ export class ThreadComponent implements OnChanges {
   ngOnChanges() {
     if (this.post.length == 0) {
       //don't load Comments because Id's are not defined
-      console.log('leerer array');
     }
     else {
       this.comments = [];
-      console.log('Changes');
       this.loadComments();
     }
   }
