@@ -23,38 +23,45 @@ export class ThreadComponent implements OnChanges {
   ngOnChanges() {
     if (this.post.length == 0) {
       //don't load Comments because Id's are not defined
+      console.log('leerer array');
     }
     else {
+      this.comments = [];
+      console.log('Changes');
       this.loadComments();
     }
   }
 
 
   loadComments() {
-    let commentRef = collection(this.db, "channels", this.post.channelId, "posts", this.post.id, 'comments');
+    let commentRef = collection(this.db, "channels", this.post.channelId, "posts", this.post.postId, 'comments');
     let q = query(commentRef, orderBy("time"));
-    let unsubscribe = onSnapshot(q, (snapshot) => {
+    let unsubscribe = onSnapshot(q, async (snapshot) => {
       this.comments = [];
-      snapshot.forEach(async (commentDoc) => {
-        this.loadAuthor(commentDoc);
+      snapshot.forEach((commentDoc) => {
+        let comment = {
+          text: commentDoc.data()['text'],
+          time: this.convertTimestamp(commentDoc.data()['time']),
+          author: '',
+          img: '',
+          commentId: commentDoc.id,
+          userId: commentDoc.data()['userId']
+        };
+        this.loadAuthor(comment);
       });
     });
   }
 
 
-  async loadAuthor(commentDoc) {
-    let user = query(collection(this.db, "users"), where("uid", "==", commentDoc.data()['userId']));
-    let querySnapshot = await getDocs(user);
-    querySnapshot.forEach((userDoc) => {
-      let comment = {
-        text: commentDoc.data()['text'],
-        time: this.convertTimestamp(commentDoc.data()['time']),
-        author: userDoc.data()['displayName'],
-        img: userDoc.data()['photoURL'],
-        id: commentDoc.id,
-      };
-      this.comments.push(comment);
+  async loadAuthor(comment) {
+    let user = query(collection(this.db, "users"), where("uid", "==", comment.userId));
+    let unsubscribe = onSnapshot(user, async (snapshot) => {
+      snapshot.forEach((userDoc) => {
+        comment.author = userDoc.data()['displayName'];
+        comment.img = userDoc.data()['photoURL'];
+      });
     });
+    this.comments.push(comment);
   }
 
 

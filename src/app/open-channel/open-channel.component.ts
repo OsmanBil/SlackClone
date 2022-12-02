@@ -22,7 +22,7 @@ export class OpenChannelComponent implements OnInit {
   post: any;
   user = [];
   thread = [];
-  
+
 
   constructor(
     private route: ActivatedRoute,
@@ -54,29 +54,40 @@ export class OpenChannelComponent implements OnInit {
   loadMessages() {
     let postRef = collection(this.db, "channels", this.channelId, "posts");
     let q = query(postRef, orderBy("time"));
-    let unsubscribe = onSnapshot(q, (snapshot) => {
-      this.posts = [];
-      snapshot.forEach(async (postDoc) => {
-        this.loadAuthor(postDoc);
-      });
+    const loadedChatID = this.channelId;
+    let unsubscribe = onSnapshot(q, async (snapshot) => {
+      if (loadedChatID != this.channelId) {
+        unsubscribe()
+      }
+      else {
+        this.posts = [];
+        snapshot.forEach((postDoc) => {
+          let post = {
+            text: postDoc.data()['text'],
+            time: this.convertTimestamp(postDoc.data()['time']),
+            author: '',
+            img: '',
+            postId: postDoc.id,
+            userId: postDoc.data()['userId'],
+            channelId: postDoc.data()['channelId']
+          };
+          this.loadAuthor(post);
+        });
+      }
     });
   }
 
 
-  async loadAuthor(postDoc) {
-    let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data()['userId']));
-    let querySnapshot = await getDocs(user);
-    querySnapshot.forEach((userDoc) => {
-      let post = {
-        text: postDoc.data()['text'],
-        time: this.convertTimestamp(postDoc.data()['time']),
-        author: userDoc.data()['displayName'],
-        img: userDoc.data()['photoURL'],
-        id: postDoc.id,
-        channelId: postDoc.data()['channelId']
-      };
-      this.posts.push(post);
+
+  loadAuthor(post) {
+    let user = query(collection(this.db, "users"), where("uid", "==", post.userId));
+    let unsubscribe = onSnapshot(user, async (snapshot) => {
+      snapshot.forEach((userDoc) => {
+        post.author = userDoc.data()['displayName'];
+        post.img = userDoc.data()['photoURL'];
+      });
     });
+    this.posts.push(post);
   }
 
 
@@ -102,7 +113,7 @@ export class OpenChannelComponent implements OnInit {
   }
 
 
-  openComments(post){
+  openComments(post) {
     this.thread = post;
   }
 
