@@ -9,15 +9,22 @@
     padding: 32px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    position: relative
 }
 
 app-comment-box{
-    position: sticky;
+    position: absolute;
     bottom: 32px;
-    right: 0;
-    left: 0;
+    right: 32px;
+    left: 32px;
     z-index: 10;
+}
+
+.post-container{
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    height: calc(100% - 200px);
 }
 
 .profile-img{
@@ -30,13 +37,16 @@ app-comment-box{
 .posts{
     display: flex;
     margin-bottom: 24px;
+    padding: 16px;
+    box-shadow: 0px 2px 8px -1px rgb(0 0 0 / 20%);
+    border-radius: 10px;
 
     img{
         margin-right: 16px;
     }
 
     &:last-child{
-        margin-bottom: 60px !important;
+        margin-bottom: 8px;
     }
 }
 
@@ -58,4 +68,33 @@ app-comment-box{
     }
 }
 
+.align{
+    display: flex;
+    align-items: center;
+}
+
+.empty-channel{
+    width: 100%;
+    text-align: center;
+    margin-top: 64px;
+    line-height: 32px;
+    font-weight: 500;
+}
+
+.head{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+
+    h2{
+        margin: unset;
+    }
+
+    i{
+        cursor: pointer;
+    }
+}
 

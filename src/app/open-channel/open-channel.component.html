@@ -1,36 +1,49 @@
 <mat-drawer-container class="drawer-container" autosize>
 
     <mat-drawer #drawer class="example-sidenav" mode="side" position="end">
-        <i (click)="drawer.close()"  class="material-icons">close</i>
+        <div class="head">
+            <h2>Thread</h2>
+            <i (click)="drawer.close()"  class="material-icons">close</i>
+        </div>
         <app-thread [post]="thread"></app-thread>
     </mat-drawer>
 
-    <div class="channel-page">
-        <div>
+        <div class="channel-page">
             <div>
-                <h2>{{ channel.channelName }}</h2>
+                <h2 class="align"> 
+                    <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
+                    <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
+                    {{ channel.channelName }}
+                </h2>
             </div>
-            <div class="posts" *ngFor="let post of posts; index as i, trackBy: trackByFn">
 
-                <img class="profile-img" src="{{ post.img }}">
+            <div class="empty-channel" *ngIf="posts.length == 0">
+                <i class="material-icons">rocket_launch</i>
+                <p>Start a conversation</p>
+            </div>
 
-                <div>
-                    <div class="general-info-line">
-                        <p><b>{{ post.author }}</b></p>
-                        <span>{{ post.time }}</span>
-                    </div>
-                    <div class="post">
-                        <p [innerHTML]="post.text"></p>
-                    </div>
+            <div class="post-container" #scrollMe>
+                <div class="posts" *ngFor="let post of posts; index as i, trackBy: trackByFn">
 
-                    <div (click)="drawer.open()" class="open-thread">
-                        <p (click)="openComments(post)">Comments</p>
+                    <img class="profile-img" src="{{ post.img }}">
+    
+                    <div>
+                        <div class="general-info-line">
+                            <p><b>{{ post.author }}</b></p>
+                            <span>{{ post.time }}</span>
+                        </div>
+                        <div class="post">
+                            <p [innerHTML]="post.text"></p>
+                        </div>
+    
+                        <div (click)="drawer.open()" class="open-thread">
+                            <p (click)="openComments(post)">Comments</p>
+                        </div>
                     </div>
                 </div>
             </div>
+            <app-comment-box location="posts"></app-comment-box>
         </div>
-        <app-comment-box location="posts"></app-comment-box>
-    </div>
 
 
 </mat-drawer-container>

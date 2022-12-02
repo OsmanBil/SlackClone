@@ -1,14 +1,7 @@
-.thread{
-    height: 100%;
-    padding: 32px;
+.comments{
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.posts{
-    display: flex;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
+    padding: 16px;
 
     img{
         margin-right: 16px;
@@ -17,6 +10,14 @@
     &:last-child{
         margin-bottom: 60px !important;
     }
+}
+
+.posts{
+    margin: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0px 2px 8px -1px rgb(0 0 0 / 20%);
+    border-radius: 10px;
+    background-color: rgba(0,0,0,0.05);
 }
 
 .general-info-line{
@@ -37,9 +38,9 @@
 }
 
 app-comment-box{
-    position: sticky;
+    position: absolute;
     bottom: 32px;
-    right: 0;
-    left: 0;
+    right: 32px;
+    left: 32px;
     z-index: 10;
 }

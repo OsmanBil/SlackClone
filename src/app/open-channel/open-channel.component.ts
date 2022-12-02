@@ -1,10 +1,9 @@
-import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { Channel } from 'src/models/channel.class';
 import { getFirestore } from '@firebase/firestore';
-import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
-import { Observable } from 'rxjs';
+import { collection, orderBy, onSnapshot, query, where } from "firebase/firestore";
 
 
 @Component({
@@ -12,9 +11,10 @@ import { Observable } from 'rxjs';
   templateUrl: './open-channel.component.html',
   styleUrls: ['./open-channel.component.scss']
 })
-export class OpenChannelComponent implements OnInit {
+export class OpenChannelComponent implements OnInit, AfterViewChecked {
 
-
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  
   db = getFirestore();
   channelId = '';
   channel: Channel = new Channel();
@@ -37,6 +37,11 @@ export class OpenChannelComponent implements OnInit {
       this.loadChannel();
       this.loadMessages();
     })
+    this.scrollToBottom();
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
   }
 
 
@@ -121,6 +126,13 @@ export class OpenChannelComponent implements OnInit {
 
   trackByFn(item) {
     return item.id;
+  }
+
+
+  scrollToBottom(): void {
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) { }
   }
 
 }

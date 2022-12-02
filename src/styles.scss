@@ -11,50 +11,72 @@ body {
 p {
     margin-block-end: 0;
     margin-block-start: 0;
-    margin: 0!important;
+    margin: 0 !important;
 }
 
-.mat-slide-toggle.mat-checked .mat-slide-toggle-bar{
+.mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
     background-color: #a161a3a3;
-}  
+}
 
-.mat-slide-toggle.mat-checked .mat-slide-toggle-thumb{
+.mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
     background-color: #A161A3;
 }
 
 @import '~quill/dist/quill.core.css';
 @import '~quill/dist/quill.snow.css';
 
-.ql-toolbar{
+.ql-toolbar {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     background-color: #e7e7e7;
 }
 
-.ql-container{
+.ql-container {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     background-color: #f7f7f7;
 }
 
-.ql-editor{
+.ql-editor {
     min-height: 80px;
     max-height: 30vh;
 
-    img{
+    img {
         width: 80px;
         height: 80px;
         object-fit: cover;
     }
 }
 
-.post{
-    p{
-        img{
+.post {
+    p {
+        img {
             width: 200px;
             height: 200px;
             object-fit: cover;
         }
     }
 
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px transparent;
+    border-radius: 3px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 3px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(164, 164, 164);
 }
