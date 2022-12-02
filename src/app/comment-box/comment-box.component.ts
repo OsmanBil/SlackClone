@@ -23,7 +23,7 @@ export class CommentBoxComponent implements OnInit {
   }) editor: QuillEditorComponent
 
   @Input() location: string;
-  @Input() postId = '';
+  @Input() CommentToPost: any;
 
   
   modules = {
@@ -48,7 +48,9 @@ export class CommentBoxComponent implements OnInit {
     time: Timestamp.fromDate(new Date()),
     userId: '',
     postId: '',
+    channelId: ''
   }
+
 
   data = {};
 
@@ -94,11 +96,13 @@ export class CommentBoxComponent implements OnInit {
       this.data = this.post;
       this.sendDataToPost();
     }
+
     if(this.location == 'comments'){
       this.thread.userId = this.currentUser['uid'];
       this.thread.text = this.text;
       this.thread.time = Timestamp.fromDate(new Date());
-      this.thread.postId = this.postId;
+      this.thread.postId = this.CommentToPost.postId;
+      this.thread.channelId = this.CommentToPost.channelId;
       this.data = this.thread;
       this.sendDataToComments();
     }
@@ -113,9 +117,10 @@ export class CommentBoxComponent implements OnInit {
 
 
   async sendDataToComments(){
-    await addDoc(collection(this.db, "channels", this.channelId, "posts", this.postId, "comments"), this.data);
+    await addDoc(collection(this.db, "channels", this.CommentToPost.channelId, "posts", this.CommentToPost.postId, "comments"), this.data);
     this.form.reset();
   }
+
 
   setThread() {
     // Get the existing data

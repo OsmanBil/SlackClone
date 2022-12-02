@@ -115,6 +115,7 @@ export class OpenChannelComponent implements OnInit {
 
   openComments(post) {
     this.thread = post;
+    console.log('thread',this.thread)
   }
 
 
