@@ -35,11 +35,16 @@
       </div>
     </form>
     <div class="center-container padding-top padding-bottom">
-      OR
+      oder
     </div>
     <div class="center-container">
       <button mat-raised-button class="background-color-green" (click)="authService.GoogleAuth()">Login mit
         Google</button>
+    </div><br>
+
+    <div class="center-container">
+      <button mat-raised-button class="background-color-green" (click)="authService.SignIn('osman.bilgin@web.de', 'gastZugang')">Login als
+        Gast</button>
     </div>
     <div class="center-container padding-top padding-bottom">
       <span routerLink="/forgot-password">Password vergessen?</span>
