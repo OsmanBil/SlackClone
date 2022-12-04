@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { AngularFirestore, } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { ChatroomsService } from '../services/chatrooms.service';
+import { limit } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-chatroom',
@@ -24,7 +25,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   otherUserID;
   @Input() activeChatroomID = '';
 
-  counter = 0;
+  numberOfLoadMessages = 10;
   messageData = {
     messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
     messageServerTime: serverTimestamp(),
@@ -38,9 +39,9 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     loadMessageText: '',
     loadMessageTime: Timestamp,
     loadMessageServerTime: Timestamp,
-    loadMessageAuthor: '', 
+    loadMessageAuthor: '',
     loadMessageAuthorImg: '',
-    loadMessageAuthorID: '', 
+    loadMessageAuthorID: '',
     messageID: ''
   };
 
@@ -56,6 +57,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     this.localUser = JSON.parse(localStorage.getItem('user'));
     this.chatusersID = [];
     this.route.paramMap.subscribe(paramMap => {
+      this.numberOfLoadMessages = 10;
       this.currentChatroomID = paramMap.get('id');
       this.loadMessages();
       this.loadUsers();
@@ -66,7 +68,10 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
-    this.scrollToBottom();
+    if(this.numberOfLoadMessages == 10) {
+      this.scrollToBottom();
+    } 
+    
   }
 
   scrollToBottom(): void {
@@ -75,9 +80,23 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     } catch (err) { }
   }
 
+  scrollToTop(): void {
+    try {
+      this.myScrollContainer.nativeElement.scrollToBottom = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) { }
+  }
+
+  async loadMoreMessages() {
+    this.numberOfLoadMessages += 10;
+    this.chatusersID = [];
+    await this.loadMessages();
+    await this.loadUsers();
+    this.scrollToTop();
+  }
+
   loadMessages() {
     const messagesRef = collection(this.db, "chatrooms", this.currentChatroomID, "messages");
-    const messagesQ = query(messagesRef, orderBy("messageServerTime"));
+    const messagesQ = query(messagesRef, orderBy("messageServerTime", "desc"), limit(this.numberOfLoadMessages));
 
     const loadedChatID = this.currentChatroomID;
     const unsubscribe = onSnapshot(messagesQ, async (snapshot) => {
@@ -93,9 +112,9 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
             loadMessageText: postDoc.data()['messageText'],
             loadMessageTime: postDoc.data()['messageTime'],
             loadMessageServerTime: postDoc.data()['messageServerTime'],
-            loadMessageAuthor: postDoc.data().messageAuthor, 
+            loadMessageAuthor: postDoc.data().messageAuthor,
             loadMessageAuthorImg: postDoc.data().messageAuthorImg,
-            loadMessageAuthorID: postDoc.data().messageAuthorID, 
+            loadMessageAuthorID: postDoc.data().messageAuthorID,
             id: postDoc.id
           };
           loadMessage.loadMessageTime = this.convertTimestamp(loadMessage.loadMessageTime);
@@ -104,11 +123,11 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
           const authorRef = query(collection(this.db, "users"), where("uid", "==", loadMessage.loadMessageAuthorID));
           const unsubscribe2 = onSnapshot(authorRef, async (snapshot2) => {
             snapshot2.forEach((postDoc2: any) => {
-             loadMessage.loadMessageAuthor = postDoc2.data().displayName;
-             loadMessage.loadMessageAuthorImg = postDoc2.data().photoURL;
+              loadMessage.loadMessageAuthor = postDoc2.data().displayName;
+              loadMessage.loadMessageAuthorImg = postDoc2.data().photoURL;
+            })
           })
-        })
-        this.messages.push(loadMessage)
+          this.messages.push(loadMessage)
         });
       }
     });

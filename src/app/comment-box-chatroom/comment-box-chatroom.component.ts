@@ -50,8 +50,8 @@ export class CommentBoxChatroomComponent implements OnInit {
       ['link'],
       ['image', 'video'],
     ],
-    
-   
+
+
   }
 
   data = {
@@ -70,7 +70,7 @@ export class CommentBoxChatroomComponent implements OnInit {
   messageData = {
     messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
     messageServerTime: serverTimestamp(),
-    messageAuthor: 'server',
+    // messageAuthor: 'server',
     messageTime: Timestamp.fromDate(new Date()),
     messageAuthorImg: '',
     messageAuthorID: '',
@@ -92,7 +92,7 @@ export class CommentBoxChatroomComponent implements OnInit {
     this.localUser = JSON.parse(localStorage.getItem('user'));
   }
 
-  
+
 
   changedEditor(event: EditorChangeContent | EditorChangeSelection) {
     if (event['event'] == 'text-change') {
@@ -100,31 +100,31 @@ export class CommentBoxChatroomComponent implements OnInit {
     }
   }
 
-  async setnewMessage(){
-    const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID);
-     await updateDoc(otherUserRef, {
-       newMessage: 0,
-     });
-     const otherUserRef2 = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.localUser.uid);
-     await updateDoc(otherUserRef2, {
-       newMessage: increment(1),
-     });
-  }
 
-  async addMessage() {    
-    const unsub = onSnapshot(doc(this.db, "users", this.localUser.uid), async (doc: any) => {
-      this.messageData.messageText = this.text;
-      this.messageData.messageServerTime = serverTimestamp(),
-      this.messageData.messageAuthorID = this.localUser.uid;
-      this.messageData.messageTime = Timestamp.fromDate(new Date());
-        this.route.paramMap.subscribe(paramMap => {
-        this.currentChatroomID = paramMap.get('id');
-      });
-      await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
-      this.setnewMessage();
-      this.form.reset();
+
+  async addMessage() {
+    this.route.paramMap.subscribe(paramMap => {
+      this.currentChatroomID = paramMap.get('id');
     });
- 
-  }
+    this.messageData.messageText = this.text;
+    this.messageData.messageServerTime = serverTimestamp(),
+      this.messageData.messageAuthorID = this.localUser.uid;
+    this.messageData.messageTime = Timestamp.fromDate(new Date());
 
+    await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
+    this.setnewMessage();
+    this.form.reset();
+  };
+
+
+  async setnewMessage() {
+    const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID);
+    await updateDoc(otherUserRef, {
+      newMessage: 0,
+    });
+    const otherUserRef2 = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.localUser.uid);
+    await updateDoc(otherUserRef2, {
+      newMessage: increment(1),
+    });
+  }
 }

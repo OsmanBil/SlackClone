@@ -7,14 +7,14 @@
             </div>
             <div>
                 <p class="header-user-name ps-2">{{ chatuser.name }}</p>
-               
+
             </div>
         </div>
     </div>
     <div class="p-2 add-bookmark-container d-flex align-items-center">
         <div class="d-flex align-items-center ps-1 pe-3 py-1" (click)="alertlist()">
-        <mat-icon fontIcon="add"></mat-icon>
-        <p>Add bookmark</p>
+            <mat-icon fontIcon="add"></mat-icon>
+            <p>Add bookmark</p>
         </div>
     </div>
     <div class="messages-container" #scrollMe>
@@ -31,23 +31,26 @@
             This conversation is just between the two of you. Here you can send messages and share files with <b>{{
                 chatuser.name }}</b>
         </div>
-
-        <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
-            <div>
-                <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
-                    src="{{ message['loadMessageAuthorImg'] }}">
-            </div>
-            <div [ngClass]="{'server-message' : message['loadMessageAuthor'] == 'server'}">
-                <div class="d-flex align-items-start" *ngIf="message['loadMessageAuthor'] !== 'server'">
-                    <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
-                    <p>{{ message['loadMessageTime']}}</p>
+        <div class="load-message-container d-flex flex-column-reverse">
+            
+            <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
+                <div>
+                    <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
+                        src="{{ message['loadMessageAuthorImg'] }}">
                 </div>
-                <div [innerHTML]="message['loadMessageText']" class="message-text">
+                <div [ngClass]="{'server-message' : message['loadMessageAuthor'] == 'server'}">
+                    <div class="d-flex align-items-start" *ngIf="message['loadMessageAuthor'] !== 'server'">
+                        <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
+                        <p>{{ message['loadMessageTime']}}</p>
+                    </div>
+                    <div [innerHTML]="message['loadMessageText']" class="message-text">
 
+                    </div>
+                    <!-- <img class="profile-img" src="{{ post.img }}"> -->
                 </div>
-                <!-- <img class="profile-img" src="{{ post.img }}"> -->
-            </div>
 
+            </div>
+            <button class="btn btn-outline-secondary m-2" (click)="loadMoreMessages()">LOAD OLDER MESSAGE</button>
         </div>
     </div>
     <app-comment-box-chatroom otherUserID="{{otherUserID}}"></app-comment-box-chatroom>
