@@ -1,9 +1,11 @@
 import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Channel } from 'src/models/channel.class';
 import { getFirestore } from '@firebase/firestore';
 import { collection, orderBy, onSnapshot, query, where } from "firebase/firestore";
+import { MatDialog } from '@angular/material/dialog';
+import { ChannelDetailsComponent } from '../channel-details/channel-details.component';
 
 
 @Component({
@@ -27,6 +29,8 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked {
   constructor(
     private route: ActivatedRoute,
     private firestore: AngularFirestore,
+    private dialog: MatDialog,
+    public router: Router
   ) { }
 
 
@@ -83,7 +87,6 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked {
   }
 
 
-
   loadAuthor(post) {
     let user = query(collection(this.db, "users"), where("uid", "==", post.userId));
     let unsubscribe = onSnapshot(user, async (snapshot) => {
@@ -93,6 +96,13 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked {
       });
     });
     this.posts.push(post);
+  }
+
+
+  showChannelDetails(){
+    let dialog = this.dialog.open(ChannelDetailsComponent);
+    dialog.componentInstance.channel = new Channel(this.channel.toJSON());
+    dialog.componentInstance.channelId = this.channelId;
   }
 
 
