@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Channel } from 'src/models/channel.class';
@@ -13,7 +13,7 @@ import { ChannelDetailsComponent } from '../channel-details/channel-details.comp
   templateUrl: './open-channel.component.html',
   styleUrls: ['./open-channel.component.scss']
 })
-export class OpenChannelComponent implements OnInit, AfterViewChecked {
+export class OpenChannelComponent implements OnInit, AfterViewChecked{
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   
@@ -39,12 +39,12 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked {
     this.route.paramMap.subscribe(paramMap => {
       this.channelId = paramMap.get('id');
       this.loadChannel();
-      this.loadMessages();
+      this.loadPosts();
     })
-    this.scrollToBottom();
   }
 
-  ngAfterViewChecked() {
+
+  ngAfterViewChecked(){
     this.scrollToBottom();
   }
 
@@ -60,7 +60,7 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked {
   }
 
 
-  loadMessages() {
+  loadPosts() {
     let postRef = collection(this.db, "channels", this.channelId, "posts");
     let q = query(postRef, orderBy("time"));
     const loadedChatID = this.channelId;
@@ -69,20 +69,25 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked {
         unsubscribe()
       }
       else {
-        this.posts = [];
-        snapshot.forEach((postDoc) => {
-          let post = {
-            text: postDoc.data()['text'],
-            time: this.convertTimestamp(postDoc.data()['time']),
-            author: '',
-            img: '',
-            postId: postDoc.id,
-            userId: postDoc.data()['userId'],
-            channelId: postDoc.data()['channelId']
-          };
-          this.loadAuthor(post);
-        });
+        this.startLoading(snapshot);
       }
+    });
+  }
+
+
+  startLoading(snapshot){
+    this.posts = [];
+    snapshot.forEach((postDoc) => {
+      let post = {
+        text: postDoc.data()['text'],
+        time: this.convertTimestamp(postDoc.data()['time']),
+        author: '',
+        img: '',
+        postId: postDoc.id,
+        userId: postDoc.data()['userId'],
+        channelId: postDoc.data()['channelId']
+      };
+      this.loadAuthor(post);
     });
   }
 
@@ -130,7 +135,6 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked {
 
   openComments(post) {
     this.thread = post;
-    console.log('thread',this.thread)
   }
 
 
