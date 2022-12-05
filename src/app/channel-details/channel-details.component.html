@@ -1,0 +1,66 @@
+<h1>Channel Info</h1>
+
+<table>
+    <tr>
+        <td>
+            <p>Channelname: </p>
+        </td>
+        <td *ngIf="!editingName">{{ channel.channelName }}</td>
+        <td *ngIf="editingName">
+            <mat-form-field id="description" [style.width.px]="250">
+                <mat-label>Edit description</mat-label>
+                <input [(ngModel)]="channel.channelName" name="title" matInput [disabled]="loading" 
+                placeholder="Edit channel name" required>
+            </mat-form-field>
+        </td>
+        <td>
+            <i *ngIf="!editingName" (click)="editName()" class="material-icons" matTooltip="Edit Name">edit</i>
+            <i *ngIf="editingName" (click)="setName()" class="material-icons" matTooltip="Commit changes">check</i>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Description: </p>
+        </td>
+        <td *ngIf="!editingDescription">{{ channel.description }}</td>
+        <td *ngIf="editingDescription">
+            <mat-form-field id="description" [style.width.px]="250">
+                <mat-label>Edit description</mat-label>
+                <textarea cdkTextareaAutosize [(ngModel)]="channel.description" name="description" matInput [disabled]="loading"
+                    required></textarea>
+            </mat-form-field>
+        </td>
+        <td>
+            <i *ngIf="!editingDescription" (click)="editDescription()" class="material-icons" matTooltip="Edit Description">edit</i>
+            <i *ngIf="editingDescription" (click)="setDescription()" class="material-icons" matTooltip="Commit changes">check</i>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Privacy: </p>
+        </td>
+        <td *ngIf="!editingPrivacy">{{ channel.privacy }}</td>
+        <td *ngIf="editingPrivacy">
+            <mat-form-field id="description" [style.width.px]="250">
+                <mat-label>Edit description</mat-label>
+                <mat-select [(ngModel)]="channel.privacy" name="privacy" [disabled]="loading">
+                    <mat-option value="Private">Private</mat-option>
+                    <mat-option value="Public">Public</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </td>
+        <td>
+            <i *ngIf="!editingPrivacy" (click)="editPrivacy()" class="material-icons" matTooltip="Edit Privacy">edit</i>
+            <i *ngIf="editingPrivacy" (click)="setPrivacy()" class="material-icons" matTooltip="Commit changes">check</i>
+        </td>
+    </tr>
+</table>
+
+<div mat-dialog-actions>
+    <button class="button-cancel" [disabled]="loading" mat-button (click)="dialogRef.close()" matTooltip="Close whitout saving">
+        <span>Discard changes</span>
+    </button>
+    <button class="button-save" [disabled]="loading" mat-button (click)="save()" matTooltip="Close and save changes">
+        <span>Done</span>
+    </button>
+</div>

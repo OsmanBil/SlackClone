@@ -10,7 +10,7 @@
 
         <div class="channel-page">
             <div>
-                <h2 class="align"> 
+                <h2 (click)="showChannelDetails()" class="align"> 
                     <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
                     <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
                     {{ channel.channelName }}

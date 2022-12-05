@@ -51,6 +51,7 @@ import { ChatroomComponent } from './chatroom/chatroom.component';
 import { ThreadsComponent } from './threads/threads.component';
 import { CommentBoxChatroomComponent } from './comment-box-chatroom/comment-box-chatroom.component';
 import { ThreadComponent } from './thread/thread.component';
+import { ChannelDetailsComponent } from './channel-details/channel-details.component';
 
 
 
@@ -75,7 +76,8 @@ import { ThreadComponent } from './thread/thread.component';
     ChatroomComponent,
     ThreadsComponent,
     CommentBoxChatroomComponent,
-    ThreadComponent
+    ThreadComponent,
+    ChannelDetailsComponent
 
   
   ],
