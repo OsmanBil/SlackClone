@@ -5,6 +5,7 @@ import { EditorChangeContent, EditorChangeSelection, QuillEditorComponent } from
 import { getFirestore } from '@firebase/firestore';
 import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { limit } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-comment-box',
@@ -88,7 +89,7 @@ export class CommentBoxComponent implements OnInit {
 
 
   setData() {
-    if(this.location == 'posts'){
+    if (this.location == 'posts') {
       this.post.userId = this.currentUser['uid'];
       this.post.text = this.text;
       this.post.time = Timestamp.fromDate(new Date());
@@ -97,7 +98,7 @@ export class CommentBoxComponent implements OnInit {
       this.sendDataToPost();
     }
 
-    if(this.location == 'comments'){
+    if (this.location == 'comments') {
       this.thread.userId = this.currentUser['uid'];
       this.thread.text = this.text;
       this.thread.time = Timestamp.fromDate(new Date());
@@ -116,19 +117,26 @@ export class CommentBoxComponent implements OnInit {
   }
 
 
-  async sendDataToComments(){
+  async sendDataToComments() {
     await addDoc(collection(this.db, "channels", this.CommentToPost.channelId, "posts", this.CommentToPost.postId, "comments"), this.data);
     this.form.reset();
   }
 
 
   setThread() {
-    // Get the existing data
-    var existing = localStorage.getItem('user');
-    // If no existing data, create an array
-    // Otherwise, convert the localStorage string to an array
-    existing = existing ? JSON.parse(existing) : {};
-    this.firestore.collection('users').doc(existing['uid']).collection('threads').doc(this.channelId).set({})
+    let ref = collection(this.db, "channels", this.channelId, "posts");
+    let y = query(ref, orderBy("time"), limit(1));
+    let unsubscribe = onSnapshot(y, (snapshot) => {
+      snapshot.forEach((postDoc) => {
+        // Get the existing data
+        var existing = localStorage.getItem('user');
+        // If no existing data, create an array
+        // Otherwise, convert the localStorage string to an array
+        existing = existing ? JSON.parse(existing) : {};
+        this.firestore.collection('users').doc(existing['uid']).collection('threads').doc(this.channelId).set({ time: postDoc.data()['time'] })
+      });
+      unsubscribe()
+    });
   }
 
 }

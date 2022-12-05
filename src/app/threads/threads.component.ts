@@ -2,19 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { DialogCreateChannelComponent } from '../dialog-create-channel/dialog-create-channel.component';
 import { FormControl, FormGroupDirective, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { getFirestore } from '@firebase/firestore';
-
-import { Firestore, CollectionReference, collectionData, docData, collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where, limit, limitToLast } from '@angular/fire/firestore';
+import { Firestore, CollectionReference, collectionData, docData, collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where, limit, limitToLast, getCountFromServer } from '@angular/fire/firestore';
 import { user } from '@angular/fire/auth';
-
 import * as firebase from "firebase/app";
 import 'firebase/firestore';
 import { Channel } from 'src/models/channel.class';
-
+import { fromEvent, timestamp } from 'rxjs';
 
 @Component({
   selector: 'app-threads',
@@ -22,20 +19,13 @@ import { Channel } from 'src/models/channel.class';
   styleUrls: ['./threads.component.scss']
 })
 export class ThreadsComponent implements OnInit {
-
   testVar: any = "";
-
-
-
   db = getFirestore();
   channelId = '';
   channel: Channel = new Channel();
   posts = [];
-
   varTest = 'Hallo'
-
   allThreads = [];
-
   localUser;
   counter = 0;
   userId = '';
@@ -45,58 +35,32 @@ export class ThreadsComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     await this.loadUser()
     await this.loadThreads();
-
   }
-
-
 
   async loadThreads() {
-
-
-    let querySnapshot = await getDocs(collection(this.fr, `users/${this.userId}/threads`));
-    this.allThreads = [];
-    this.counter = -1;
-    //console.log("userId:", this.userId)
-
-    querySnapshot.forEach(async (doc) => {
-      this.counter++;
-      //console.log("docID:", doc.id)
-      this.channelId = doc.id;
-      // console.log("channelId:", this.channelId)
-      //console.log("counter:", this.counter)
-
-
-      this.loadFirstMessage(this.counter);
-      this.loadMessages(this.counter);
-      this.loadChannelNames(this.counter)
-      this.allThreads.push({ id: this.channelId, content: [] });
-
-    })
-
-    console.log("allThreads:", this.allThreads)
-
+    let ref = collection(this.db, "users", this.userId, "threads");
+    let y = query(ref, orderBy("time", "desc"));
+    let unsubscribe = await onSnapshot(y, (snapshot) => {
+      this.allThreads = [];
+      this.counter = -1;
+      snapshot.forEach((doc) => {
+        this.counter++;
+        this.channelId = doc.id;
+        this.loadFirstMessage(this.counter);
+        this.loadMessages(this.counter);
+        this.loadChannelNames(this.counter)
+        this.allThreads.push({ id: this.channelId, content: [] });
+      });
+      unsubscribe()
+    });
   }
-
-  // async loadChannel(test) {
-  //   this.firestore
-  //     .collection('channels')
-  //     .doc(test)
-  //     .valueChanges()
-  //     .subscribe((channel: any) => {
-  //       test = new Channel(channel);
-
-  //     })
-
-  // }
 
   loadUser() {
     // Get the existing data
     var existing = localStorage.getItem('user');
-
     // If no existing data, create an array
     // Otherwise, convert the localStorage string to an array
     existing = existing ? JSON.parse(existing) : {};
-
     this.userId = existing['uid'];
     // console.log('USER: ', existing['uid'])
   }
@@ -108,37 +72,50 @@ export class ThreadsComponent implements OnInit {
       this.allThreads[counter].channelName = this.testVar.channelName;
       // this.testArray.push({ channelName: this.testVar.channelName })
     });
-
   }
 
+  // loadMessages(counter) {
+  //     const visitArray = this.firestore.collection("channels").doc(this.channelId).collection("posts").snapshotChanges();
+  //    visitArray.subscribe(payload => {
+  //        this.totalVisitCount = payload.length;
+  //        console.log('length:', this.totalVisitCount)
+  //     if (this.totalVisitCount > 1) {
+  //       let ref = collection(this.db, "channels", this.channelId, "posts");
+  //       let q = query(ref, orderBy("time", "asc"), limitToLast(2));
+  //       let unsubscribe = onSnapshot(q, (snapshot) => {
+  //         this.allThreads[counter].content = []
+  //         snapshot.forEach((postDoc) => {
+  //           this.loadAuthor(postDoc, counter);
+  //         });
+  //         unsubscribe()
+  //       });
+  //     }
+  //   });
+  // }
 
-  loadMessages(counter) {
+  async loadMessages(counter) {
     let ref = collection(this.db, "channels", this.channelId, "posts");
     let q = query(ref, orderBy("time", "asc"), limitToLast(2));
-    let unsubscribe = onSnapshot(q, (snapshot) => {
+    let unsubscribe = onSnapshot(q, async (snapshot) => {
       this.allThreads[counter].content = []
-      // this.posts = [];
-      snapshot.forEach((postDoc) => {
+      await snapshot.forEach((postDoc) => {
         this.loadAuthor(postDoc, counter);
-
-
       });
+      unsubscribe()
     });
   }
 
-
-  loadFirstMessage(counter) {
+  async loadFirstMessage(counter) {
     let ref = collection(this.db, "channels", this.channelId, "posts");
     let y = query(ref, orderBy("time"), limit(1));
-    let unsubscribe = onSnapshot(y, (snapshot) => {
+    let unsubscribe = await onSnapshot(y, (snapshot) => {
       this.allThreads[counter].content = []
-      // this.posts = [];
       snapshot.forEach((postDoc) => {
         this.loadAuthor(postDoc, counter);
       });
+      unsubscribe()
     });
   }
-
 
   async loadAuthor(postDoc, counter) {
     let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data()['userId']));
@@ -152,7 +129,6 @@ export class ThreadsComponent implements OnInit {
         id: postDoc.id
       };
       this.allThreads[counter].content.push(post);
-
     });
   }
 
