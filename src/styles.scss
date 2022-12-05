@@ -12,8 +12,7 @@ p {
     margin-block-end: 0;
     margin-block-start: 0;
     margin: 0 !important;
-    // display: flex;
-    // flex-direction: column;
+    
 }
 
 .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
@@ -48,6 +47,10 @@ p {
         height: 80px;
         object-fit: cover;
     }
+    p {
+        display: flex;
+    flex-direction: column;
+    }
 }
 
 .post {
@@ -58,8 +61,17 @@ p {
             object-fit: cover;
         }
     }
-
 }
+
+.one-message{
+    img{
+        max-height: 250px;
+        object-fit: cover;
+    }
+    p{
+    display: flex;
+        flex-direction: column;
+}}
 
 /* width */
 ::-webkit-scrollbar {

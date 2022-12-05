@@ -22,18 +22,14 @@ import { ChatroomsService } from '../services/chatrooms.service';
 export class SidenavComponent implements OnInit {
 
   channels = [];
- 
   channelOpen = true;
   messageOpen = true;
-
   db = getFirestore();
   chatrooms = [];
   localUser;
-
-  activeChatChannel = 'adsf';
-
-
+  activeChatChannel = '';
   otherUserID = '';
+
   constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute,
     public chatroomService: ChatroomsService) { }
 
@@ -57,7 +53,6 @@ export class SidenavComponent implements OnInit {
     }
   }
 
-
   toggleMessageMenu() {
     if (this.messageOpen) {
       this.messageOpen = false;
@@ -68,9 +63,7 @@ export class SidenavComponent implements OnInit {
   }
 
 
-
-  
-
+  // LOAD ALL CHATROOMS IN SIDEBAR FROM LOCAL USER
   loadChatroomData() {
     this.localUser = JSON.parse(localStorage.getItem('user'))
     let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
@@ -79,6 +72,7 @@ export class SidenavComponent implements OnInit {
       querySnapshot.forEach(async (doc) => {
         let neededData = {
           chatroomID: '',
+          showChatroomInSidebar: '',
           userID: '',
           userImg: '',
           userIsOnline: '',
@@ -86,52 +80,73 @@ export class SidenavComponent implements OnInit {
           newMessageforOtherUser: '',
         }
         neededData.chatroomID = doc.id;
-        const x1 = query(collection(this.db, "chatrooms", doc.id, "users"), where("id", "!=", this.localUser.uid));
-        const s1 = onSnapshot(x1, async (querySnapshot) => {
-        querySnapshot.forEach(async (doc2: any) => {
-          for (let x = 0; x < this.chatrooms.length; x++) {
-            if (this.chatrooms[x].userID == doc2.uid) {
-              this.chatrooms[x].newMessageforOtherUser = doc2.data().newMessage}
-              else {
-                neededData.newMessageforOtherUser = doc2.data().newMessage
-              }
-          }
-          const x2 = query(collection(this.db, "users"), where("uid", "==", doc2.id));
-          const s2 = onSnapshot(x2, async (querySnapshot) => {
-            querySnapshot.forEach(async (doc3: any) => {
-              for (let x = 0; x < this.chatrooms.length; x++) {
-                if (this.chatrooms[x].userID == doc3.data().uid) {
-                  this.chatrooms[x].userID = doc3.data().uid
-                  this.chatrooms[x].userImg = doc3.data().photoURL;
-                  this.chatrooms[x].userName = doc3.data().displayName;
-                  this.chatrooms[x].userIsOnline = doc3.data().isOnline;
-                } else {
-                  neededData.userID = doc3.data().uid
-                  neededData.userImg = doc3.data().photoURL;
-                  neededData.userName = doc3.data().displayName;
-                  neededData.userIsOnline = doc3.data().isOnline;
-                }
-              }
-            })
-          })
-          })
-        })
+        this.checkIfNewMessage(neededData, doc);
+        this.checkIfChatroomIsShownInSidebar(neededData, doc.id);
         this.chatrooms.push(neededData);
       })
     })
-    this.firestore
-    .collection('channels')
-    .valueChanges({ idField: 'channelId' })
-    .subscribe((changes: any) => {
-      this.channels = changes;
-    })
-  }
- 
-  showActive(value, positionInArray) {
-    this.activeChatChannel = value;
-   
+    this.loadChannels();
   }
 
+   // ÜBERPRÜFT DAUERHAFT OB NEUE NACHRICHT AN LOCAL USER GEGANGEN IST
+   checkIfNewMessage(neededData, doc) {
+    const x1 = query(collection(this.db, "chatrooms", doc.id, "users"), where("id", "!=", this.localUser.uid));
+    const s1 = onSnapshot(x1, async (querySnapshot) => {
+      querySnapshot.forEach(async (doc2: any) => {
+        for (let x = 0; x < this.chatrooms.length; x++) {
+          if (this.chatrooms[x].userID == doc2.uid) {
+            this.chatrooms[x].newMessageforOtherUser = doc2.data().newMessage
+          }
+          else {
+            neededData.newMessageforOtherUser = doc2.data().newMessage
+          }
+        }
+        this.loadOtherUsers(neededData, doc2);
+      })
+    })
+  }
+
+   // LÄD DIE ANDEREN USERS AUßer DEN LOCAL USER
+   loadOtherUsers(neededData, doc2) {
+    const x2 = query(collection(this.db, "users"), where("uid", "==", doc2.id));
+    const s2 = onSnapshot(x2, async (querySnapshot) => {
+      querySnapshot.forEach(async (doc3: any) => {
+        for (let x = 0; x < this.chatrooms.length; x++) {
+          neededData.userID = doc3.data().uid
+          neededData.userImg = doc3.data().photoURL;
+          neededData.userName = doc3.data().displayName;
+          neededData.userIsOnline = doc3.data().isOnline;
+        }
+      })
+    })
+  }
+
+  // ÜBERPRÜFT DAUERHAFT OB DER CHATROOM IN DER SIDEBAR ANGEZEIGT WERDEN SOLL
+  checkIfChatroomIsShownInSidebar(neededData, docID) {
+    const x3 = query(collection(this.db, "users", this.localUser.uid, "chatids",), where("id", "==", docID));
+    const s3 = onSnapshot(x3, async (querySnapshot) => {
+      querySnapshot.forEach(async (doc3: any) => {
+        neededData.showChatroomInSidebar = doc3.data()['shownInSidebar'];
+      })
+    })
+
+  }
+
+  loadChannels() {
+    this.firestore
+      .collection('channels')
+      .valueChanges({ idField: 'channelId' })
+      .subscribe((changes: any) => {
+        this.channels = changes;
+      })
+  }
+
+  // SHOWS IN SIDEBAR WHICH CHANNEL IS ACTIVE
+  showActive(value, positionInArray) {
+    this.activeChatChannel = value;
+  }
+
+  // SHOWS IN SIDEBAR WHICH CHANNEL IS ACTIVE 
   async showActiveChat(value, positionInArray) {
     this.activeChatChannel = value;
     const otherUserRef = doc(this.db, "chatrooms", this.chatrooms[positionInArray].chatroomID, "users", this.chatrooms[positionInArray].userID);
@@ -140,87 +155,22 @@ export class SidenavComponent implements OnInit {
     });
   }
 
+  // HIDE THE CHATROOM IN SIDEBAR WHEN THE USER CLICKS THE CLOSE IMG
+  showChatroomInSidebar(chatroomid) {
+    const chatroomRef = doc(this.db, "users", this.localUser.uid, "chatids", chatroomid);
+    updateDoc(chatroomRef, {
+      shownInSidebar: false,
+    });
+  }
+
+  // OPENS THE CHATROOM WHEN THE USER CLICKS ON IT
   async openChatroom(chatroomID) {
     this.router.navigateByUrl('/mainpage/chatroom/' + chatroomID);
   }
 
-  closeMist(){
-
-  }
 
 
 
-  // async loadChatIDs() {
-  //   this.chatUserIDs = [];
-  //   for (let x = 0; x < this.chatIDs.length; x++) {
-  //     let docRef2 = collection(this.db, "chatrooms", this.chatIDs[x], "users");
-  //     let querySnapshot2 = await getDocs(docRef2);
-  //     querySnapshot2.forEach(async (doc2: any) => {
-  //       if (doc2.data().id !== this.localUser['uid']) {
-  //         this.chatUserIDs.push({ userID: doc2.data().id, name: doc2.data().name, chatID: this.chatIDs[x] })
-  //       }
-  //     })
-  //   }
-  // };
 
-  // async loadChatroomUserData() {
-  //   this.chatrooms = [];
-  //   for (let i = 0; i < this.chatUserIDs.length; i++) {
-  //     const unsub = onSnapshot(doc(this.db, "users", this.chatUserIDs[i].userID), { includeMetadataChanges: true },
-  //       (doc: any) => {
-  //         let chatroomUser = {
-  //           userID: doc.data().id, chatroomID: this.chatUserIDs[i].chatID, name: doc.data().displayName,
-  //           isOnline: doc.data().isOnline, photoURL: doc.data().photoURL, localIndex: i
-  //         }
-  //         if (this.chatrooms.length == this.chatIDs.length) {
-  //           this.chatrooms[chatroomUser.localIndex] = chatroomUser
-  //         }
-  //         else {
-  //           this.chatrooms.push(chatroomUser)
-  //         }
-  //       })
-  //   }
-  // }
-
-  // async loadChatrooms() {
-  //   this.localUser = JSON.parse(localStorage.getItem('user'))
-  //   // LOAD USER FROM CHATROOM
-  //   let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
-  //   const unsubscribe = onSnapshot(docRef, async (querySnapshot) => {
-  //     this.chatIDs = [];
-  //     this.chatUserIDs = [];
-  //     this.chatrooms = [];
-  //     querySnapshot.forEach(async (doc) => {
-
-  //       this.chatIDs.push(doc.id)
-  //     })
-  //     await this.loadChatIDs();
-  //     await this.loadChatroomUserData();
-  //     console.log(this.chatIDs[0])
-  //     let docRef2 = collection(this.db, "chatrooms", this.chatIDs[1], "messages");
-  //     const q = query(docRef2, orderBy("messageTime", "desc"), limit(1));
-  //     const unsubscribe = onSnapshot(q, async (querySnapshot) => {
-  //       const cities = [];
-  //       querySnapshot.forEach((doc: any) => {
-  //         cities.push(doc.data().messageTime);
-  //       });
-  //       console.log("Current cities in CA: ", cities);
-  //       const washingtonRef = doc(this.db, "chatrooms", this.chatIDs[1], "lastMessage", "lastMessage");
-  //       // Set the "capital" field of the city 'DC'
-  //       console.log(cities[0])
-  //       // await updateDoc(washingtonRef, {
-  //       //   authorID: this.localUser.uid,
-  //       //   time: cities[0]
-  //       // });
-  //     });
-  //   })
-  //   this.firestore
-  //     .collection('channels')
-  //     .valueChanges({ idField: 'channelId' })
-  //     .subscribe((changes: any) => {
-  //       this.channels = changes;
-  //     })
-  // }
- 
 
 }

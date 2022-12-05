@@ -44,22 +44,15 @@
                         <p>{{ message['loadMessageTime']}}</p>
                     </div>
                     <div [innerHTML]="message['loadMessageText']" class="message-text">
-
                     </div>
-                    <!-- <img class="profile-img" src="{{ post.img }}"> -->
                 </div>
 
             </div>
-            <button class="btn btn-outline-secondary m-2" (click)="loadMoreMessages()">LOAD OLDER MESSAGE</button>
+            <div class="button-container d-flex justify-content-center" *ngIf="messages.length >= 10">
+            <button class="loadmore-button btn btn-outline-secondary py-0 px-2 mt-3" (click)="loadMoreMessages()">load more messages</button>
+            </div>
         </div>
     </div>
     <app-comment-box-chatroom otherUserID="{{otherUserID}}"></app-comment-box-chatroom>
 </div>
 
-<!-- <div class="send-message-container">
-    <input #searchUserField placeholder="Search User" type="text" [(ngModel)]="textMessage">
-    <button (click)="addMessage(textMessage)" [disabled]="searchUserField.value == ''">add Chat</button>
-    <button routerLink="/mainpage/chatroom">LINK</button>
-
-
-</div> -->

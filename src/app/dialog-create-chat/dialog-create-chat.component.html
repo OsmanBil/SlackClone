@@ -1,10 +1,21 @@
 <div class="container">
     <div class="header-container">
         <h2>Direct messages</h2>
-        <div class="search-container">
-            <p>To:</p>
-            <button (click)="createChat()" [disabled]="usersWantToChat.length == 0">create Chat</button>
+        <div class="search-container w-100">
+            <div  class="w-100 d-flex align-items-center" >
+            <p class="text-center">To:</p>
+            <div class="want-to-chat-user-list" *ngFor="let userwantToChat of usersWantToChat; let i = index">
+                <div class="want-to-chat-user">
+                    <img src="{{ userwantToChat['imageUrl'] }}">
+                    <p>{{ userwantToChat['name'] }}</p>
+                    <div class="want-to-chat-icon" (click)="deleteUserWantToChat(i)">
+                        <mat-icon>close</mat-icon>
+                    </div>
+                </div>
+            </div>
 
+            <button class="ms-auto" (click)="createChat()" [disabled]="usersWantToChat.length == 0">create Chat</button>
+            </div>
 
         </div>
         <div class="search-container">
@@ -12,15 +23,7 @@
                 (ngModelChange)="valuechange($event)" />
 
         </div>
-        <div class="want-to-chat-user-list" *ngFor="let userwantToChat of usersWantToChat; let i = index">
-            <div class="want-to-chat-user">
-                <img src="{{ userwantToChat['imageUrl'] }}">
-                <p>{{ userwantToChat['name'] }}</p>
-                <div class="want-to-chat-icon" (click)="deleteUserWantToChat(i)">
-                    <mat-icon>close</mat-icon>
-                </div>
-            </div>
-        </div>
+        
         <div class="search-user-list" *ngFor="let foundUser of foundUsers; let i = index">
             <div (click)="addUserWantToChat(i, searchUserField)">
                 <img class="found-user-image" src="{{ foundUser['imageUrl'] }}">
@@ -29,7 +32,7 @@
         </div>
     </div>
     <div class="body-container">
-        <div class="latest-messages-container" *ngIf="chatActive == false">
+        <div class="latest-messages-container">
             <div *ngFor="let messageEx of messagesExample">
                 <div class="day-container">
                     <p class="day-text">{{ messageEx['date'] }}</p>
@@ -41,7 +44,6 @@
                                 <p>{{ messageEx['day_message']['user_firstname'] }}<span>{{
                                         messageEx['day_message']['user_message']
                                         }}</span></p>
-
                             </div>
                         </div>
                     </div>
@@ -65,12 +67,6 @@
             </div>
 
         </div>
-        <div class="send-message-container">
-            <input #searchUserField placeholder="Search User" type="text" [(ngModel)]="textMessage">
-            <button (click)="addMessage(textMessage)" [disabled]="usersWantToChat.length == 0">add Chat</button>
-            <button routerLink="/mainpage/chatroom">LINK</button>
-
-
-        </div>
+       
     </div>
 </div>

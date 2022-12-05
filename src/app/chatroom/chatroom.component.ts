@@ -16,10 +16,13 @@ import { limit } from '@angular/fire/firestore';
 export class ChatroomComponent implements OnInit, AfterViewChecked {
   db = getFirestore();
   @Input() currentChatroomID;
-  @Input() currentChatroomID2;
   @Input() public messages: any[] = [];
   @Input() public chatusers: any[] = [];
   @Input() public chatusersID: any[] = [];
+  
+  ligthboxOpen: boolean = true;
+  lightboxImg = '';
+
   textMessage;
   localUser;
   otherUserID;
@@ -67,6 +70,16 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
 
   }
 
+  openLightbox(openImg){
+    if(this.ligthboxOpen == true){
+      this.ligthboxOpen = false;
+    } else {
+      this.ligthboxOpen = true
+    }
+    this.lightboxImg = openImg;
+    console.log(openImg)
+  }
+
   ngAfterViewChecked() {
     if(this.numberOfLoadMessages == 10) {
       this.scrollToBottom();
@@ -100,7 +113,6 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
 
     const loadedChatID = this.currentChatroomID;
     const unsubscribe = onSnapshot(messagesQ, async (snapshot) => {
-
       if (loadedChatID != this.currentChatroomID) {
         unsubscribe()
       }
