@@ -47,10 +47,12 @@ p {
         height: 80px;
         object-fit: cover;
     }
-    p {
-        display: flex;
-    flex-direction: column;
-    }
+}
+
+#emoji-palette {
+    top: -260px!important;
+    left: 20px!important;
+    right: auto!important;
 }
 
 .post {
@@ -68,10 +70,7 @@ p {
         max-height: 250px;
         object-fit: cover;
     }
-    p{
-    display: flex;
-        flex-direction: column;
-}}
+}
 
 /* width */
 ::-webkit-scrollbar {

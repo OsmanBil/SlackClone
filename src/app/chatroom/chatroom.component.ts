@@ -16,13 +16,11 @@ import { limit } from '@angular/fire/firestore';
 export class ChatroomComponent implements OnInit, AfterViewChecked {
   db = getFirestore();
   @Input() currentChatroomID;
+  @Input() currentChatroomID2;
   @Input() public messages: any[] = [];
   @Input() public chatusers: any[] = [];
   @Input() public chatusersID: any[] = [];
-  
-  ligthboxOpen: boolean = true;
-  lightboxImg = '';
-
+  ligthboxOpen: true;
   textMessage;
   localUser;
   otherUserID;
@@ -45,8 +43,15 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     loadMessageAuthor: '',
     loadMessageAuthorImg: '',
     loadMessageAuthorID: '',
-    messageID: ''
+    messageID: '',
+    loadMessageImg: ''
   };
+
+  scrollCounter = 0;
+
+  @Input() lightboxOpen = false;
+  @Input() lightboxImg = '';
+
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
@@ -54,6 +59,8 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     public chatroomService: ChatroomsService) {
 
   }
+
+
 
 
   ngOnInit(): void {
@@ -67,22 +74,13 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
 
     })
     this.scrollToBottom();
-
-  }
-
-  openLightbox(openImg){
-    if(this.ligthboxOpen == true){
-      this.ligthboxOpen = false;
-    } else {
-      this.ligthboxOpen = true
-    }
-    this.lightboxImg = openImg;
-    console.log(openImg)
+   
   }
 
   ngAfterViewChecked() {
-    if(this.numberOfLoadMessages == 10) {
+    if(this.numberOfLoadMessages == 10 && this.scrollCounter == 0) {
       this.scrollToBottom();
+      this.scrollCounter++
     } 
     
   }
@@ -127,6 +125,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
             loadMessageAuthor: postDoc.data().messageAuthor,
             loadMessageAuthorImg: postDoc.data().messageAuthorImg,
             loadMessageAuthorID: postDoc.data().messageAuthorID,
+            loadMessageImg: postDoc.data().messageImg,
             id: postDoc.id
           };
           loadMessage.loadMessageTime = this.convertTimestamp(loadMessage.loadMessageTime);
@@ -174,6 +173,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
               isOnline: doc.data().isOnline, student: 'student',
             }
             this.chatusers.push(chatuserData)
+            this.scrollCounter = 0
           }
         })
     }
@@ -202,6 +202,16 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
 
   alertlist() {
     alert('Ist auf der To-Do Liste ;)')
+  }
+
+  
+  closeLightbox(){
+    this.lightboxOpen = false;
+  }
+
+  openLightbox(url){
+    this.lightboxOpen = true;
+    this.lightboxImg = url;
   }
 
 

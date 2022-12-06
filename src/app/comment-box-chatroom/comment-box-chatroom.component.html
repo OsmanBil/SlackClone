@@ -1,13 +1,32 @@
-<form class="form-container" [formGroup]="form">
-    <quill-editor 
-        #editor 
-        class="content-editor" 
-        formControlName="editor" 
-        [placeholder]="''" 
-        [modules]="modules"
-        (onEditorChanged)="changedEditor($event)">
-        
+<form class="form-container" [formGroup]="form" >
+    <quill-editor [ngClass]="{'set-height' : downloadURL2}"
+     #editor class="content-editor" formControlName="editor" [placeholder]="''" [modules]="modules"
+        (onEditorChanged)="changedEditor($event)" (onEditorCreated)="getEditorInstance($event)">
     </quill-editor>
-   
+
+
     <i class="material-icons send-icon" matTooltip="Post" (click)="addMessage()">send</i>
+    
+    <div class="send-icon2">
+        <label for="file" class="upload-file">
+            <i class="material-icons" matTooltip="add image">add</i>
+           
+        </label>
+        <input class="send-icon2" type="file" id="file" (change)="upload($event)" accept=".png,.jpg">
+    </div>    
+
 </form>
+
+<div class="upload-image-container" *ngIf="downloadURL2 | async; let url">
+    <div class="position-relative">
+        <img (click)="openLightbox(url)" [src]="url" class="">
+        <i (click)="discardUpload()" class="material-icons">close</i>
+    </div>
+</div>
+
+<div class="lightbox-container" *ngIf="lightboxOpen == true">
+    <div>
+        <img class="lightbox-img"  src="{{lightboxImg}}">
+    </div>
+    <i class="material-icons close-lightbox" (click)="closeLightbox()">close</i>
+</div>

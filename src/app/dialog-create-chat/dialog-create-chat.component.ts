@@ -13,6 +13,7 @@ import { collection, addDoc, getDocs, doc, orderBy, Timestamp, setDoc, serverTim
 import { checkActionCode, user } from '@angular/fire/auth';
 import { from, min, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { limit } from '@angular/fire/firestore';
 
 class City {
   name: any;
@@ -70,14 +71,7 @@ export class DialogCreateChatComponent implements OnInit {
     },
   ]
 
-  chatroomUsers = { user: '', lastLogin: '45464' };
-  chatroomMessages = { message: '', time: '', author: '' };
-
-  chatroom =
-    {
-      usersss: this.chatroomUsers,
-      chatsss: []
-    };
+ 
 
   userData = {
     name: '',
@@ -93,7 +87,6 @@ export class DialogCreateChatComponent implements OnInit {
 
   db = getFirestore();
 
-  unsub: any;
 
 
   mymodel;
@@ -107,14 +100,9 @@ export class DialogCreateChatComponent implements OnInit {
   roomidsSort: string[];
   roomid: string;
 
-  messageData = {
-    messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
-    messageServerTime: serverTimestamp(),
-    messageAuthor: 'server',
-    messageTime: Timestamp.fromDate(new Date()),
-    messageAuthorImg: '',
-    messageAuthorID: 'server',
-  }
+  
+
+  oldMessages = [];
 
   @Input() public messages: any[] = [];
   textMessage;
@@ -126,10 +114,46 @@ export class DialogCreateChatComponent implements OnInit {
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
+    this.loadOldMessages();
+    
+  }
+
+
+  async loadOldMessages(){
+    const chatroomRef = collection(this.db, "users", this.localUser.uid, "chatids");
+    const querySnapshot = await getDocs(chatroomRef);
+    querySnapshot.forEach( async (doc) => {
+      let messageData = {
+        messageText: '',
+        messageServerTime: Timestamp,
+        messageAuthor: '',
+        messageTime: Timestamp,
+        messageAuthorImg: '',
+        messageAuthorID: '',
+      }
+      const lastMessage = collection(this.db, "chatrooms", doc.id, "messages");
+      const q = query(lastMessage, orderBy('messageTime', "desc"), limit(1));
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach( async (doc2: any) => {
+        messageData.messageAuthorID = doc2.data().messageAuthorID
+        messageData.messageTime = this.convertTimestamp(doc2.data().messageTime)
+        messageData.messageText = doc2.data().messageText
+        const authorRef = collection(this.db, "users")
+        const q2 = query(authorRef, where('uid', '==', doc2.data().messageAuthorID))
+        const querySnapshot2 = await getDocs(q2)
+        querySnapshot2.forEach((doc3: any) => {
+          messageData.messageAuthor = doc3.data().displayName
+          messageData.messageAuthorImg = doc3.data().photoURL
+         
+        })
+        this.oldMessages.push(messageData)
+      })
+    })
+    console.log(this.oldMessages, this.oldMessages[0])
+    
   }
 
   // search Users
-
   async valuechange(newValue) {
     this.mymodel = newValue;
     // let mymodelLength = this.mymodel.lenght
@@ -216,5 +240,26 @@ export class DialogCreateChatComponent implements OnInit {
     };    
   }
 
+
+  convertTimestamp(timestamp) {
+    let date = timestamp.toDate();
+    let mm = date.getMonth();
+    let dd = date.getDate();
+    let yyyy = date.getFullYear();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let secondes = date.getSeconds();
+    if (secondes < 10) {
+      secondes = '0' + secondes
+    }
+    if (hours < 10) {
+      hours = '0' + hours
+    }
+    if (minutes < 10) {
+      minutes = '0' + minutes
+    }
+    date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
+    return date;
+  }
 
 }
