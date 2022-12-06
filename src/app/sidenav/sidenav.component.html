@@ -22,6 +22,7 @@
       </div>
       <mat-icon fontIcon="add" (click)="openDialogCreateChannel()"></mat-icon>
     </div>
+    
     <div class="container-channels" *ngIf="channelOpen">
       <div class="" *ngFor="let channel of channels, let i = index">
         <div class="channel" [ngClass]="{'active-chatroom' : activeChatChannel == ('channel' + i) }"

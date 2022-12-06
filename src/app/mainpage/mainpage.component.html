@@ -4,7 +4,7 @@
     </div>
     <div class="toolbar-right">
         <div class="search-field">
-            <span>search field</span>
+            <app-search (searchTextChanges)="onSearchTextEnter($event)"></app-search>
         </div>
 
         <div class="toolbar-right-active-side">

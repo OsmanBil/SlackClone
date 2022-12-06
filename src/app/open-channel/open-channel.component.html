@@ -23,23 +23,27 @@
             </div>
 
             <div class="post-container" #scrollMe>
-                <div class="posts" *ngFor="let post of posts; index as i, trackBy: trackByFn">
-
-                    <img class="profile-img" src="{{ post.img }}">
+                <div *ngFor="let post of posts; index as i">
+                    <div class="posts" *ngIf="searchText === '' || 
+                    post.author.toLowerCase().includes(searchText) ||
+                    post.text.toLowerCase().includes(searchText)">
+                        <img class="profile-img" src="{{ post.img }}">
     
-                    <div>
-                        <div class="general-info-line">
-                            <p><b>{{ post.author }}</b></p>
-                            <span>{{ post.time }}</span>
-                        </div>
-                        <div class="post">
-                            <p [innerHTML]="post.text"></p>
-                        </div>
-    
-                        <div (click)="drawer.open()" class="open-thread">
-                            <p (click)="openComments(post)">Comments</p>
+                        <div>
+                            <div class="general-info-line">
+                                <p><b>{{ post.author }}</b></p>
+                                <span>{{ post.time }}</span>
+                            </div>
+                            <div class="post">
+                                <p [innerHTML]="post.text"></p>
+                            </div>
+        
+                            <div (click)="drawer.open()" class="open-thread">
+                                <p (click)="openComments(post)">Comments</p>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <app-comment-box location="posts"></app-comment-box>
