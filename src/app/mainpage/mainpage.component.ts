@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogEditUserComponent } from '../dialog-edit-user/dialog-edit-user.component';
 import { AuthService } from '../services/auth.service';
+import { SearchService } from '../services/search.service';
 import { User } from '../services/user';
 
 
@@ -17,9 +18,14 @@ export class MainpageComponent implements OnInit {
   users = [];
   currentUserId = '';
   currentUser: User;
+  searchText: string = '';
 
  
-  constructor(public authService: AuthService, private firestore: AngularFirestore, private dialog: MatDialog) { }
+  constructor(
+    public authService: AuthService, 
+    private firestore: AngularFirestore, 
+    private dialog: MatDialog,
+    private search: SearchService) { }
 
   ngOnInit(): void {
     this.getCurrentUser();
@@ -64,4 +70,8 @@ export class MainpageComponent implements OnInit {
   }
 
   
+  onSearchTextEnter(searchValue: string){
+    this.searchText = searchValue;
+    this.search.sendData(this.searchText);
+  }
 }

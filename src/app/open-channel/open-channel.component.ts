@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Channel } from 'src/models/channel.class';
@@ -6,6 +6,8 @@ import { getFirestore } from '@firebase/firestore';
 import { collection, orderBy, onSnapshot, query, where } from "firebase/firestore";
 import { MatDialog } from '@angular/material/dialog';
 import { ChannelDetailsComponent } from '../channel-details/channel-details.component';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { SearchService } from '../services/search.service';
 
 
 @Component({
@@ -13,25 +15,28 @@ import { ChannelDetailsComponent } from '../channel-details/channel-details.comp
   templateUrl: './open-channel.component.html',
   styleUrls: ['./open-channel.component.scss']
 })
-export class OpenChannelComponent implements OnInit, AfterViewChecked{
+export class OpenChannelComponent implements OnInit{
 
-  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   
   db = getFirestore();
   channelId = '';
   channel: Channel = new Channel();
+  privateChannel = [];
   posts = [];
   post: any;
   user = [];
   thread = [];
+
+  searchText = '';
 
 
   constructor(
     private route: ActivatedRoute,
     private firestore: AngularFirestore,
     private dialog: MatDialog,
-    public router: Router
-  ) { }
+    public router: Router,
+    private search: SearchService
+  ) {  }
 
 
   ngOnInit(): void {
@@ -41,15 +46,19 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
       this.loadChannel();
       this.loadPosts();
     })
+    this.setSearchValue();
   }
 
 
-  ngAfterViewChecked(){
-    this.scrollToBottom();
+  setSearchValue(){
+    this.search.getData().subscribe(s => {                  
+      this.searchText = s; 
+      console.log('search',this.searchText);
+    });
   }
 
 
-  loadChannel() {
+  loadChannel() {  
     this.firestore
       .collection('channels')
       .doc(this.channelId)
@@ -140,13 +149,6 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
 
   trackByFn(item) {
     return item.id;
-  }
-
-
-  scrollToBottom(): void {
-    try {
-      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch (err) { }
   }
 
 }
