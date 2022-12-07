@@ -22,14 +22,14 @@ export class CommentBoxThreadComponent implements OnInit {
   form: FormGroup;
   db = getFirestore();
 
-  ref2: AngularFireStorageReference;
-  task2: AngularFireUploadTask;
-  uploadProgress2: Observable<number>;
-  uploadState2: Observable<string>;
-  imgUpload = '';
-  downloadURL2!: Observable<string>;
+  refThread: AngularFireStorageReference;
+  taskThread: AngularFireUploadTask;
+  uploadProgressThread: Observable<number>;
+  uploadStateThread: Observable<string>;
+  downloadURLThread: Observable<string>;
 
-  imageURL2: string;
+  imgUploadThread = '';
+
 
   @ViewChild('editor', {
     static: true
@@ -107,7 +107,7 @@ export class CommentBoxThreadComponent implements OnInit {
       this.thread.time = Timestamp.fromDate(new Date());
       this.thread.postId = this.CommentToPost.postId;
       this.thread.channelId = this.CommentToPost.channelId;
-      this.thread.upload = this.imgUpload;
+      this.thread.upload = this.imgUploadThread;
       this.data = this.thread;
       this.sendDataToComments();
   }
@@ -116,7 +116,7 @@ export class CommentBoxThreadComponent implements OnInit {
   async sendDataToComments() {
     await addDoc(collection(this.db, "channels", this.CommentToPost.channelId, "posts", this.CommentToPost.postId, "comments"), this.data);
     this.form.reset();
-    this.resetUpload();
+    // this.resetUpload();
   }
 
 
@@ -137,43 +137,37 @@ export class CommentBoxThreadComponent implements OnInit {
   }
 
 
-  upload = (event) => {
+  uploadToThread(event){
     const randomId = Math.random().toString(36).substring(2);
-    this.ref2 = this.afStorage.ref('/images/' + randomId);
-    this.task2 = this.ref2.put(event.target.files[0]);
-    // observe upload progress
-    this.uploadProgress2 = this.task2.percentageChanges();
-    // get notified when the download URL is available
-    this.task2.snapshotChanges().pipe(
+    this.refThread = this.afStorage.ref('/images/' + randomId);
+    this.taskThread = this.refThread.put(event.target.files[0]);
+    this.taskThread.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURL2 = this.ref2.getDownloadURL();
-        this.downloadURL2.subscribe(url => {
+        this.downloadURLThread = this.refThread.getDownloadURL();
+        this.downloadURLThread.subscribe(url => {
           if (url) {
-            this.imageURL2 = url;
-            this.uploadState2 = null;
-            this.imgUpload = url;
+            this.uploadStateThread = null;
+            this.imgUploadThread = url;
           }
         });
       })
     )
       .subscribe();
-    this.uploadState2 = this.task2.snapshotChanges().pipe(map(s => s.state));
-
   }
 
 
   discardUpload() {
-    this.imgUpload = '';
-      this.ref2.delete();
+    this.imgUploadThread = '';
+    this.refThread.delete();
     this.resetUpload();
   }
 
 
   resetUpload() {
-    this.downloadURL2 = null;
-    this.uploadState2 = null;
-    this.ref2 = null;
-    this.task2 = null;
+    this.downloadURLThread = null;
+    this.uploadStateThread = null;
+    this.refThread = null;
+    this.taskThread = null;
   }
 
 

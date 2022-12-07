@@ -12,13 +12,13 @@
                 <i class="material-icons" matTooltip="add image">add</i>
 
             </label>
-            <input class="send-icon2" type="file" id="file" (change)="upload($event)" accept=".png,.jpg">
+            <input class="send-icon2" type="file" id="file" (change)="uploadToPosts($event)" accept=".png,.jpg">
         </div>
     </form>
 
-    <div class="upload-image-container" *ngIf="downloadURL2 | async; let url">
+    <div class="upload-image-container" *ngIf="downloadURLPost">
         <div class="position-relative">
-            <img (click)="openLightbox(url)" [src]="url" class="">
+            <img (click)="openLightbox(imgUploadPost)" [src]="imgUploadPost" class="">
             <i (click)="discardUpload()" class="material-icons">close</i>
         </div>
     </div>
