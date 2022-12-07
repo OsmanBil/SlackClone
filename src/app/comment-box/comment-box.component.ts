@@ -8,7 +8,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { limit } from '@angular/fire/firestore';
 import 'quill-emoji/dist/quill-emoji.js';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/compat/storage';
-import { finalize, map, Observable } from 'rxjs';
+import { finalize, map, ObjectUnsubscribedError, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { LightboxComponent } from '../lightbox/lightbox.component';
 
@@ -24,12 +24,12 @@ export class CommentBoxComponent implements OnInit {
   form: FormGroup;
   db = getFirestore();
 
-  ref2: AngularFireStorageReference;
-  task2: AngularFireUploadTask;
-  uploadProgress2: Observable<number>;
-  uploadState2: Observable<string>;
-  imgUpload = '';
-  downloadURL2: Observable<string>;
+  refPost: AngularFireStorageReference;
+  taskPost: AngularFireUploadTask;
+  uploadProgressPost: Observable<number>;
+  uploadStatePost: Observable<string>;
+  imgUploadPost = '';
+  downloadURLPost: Observable<string>;
 
   imageURL2: string;
 
@@ -120,7 +120,7 @@ export class CommentBoxComponent implements OnInit {
       this.post.text = this.text;
       this.post.time = Timestamp.fromDate(new Date());
       this.post.channelId = this.channelId;
-      this.post.upload = this.imgUpload;
+      this.post.upload = this.imgUploadPost;
       this.data = this.post;
       this.sendDataToPost();
     }
@@ -131,7 +131,7 @@ export class CommentBoxComponent implements OnInit {
       this.thread.time = Timestamp.fromDate(new Date());
       this.thread.postId = this.CommentToPost.postId;
       this.thread.channelId = this.CommentToPost.channelId;
-      this.thread.upload = this.imgUpload;
+      // this.thread.upload = this.imgUpload;
       this.data = this.thread;
       this.sendDataToComments();
     }
@@ -170,43 +170,38 @@ export class CommentBoxComponent implements OnInit {
   }
 
 
-  upload = (event) => {
+  uploadToPosts(event){
     const randomId = Math.random().toString(36).substring(2);
-    this.ref2 = this.afStorage.ref('/images/' + randomId);
-    this.task2 = this.ref2.put(event.target.files[0]);
-    // observe upload progress
-    this.uploadProgress2 = this.task2.percentageChanges();
-    // get notified when the download URL is available
-    this.task2.snapshotChanges().pipe(
+    this.refPost = this.afStorage.ref('/images/' + randomId);
+    this.taskPost = this.refPost.put(event.target.files[0]);
+    this.taskPost.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURL2 = this.ref2.getDownloadURL();
-        this.downloadURL2.subscribe(url => {
+        this.downloadURLPost = this.refPost.getDownloadURL();
+        this.downloadURLPost.subscribe(url => {
           if (url) {
-            this.imageURL2 = url;
-            this.uploadState2 = null;
-            this.imgUpload = url;
+            this.uploadStatePost = null;
+            this.imgUploadPost = url;
           }
         });
       })
     )
-      .subscribe();
-    this.uploadState2 = this.task2.snapshotChanges().pipe(map(s => s.state));
+    .subscribe();
 
   }
 
 
   discardUpload() {
-    this.imgUpload = '';
-    this.ref2.delete();
+    this.imgUploadPost = '';
+    this.refPost.delete();
     this.resetUpload();
   }
 
 
   resetUpload() {
-    this.downloadURL2 = null;
-    this.uploadState2 = null;
-    this.ref2 = null;
-    this.task2 = null;
+    this.downloadURLPost = null;
+    this.uploadStatePost = null;
+    this.refPost = null;
+    this.taskPost = null;
   }
 
 
