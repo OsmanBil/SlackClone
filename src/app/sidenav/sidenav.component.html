@@ -5,12 +5,11 @@
 
 
 
-    <div class="container-threads" [routerLink]="['/mainpage/threads/']"
-    [ngClass]="{'active-chatroom' : activeChatChannel == ('threads') }"
-          (click)="showActive('threads', '0')">
-        <mat-icon fontIcon="comment"></mat-icon>
-        <span >Threads</span>
-    </div>
+  <div class="container-threads" [routerLink]="['/mainpage/threads/']"
+    [ngClass]="{'active-chatroom' : activeChatChannel == ('threads') }" (click)="showActive('threads', '0')">
+    <mat-icon fontIcon="comment"></mat-icon>
+    <span>Threads</span>
+  </div>
 
 
   <div class="container2">
@@ -22,14 +21,14 @@
       </div>
       <mat-icon fontIcon="add" (click)="openDialogCreateChannel()"></mat-icon>
     </div>
-    
+
     <div class="container-channels" *ngIf="channelOpen">
       <div class="" *ngFor="let channel of channels, let i = index">
         <div class="channel" [ngClass]="{'active-chatroom' : activeChatChannel == ('channel' + i) }"
           (click)="showActive('channel' + i, i)" [routerLink]="['/mainpage/channel/' + channel.channelId]">
           <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
           <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
-          <span >{{ channel['channelName'] }}</span>
+          <span>{{ channel['channelName'] }}</span>
         </div>
       </div>
 
@@ -52,22 +51,28 @@
     </div>
     <div class="container-channels" *ngIf="messageOpen">
 
-      <div class="" *ngFor="let chatroom of chatrooms; let i = index" class="">
+      <div class="d-flex flex-column" *ngFor="let chatroom of chatrooms; let i = index" class="">
         <!-- <div (click)="openChatroom(chatroom.chatroomID)" >  -->
-        <div  class="chat d-flex align-items-center"
+        <div class="chat d-flex align-items-center"
           [ngClass]="{'active-chatroom' : activeChatChannel == ('chatroom' + i) }"
-          *ngIf="chatroom.showChatroomInSidebar == true"
-          (click)="showActiveChat('chatroom' + i, i)"
-          >
-          <div class="d-flex align-items-center" [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]">
-          <div class="header-img-container">
-            <img class="chatroom-img me-2" src="{{ chatroom.userImg }}">
-            <div [ngClass]="{'header-icon-online' : chatroom.userIsOnline == true}"></div>
+          *ngIf="chatroom.showChatroomInSidebar == true" (click)="showActiveChat('chatroom' + i, i)">
+          <div class="chat-containers d-flex align-items-center" [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]">
+            <div class="header-img-container">
+              <img class="chatroom-img me-2" src="{{ chatroom.userImg }}">
+              <div *ngIf="chatroom.numberOfChatUsers < 3" [ngClass]="{'header-icon-online' : chatroom.userIsOnline == true}"></div>
+            </div>
+            <div class="user-names-container" >
+              <div class="d-flex user-names" *ngFor="let user of chatroom.userName, let i = index">
+                <span *ngIf="i > 0" class="me-2">, </span>
+                <p class="overflow-hidden d-flex">{{user}}</p>
+              </div>
+            </div>
+            <!-- <span class="mt-1">{{ chatroom.userName }}</span> -->
+            <span class="newMessage ms-auto me-2" *ngIf="chatroom.newMessageforOtherUser > 0">{{
+              chatroom.newMessageforOtherUser }}</span>
           </div>
-          <span class="mt-1">{{ chatroom.userName }}</span>
-          <span  class="newMessage ms-auto me-2" *ngIf="chatroom.newMessageforOtherUser > 0">{{ chatroom.newMessageforOtherUser }}</span>
-          </div>
-          <mat-icon (click)="showChatroomInSidebar(chatroom.chatroomID)" class="close-sidebar-chatroom ms-auto me-2" fontIcon="close"></mat-icon>
+          <mat-icon (click)="showChatroomInSidebar(chatroom.chatroomID)" class="close-sidebar-chatroom ms-auto me-2"
+            fontIcon="close"></mat-icon>
         </div>
       </div>
 

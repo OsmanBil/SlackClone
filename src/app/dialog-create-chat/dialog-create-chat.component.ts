@@ -85,9 +85,14 @@ export class DialogCreateChatComponent implements OnInit {
   async ngOnInit() {
     this.localUser = JSON.parse(localStorage.getItem('user'));
     await this.loadOldMessages();
+    console.log('oldMessages in onInit als async', this.oldMessages);
+    console.log('oldMessages Stelle [0] in onInit', this.oldMessages[0]);
+
     setTimeout(() => { this.check() }, 500);
     //this.check2();
   }
+
+  
 
 
   async loadOldMessages() {
@@ -161,7 +166,11 @@ export class DialogCreateChatComponent implements OnInit {
         this.oldMessages.push(messageData)
       })
     })
-    console.log(this.oldMessages, this.oldMessages[0], this.oldMessages.length)
+    console.log('oldMessages zum ersten Mal ausgeloogt', this.oldMessages, 'später', this.oldMessages.length);
+    console.log('oldMessages an der Stelle [0]', this.oldMessages[0]);
+    console.log('oldMessages length',this.oldMessages.length);
+    console.log('oldMessages zum zweiten Mal ausgeloogt', this.oldMessages);
+    
   }
 
 
@@ -175,8 +184,6 @@ export class DialogCreateChatComponent implements OnInit {
   check() {
     this.oldMessages.sort((a, b) => b.messageServerTime - a.messageServerTime)
     this.loadingFinish = true;
-    console.log(this.oldMessages[0])
-    console.log(this.oldMessages)
   }
 
   // search Users
@@ -289,6 +296,107 @@ export class DialogCreateChatComponent implements OnInit {
     }
     date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
     return date;
+  }
+
+
+  // BEISPIELE VON MIHAI
+
+
+  // LOAD 3 ist aus dem Call und könnte die Abfrage where komplett ersetzen
+  async loadOldMessages3() {
+    const chatroomRef = collection(this.db, "users", this.localUser.uid, "chatids");
+    const chatRoomSnapshot = (await getDocs(chatroomRef)).docs;
+
+    console.log('All ChatRooms :', chatRoomSnapshot);
+
+    for (let chatRoomIndex = 0; chatRoomIndex < chatRoomSnapshot.length; chatRoomIndex++) {
+      const docChatRoom = chatRoomSnapshot[chatRoomIndex];
+
+      const messages = collection(this.db, "chatrooms", docChatRoom.id, "messages");
+      const lastMessagesQuery = query(messages, orderBy('messageTime', "desc"), limit(1));
+      const lastMessagesSnapshot = (await getDocs(lastMessagesQuery)).docs;
+      console.log('All LastMessages from chatRoomIndex' + chatRoomIndex +' :', lastMessagesSnapshot );
+
+      for (let lastMessageIndex = 0; lastMessageIndex < lastMessagesSnapshot.length; lastMessageIndex++) {
+        const lastMessage = lastMessagesSnapshot[lastMessageIndex];
+
+        let messageData = {
+          messageText: '',
+          messageServerTime: Timestamp,
+          messageAuthor: '',
+          messageTime: Timestamp,
+          messageAuthorImg: '',
+          messageAuthorID: '',
+        };
+
+        messageData.messageAuthorID = lastMessage.data()['messageAuthorID']
+        messageData.messageTime = this.convertTimestamp(lastMessage.data()['messageTime'])
+        messageData.messageText = lastMessage.data()['messageText']
+
+
+        // DAS HIER
+        const authorRef = collection(this.db, "users")
+        const userRef = doc(authorRef, lastMessage.data()['messageAuthorID']);
+        const author = await getDoc(userRef);
+        // 
+
+
+        messageData.messageAuthor = author.data()['displayName']
+        messageData.messageAuthorImg = author.data()['photoURL']
+
+        console.log('Pushing MessageData from chatRoomIndex ' + chatRoomIndex + ', lastMessageIndex ' + lastMessageIndex + ' :', messageData);
+        this.oldMessages.push(messageData)
+      }
+
+    }
+    console.log(this.oldMessages, this.oldMessages.length)
+
+  }
+
+  async loadOldMessages2() {
+    const chatroomRef = collection(this.db, "users", this.localUser.uid, "chatids");
+    const chatRoomSnapshot = (await getDocs(chatroomRef)).docs;
+
+    for (let index = 0; index < chatRoomSnapshot.length; index++) {
+      const docChatRoom = chatRoomSnapshot[index];
+
+
+      let messageData = {
+        messageText: '',
+        messageServerTime: Timestamp,
+        messageAuthor: '',
+        messageTime: Timestamp,
+        messageAuthorImg: '',
+        messageAuthorID: '',
+      };
+
+      const messages = collection(this.db, "chatrooms", docChatRoom.id, "messages");
+      const lastMessagesQuery = query(messages, orderBy('messageTime', "desc"), limit(1));
+
+
+      const lastMessagesSnapshot = (await getDocs(lastMessagesQuery)).docs;
+
+      for (let index = 0; index < lastMessagesSnapshot.length; index++) {
+        const doc2 = lastMessagesSnapshot[index];
+
+        messageData.messageAuthorID = doc2.data()['messageAuthorID']
+        messageData.messageTime = this.convertTimestamp(doc2.data()['messageTime'])
+        messageData.messageText = doc2.data()['messageText']
+
+        const authorRef = collection(this.db, "users")
+        const authorQuery = query(authorRef, where('uid', '==', doc2.data()['messageAuthorID']))
+        const querySnapshot2 = await getDocs(authorQuery)
+        querySnapshot2.forEach((doc3: any) => {
+          messageData.messageAuthor = doc3.data().displayName
+          messageData.messageAuthorImg = doc3.data().photoURL
+        });
+
+        this.oldMessages.push(messageData)
+      }
+
+    }
+    console.log(this.oldMessages, this.oldMessages[0])
+
   }
 
 }

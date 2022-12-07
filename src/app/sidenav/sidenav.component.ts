@@ -66,33 +66,45 @@ export class SidenavComponent implements OnInit {
   // LOAD ALL CHATROOMS IN SIDEBAR FROM LOCAL USER
   loadChatroomData() {
     this.localUser = JSON.parse(localStorage.getItem('user'))
-    let docRef = collection(this.db, "users", this.localUser['uid'], "chatids");
-    const unsubscribe = onSnapshot(docRef, async (querySnapshot) => {
+    let localUserChatIDSCollection = collection(this.db, "users", this.localUser['uid'], "chatids");
+    const unsubscribe = onSnapshot(localUserChatIDSCollection, async (localUserChatID) => {
       this.chatrooms = [];
-      querySnapshot.forEach(async (doc) => {
-        let neededData = {
+      localUserChatID.forEach(async (chatroom) => {
+        let neededData: any = {
           chatroomID: '',
+          numberOfChatUsers: Number,
           showChatroomInSidebar: '',
           userID: '',
           userImg: '',
           userIsOnline: '',
-          userName: '',
+          userName: [],
           newMessageforOtherUser: '',
         }
-        neededData.chatroomID = doc.id;
-        this.checkIfNewMessage(neededData, doc);
-        this.checkIfChatroomIsShownInSidebar(neededData, doc.id);
+        neededData.chatroomID = chatroom.id;
+        await this.getNumberOfChatroomUsers(neededData, chatroom)
+        this.checkIfNewMessage(neededData, chatroom);
+        this.checkIfChatroomIsShownInSidebar(neededData, chatroom.id);
         this.chatrooms.push(neededData);
       })
     })
     this.loadChannels();
   }
 
+
+  // GET NUMBER OF CHATROOM USERS FOR EACH CHATROOM
+  async getNumberOfChatroomUsers(neededData, chatroom){
+    const localUserOneChatroom = query(collection(this.db, "chatrooms"), where("id", "==", chatroom.id));
+    const localUserOneChatroomDoc = await getDocs(localUserOneChatroom);
+    (localUserOneChatroomDoc).forEach(async (onechatroom: any) => {
+      neededData.numberOfChatUsers = onechatroom.data().numberOfUsers
+    });
+  }
+
    // ÜBERPRÜFT DAUERHAFT OB NEUE NACHRICHT AN LOCAL USER GEGANGEN IST
-   checkIfNewMessage(neededData, doc) {
-    const x1 = query(collection(this.db, "chatrooms", doc.id, "users"), where("id", "!=", this.localUser.uid));
-    const s1 = onSnapshot(x1, async (querySnapshot) => {
-      querySnapshot.forEach(async (doc2: any) => {
+   checkIfNewMessage(neededData, chatroom) {
+    const otherUsersRef = query(collection(this.db, "chatrooms", chatroom.id, "users"), where("id", "!=", this.localUser.uid));
+    const s1 = onSnapshot(otherUsersRef, async (otherUserSnapshot) => {
+      otherUserSnapshot.forEach(async (doc2: any) => {
         for (let x = 0; x < this.chatrooms.length; x++) {
           if (this.chatrooms[x].userID == doc2.uid) {
             this.chatrooms[x].newMessageforOtherUser = doc2.data().newMessage
@@ -111,19 +123,24 @@ export class SidenavComponent implements OnInit {
     const x2 = query(collection(this.db, "users"), where("uid", "==", doc2.id));
     const s2 = onSnapshot(x2, async (querySnapshot) => {
       querySnapshot.forEach(async (doc3: any) => {
-        for (let x = 0; x < this.chatrooms.length; x++) {
+       // for (let x = 0; x < this.chatrooms.length; x++) {
           neededData.userID = doc3.data().uid
-          neededData.userImg = doc3.data().photoURL;
-          neededData.userName = doc3.data().displayName;
+          neededData.userName.push(doc3.data().displayName)
           neededData.userIsOnline = doc3.data().isOnline;
-        }
+          if(neededData.numberOfChatUsers > 2){
+            neededData.userImg = '/assets/img/group-g4bf838880_640.png';
+          }
+          else{
+          neededData.userImg = doc3.data().photoURL;
+          }
+        // }
       })
     })
   }
 
   // ÜBERPRÜFT DAUERHAFT OB DER CHATROOM IN DER SIDEBAR ANGEZEIGT WERDEN SOLL
-  checkIfChatroomIsShownInSidebar(neededData, docID) {
-    const x3 = query(collection(this.db, "users", this.localUser.uid, "chatids",), where("id", "==", docID));
+  checkIfChatroomIsShownInSidebar(neededData, chatroomID) {
+    const x3 = query(collection(this.db, "users", this.localUser.uid, "chatids",), where("id", "==", chatroomID));
     const s3 = onSnapshot(x3, async (querySnapshot) => {
       querySnapshot.forEach(async (doc3: any) => {
         neededData.showChatroomInSidebar = doc3.data()['shownInSidebar'];
