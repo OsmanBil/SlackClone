@@ -1,6 +1,8 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { getFirestore } from '@firebase/firestore';
 import { collection, getDocs, orderBy, onSnapshot, query, where } from "firebase/firestore";
+import { LightboxComponent } from '../lightbox/lightbox.component';
 
 
 @Component({
@@ -15,9 +17,10 @@ export class ThreadComponent implements OnChanges {
 
   db = getFirestore();
   comments = [];
+  
+  @Input() lightboxImg = '';
 
-
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
 
 
   ngOnChanges() {
@@ -43,7 +46,8 @@ export class ThreadComponent implements OnChanges {
           author: '',
           img: '',
           commentId: commentDoc.id,
-          userId: commentDoc.data()['userId']
+          userId: commentDoc.data()['userId'],
+          uploadImg: commentDoc.data()['upload']
         };
         this.loadAuthor(comment);
       });
@@ -82,6 +86,12 @@ export class ThreadComponent implements OnChanges {
     }
     date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
     return date;
+  }
+
+
+  openLightbox(url){
+    let dialog = this.dialog.open(LightboxComponent);
+    dialog.componentInstance.lightboxImg = url;
   }
 
 }

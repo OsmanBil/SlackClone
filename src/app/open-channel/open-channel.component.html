@@ -37,6 +37,9 @@
                             <div class="post">
                                 <p [innerHTML]="post.text"></p>
                             </div>
+
+                            <img (click)="openLightbox( post['uploadImg'] )" class="upload-image" *ngIf=" post['uploadImg']"
+                            src="{{ post['uploadImg'] }}">
         
                             <div (click)="drawer.open()" class="open-thread">
                                 <p (click)="openComments(post)">Comments</p>
@@ -46,6 +49,7 @@
 
                 </div>
             </div>
+
             <app-comment-box location="posts"></app-comment-box>
         </div>
 

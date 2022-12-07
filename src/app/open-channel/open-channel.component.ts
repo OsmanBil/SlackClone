@@ -6,8 +6,8 @@ import { getFirestore } from '@firebase/firestore';
 import { collection, orderBy, onSnapshot, query, where } from "firebase/firestore";
 import { MatDialog } from '@angular/material/dialog';
 import { ChannelDetailsComponent } from '../channel-details/channel-details.component';
-import { Subscription } from 'rxjs/internal/Subscription';
 import { SearchService } from '../services/search.service';
+import { LightboxComponent } from '../lightbox/lightbox.component';
 
 
 @Component({
@@ -28,6 +28,9 @@ export class OpenChannelComponent implements OnInit{
   thread = [];
 
   searchText = '';
+  
+  @Input() lightboxOpen = false;
+  @Input() lightboxImg = '';
 
 
   constructor(
@@ -53,7 +56,6 @@ export class OpenChannelComponent implements OnInit{
   setSearchValue(){
     this.search.getData().subscribe(s => {                  
       this.searchText = s; 
-      console.log('search',this.searchText);
     });
   }
 
@@ -94,7 +96,8 @@ export class OpenChannelComponent implements OnInit{
         img: '',
         postId: postDoc.id,
         userId: postDoc.data()['userId'],
-        channelId: postDoc.data()['channelId']
+        channelId: postDoc.data()['channelId'],
+        uploadImg: postDoc.data()['upload']
       };
       this.loadAuthor(post);
     });
@@ -147,8 +150,8 @@ export class OpenChannelComponent implements OnInit{
   }
 
 
-  trackByFn(item) {
-    return item.id;
+  openLightbox(url){
+    let dialog = this.dialog.open(LightboxComponent);
+    dialog.componentInstance.lightboxImg = url;
   }
-
 }

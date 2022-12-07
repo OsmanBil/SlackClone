@@ -13,13 +13,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { LightboxComponent } from '../lightbox/lightbox.component';
 
 @Component({
-  selector: 'app-comment-box',
-  templateUrl: './comment-box.component.html',
-  styleUrls: ['./comment-box.component.scss']
+  selector: 'app-comment-box-thread',
+  templateUrl: './comment-box-thread.component.html',
+  styleUrls: ['./comment-box-thread.component.scss']
 })
-
-
-export class CommentBoxComponent implements OnInit {
+export class CommentBoxThreadComponent implements OnInit {
 
   form: FormGroup;
   db = getFirestore();
@@ -29,7 +27,7 @@ export class CommentBoxComponent implements OnInit {
   uploadProgress2: Observable<number>;
   uploadState2: Observable<string>;
   imgUpload = '';
-  downloadURL2: Observable<string>;
+  downloadURL2!: Observable<string>;
 
   imageURL2: string;
 
@@ -37,12 +35,11 @@ export class CommentBoxComponent implements OnInit {
     static: true
   }) editor: QuillEditorComponent
 
-  @Input() location: string;
+
   @Input() CommentToPost: any;
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
 
-  
   modules = {
     'emoji-shortname': true,
     'emoji-textarea': false,
@@ -54,14 +51,6 @@ export class CommentBoxComponent implements OnInit {
       ['link'],
       ['emoji']
     ],
-  }
-
-  post = {
-    text: '',
-    time: Timestamp.fromDate(new Date()),
-    userId: '',
-    channelId: '',
-    upload: ''
   }
 
   thread = {
@@ -92,10 +81,8 @@ export class CommentBoxComponent implements OnInit {
     });
   }
 
-
   ngOnInit(): void {
   }
-
 
   changedEditor(event: EditorChangeContent | EditorChangeSelection) {
     if (event['event'] == 'text-change') {
@@ -115,17 +102,6 @@ export class CommentBoxComponent implements OnInit {
 
 
   setData() {
-    if (this.location == 'posts') {
-      this.post.userId = this.currentUser['uid'];
-      this.post.text = this.text;
-      this.post.time = Timestamp.fromDate(new Date());
-      this.post.channelId = this.channelId;
-      this.post.upload = this.imgUpload;
-      this.data = this.post;
-      this.sendDataToPost();
-    }
-
-    if (this.location == 'comments') {
       this.thread.userId = this.currentUser['uid'];
       this.thread.text = this.text;
       this.thread.time = Timestamp.fromDate(new Date());
@@ -134,15 +110,6 @@ export class CommentBoxComponent implements OnInit {
       this.thread.upload = this.imgUpload;
       this.data = this.thread;
       this.sendDataToComments();
-    }
-
-  }
-
-
-  async sendDataToPost() {
-    await addDoc(collection(this.db, "channels", this.channelId, "posts"), this.data);
-    this.form.reset();
-    this.resetUpload();
   }
 
 
@@ -197,7 +164,7 @@ export class CommentBoxComponent implements OnInit {
 
   discardUpload() {
     this.imgUpload = '';
-    this.ref2.delete();
+      this.ref2.delete();
     this.resetUpload();
   }
 

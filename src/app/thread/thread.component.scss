@@ -44,3 +44,14 @@ app-comment-box{
     left: 32px;
     z-index: 10;
 }
+
+.upload-image{
+    margin-top: 15px;
+    height: 100px!important;
+    width: 100px!important;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 10px!important;
+    box-sizing:unset;
+    border: 1px solid black;
+}

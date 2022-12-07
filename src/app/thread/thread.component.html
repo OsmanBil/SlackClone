@@ -10,6 +10,8 @@
             <div class="post">
                 <p [innerHTML]="post.text"></p>
             </div>
+            <img (click)="openLightbox( post['uploadImg'] )" class="upload-image" *ngIf=" post['uploadImg']"
+            src="{{ post['uploadImg'] }}">
         </div>
     </div>
 
@@ -25,7 +27,10 @@
                 <p [innerHTML]="comment.text"></p>
             </div>
         </div>
+
+        <img (click)="openLightbox( comment.uploadImg )" class="upload-image" *ngIf=" comment.uploadImg"
+            src="{{ comment.uploadImg }}">
     </div>
 </div>
 
-<app-comment-box [CommentToPost]="post" location="comments"></app-comment-box>
+<app-comment-box-thread [CommentToPost]="post"></app-comment-box-thread>
