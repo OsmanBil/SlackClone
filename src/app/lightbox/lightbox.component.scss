@@ -1,0 +1,29 @@
+.lightbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 9999;
+}
+
+.close-lightbox{
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    padding: 4px;
+    background-color: black;
+    border-radius: 100%;
+    &:hover{
+        cursor: pointer;
+        color: black;
+        background-color: white;
+    }
+}

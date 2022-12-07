@@ -53,6 +53,8 @@ import { CommentBoxChatroomComponent } from './comment-box-chatroom/comment-box-
 import { ThreadComponent } from './thread/thread.component';
 import { ChannelDetailsComponent } from './channel-details/channel-details.component';
 import { SearchComponent } from './search/search.component';
+import { LightboxComponent } from './lightbox/lightbox.component';
+import { CommentBoxThreadComponent } from './comment-box-thread/comment-box-thread.component';
 
 
 
@@ -79,7 +81,9 @@ import { SearchComponent } from './search/search.component';
     CommentBoxChatroomComponent,
     ThreadComponent,
     ChannelDetailsComponent,
-    SearchComponent  
+    SearchComponent,
+    LightboxComponent,
+    CommentBoxThreadComponent  
   ],
   imports: [
     BrowserModule,
