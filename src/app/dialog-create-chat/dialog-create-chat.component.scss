@@ -1,7 +1,8 @@
-.container {
-    width: 70%;
+.over-container {
+    width: 100%;
     background-color: rgb(230, 230, 230);
     min-height: calc(100vh - 50px);
+    padding-bottom: 50px;
 }
 
 .header-container {
@@ -31,8 +32,9 @@
 }
 
 .day-container {
-    padding: 30px 15px;
+    margin: 30px 70px;
     padding-bottom: 0;
+    cursor: pointer;
 }
 
 .day-text {
@@ -68,6 +70,8 @@
 
 .user-name {
     font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px!important;
 }
 
 .search-user-list{
@@ -147,4 +151,15 @@
         width: 30px;
         border-radius: 5px;
     }
+}
+
+.loadmessage-image{
+    margin-top: 15px;
+    height: 100px!important;
+    width: 100px!important;
+    object-fit: contain;
+    cursor: pointer;
+    border-radius: 10px!important;
+    box-sizing:unset;
+    border: 1px solid black;
 }

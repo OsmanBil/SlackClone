@@ -16,8 +16,7 @@ import { increment } from '@angular/fire/firestore';
 
 import 'quill-emoji/dist/quill-emoji.js';
 
-Quill.register('modules/imageHandler', ImageHandler);
-Quill.register('modules/videoHandler', VideoHandler);
+
 
 @Component({
   selector: 'app-comment-box-chatroom',

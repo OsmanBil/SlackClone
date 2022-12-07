@@ -1,29 +1,31 @@
-<div class="container">
+<div class="over-container">
     <div class="header-container">
         <h2>Direct messages</h2>
         <div class="search-container w-100">
-            <div  class="w-100 d-flex align-items-center" >
-            <p class="text-center">To:</p>
-            <div class="want-to-chat-user-list" *ngFor="let userwantToChat of usersWantToChat; let i = index">
-                <div class="want-to-chat-user">
-                    <img src="{{ userwantToChat['imageUrl'] }}">
-                    <p>{{ userwantToChat['name'] }}</p>
-                    <div class="want-to-chat-icon" (click)="deleteUserWantToChat(i)">
-                        <mat-icon>close</mat-icon>
+            <div class="w-100 d-flex align-items-center">
+                <p class="text-center">To:</p>
+                <div class="want-to-chat-user-list" *ngFor="let userwantToChat of usersWantToChat; let i = index">
+                    <div class="want-to-chat-user">
+                        <img src="{{ userwantToChat['imageUrl'] }}">
+                        <p>{{ userwantToChat['name'] }}</p>
+                        <div class="want-to-chat-icon" (click)="deleteUserWantToChat(i)">
+                            <mat-icon>close</mat-icon>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <button class="ms-auto" (click)="createChat()" [disabled]="usersWantToChat.length == 0">create Chat</button>
+                <button class="ms-auto" (click)="createChat()" [disabled]="usersWantToChat.length == 0">create
+                    Chat</button>
             </div>
 
         </div>
         <div class="search-container">
-            <input #searchUserField placeholder="Search User" type="text" [ngModel]="mymodel"
-                (ngModelChange)="valuechange($event)" />
-
+            <input [ngClass]="{'d-none' : usersWantToChat.length > 3}" #searchUserField placeholder="Search User"
+                type="text" [ngModel]="mymodel" (ngModelChange)="valuechange($event)" />
+            <input disabled [ngClass]="{'d-none' : usersWantToChat.length <= 3}"
+                placeholder="This is the maximum of Chat Users" type="text" />
         </div>
-        
+
         <div class="search-user-list" *ngFor="let foundUser of foundUsers; let i = index">
             <div (click)="addUserWantToChat(i, searchUserField)">
                 <img class="found-user-image" src="{{ foundUser['imageUrl'] }}">
@@ -32,41 +34,33 @@
         </div>
     </div>
     <div class="body-container">
-        <div class="latest-messages-container">
-            <div *ngFor="let messageEx of messagesExample">
-                <div class="day-container">
-                    <p class="day-text">{{ messageEx['date'] }}</p>
+        <div class="latest-messages-container" *ngIf="loadingFinish == true">
+            <div *ngFor="let messageEx of oldMessages">
+                <div class="day-container" [routerLink]="['/mainpage/chatroom/' + messageEx.chatroomID]">
+                    <p class="day-text">{{ messageEx.messageTime }} Uhr</p>
                     <div class="message-container">
-                        <img src="{{ messageEx['day_message']['user_src'] }}">
+                        <img src="{{ messageEx['messageOtherUserImg'] }}">
                         <div class="message-text-container">
-                            <p class="user-name">{{ messageEx['day_message']['user'] }}</p>
                             <div>
-                                <p>{{ messageEx['day_message']['user_firstname'] }}<span>{{
-                                        messageEx['day_message']['user_message']
-                                        }}</span></p>
+                                <div class="user-name" *ngFor="let user of messageEx['messageOtherUserName'], let i = index" >
+                                    <span *ngIf="i > 0" class="me-2">, </span>
+                                    <p>{{user}}</p>
+                                </div>
                             </div>
+                            <div class="d-flex flex-column">
+                                <p>{{ messageEx['messageAuthor'] }}:</p>
+                                <p *ngIf=" messageEx['messageText'].length > 0"><i class="d-flex"
+                                        [innerHTML]="'&bdquo;' + messageEx['messageText'] + '&rdquo;'"></i></p>
+                            </div>
+                            <img class="loadmessage-image" *ngIf=" messageEx['messageImg']"
+                                src="{{ messageEx['messageImg'] }}">
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="active-chat-container">
-            <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
-                <div>
-                    <img class="one-message-img me-2" src="{{ message['loadMessageAuthorImg'] }}">
-                </div>
-                <div>
-                    <div class="d-flex">
-                        <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
-                        <p>{{ message['loadMessageTime']}}</p>
-                    </div>
-                    <div>{{ message['loadMessageText']}}</div>
-                </div>
 
-            </div>
-
-        </div>
-       
     </div>
 </div>
