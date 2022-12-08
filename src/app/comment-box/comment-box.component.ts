@@ -35,6 +35,7 @@ export class CommentBoxComponent implements OnInit {
   imgUploadThread = '';
   imgUploadPost = '';
   loading = false;
+  valid = false;
 
   channelId: string;
   currentUser = [];
@@ -98,11 +99,19 @@ export class CommentBoxComponent implements OnInit {
   changedEditor(event: EditorChangeContent | EditorChangeSelection) {
     if (event['event'] == 'text-change') {
       this.text = event['html'];
+      console.log(this.text);
+      if(this.text == null){
+        this.valid = false;
+      }
+      else{
+        this.valid = true;
+      }
     }
   }
 
 
   postToChannel() {
+    this.loading = true;
     this.currentUser = JSON.parse(localStorage.getItem('user'));
     this.route.paramMap.subscribe(paramMap => {
       this.channelId = paramMap.get('id');
@@ -182,7 +191,9 @@ export class CommentBoxComponent implements OnInit {
         this.downloadURLPost = this.ref.getDownloadURL();
         this.downloadURLPost.subscribe(url => {
           if (url) {
+            this.uploadState = null;
             this.imgUploadPost = url;
+            this.valid = true;
           }
         });
       })
@@ -202,6 +213,7 @@ export class CommentBoxComponent implements OnInit {
           if (url) {
             this.uploadState = null;
             this.imgUploadThread = url;
+            this.valid = true;
           }
         });
       })
@@ -219,6 +231,8 @@ export class CommentBoxComponent implements OnInit {
 
 
   resetUpload() {
+    this.valid = false;
+    this.loading = false;
     this.downloadURLPost = null;
     this.downloadURLThread = null;
     this.uploadState = null;

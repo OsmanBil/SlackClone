@@ -5,7 +5,7 @@
 
         </quill-editor>
 
-        <i class="material-icons send-icon" matTooltip="Post" (click)="postToChannel()">send</i>
+        <i *ngIf="valid && !loading" class="material-icons send-icon" matTooltip="Post" (click)="postToChannel()">send</i>
 
         <div class="send-icon2" *ngIf="location == 'posts'">
             <label for="posts" class="upload-file">
