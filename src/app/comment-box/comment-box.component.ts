@@ -23,15 +23,21 @@ export class CommentBoxComponent implements OnInit {
 
   form: FormGroup;
   db = getFirestore();
+  data = {};
+  text: string;
 
-  refPost: AngularFireStorageReference;
-  taskPost: AngularFireUploadTask;
-  uploadProgressPost: Observable<number>;
-  uploadStatePost: Observable<string>;
-  imgUploadPost = '';
+  ref: AngularFireStorageReference;
+  task: AngularFireUploadTask;
+  uploadState: Observable<string>;
   downloadURLPost: Observable<string>;
+  downloadURLThread: Observable<string>;
 
-  imageURL2: string;
+  imgUploadThread = '';
+  imgUploadPost = '';
+  loading = false;
+
+  channelId: string;
+  currentUser = [];
 
   @ViewChild('editor', {
     static: true
@@ -73,14 +79,6 @@ export class CommentBoxComponent implements OnInit {
     upload: ''
   }
 
-
-  data = {};
-
-  text: string;
-
-  channelId: string;
-  currentUser = [];
-
   constructor(
     private route: ActivatedRoute, 
     private firestore: AngularFirestore, 
@@ -115,27 +113,32 @@ export class CommentBoxComponent implements OnInit {
 
 
   setData() {
-    if (this.location == 'posts') {
-      this.post.userId = this.currentUser['uid'];
-      this.post.text = this.text;
-      this.post.time = Timestamp.fromDate(new Date());
-      this.post.channelId = this.channelId;
-      this.post.upload = this.imgUploadPost;
-      this.data = this.post;
-      this.sendDataToPost();
-    }
+    if (this.location == 'posts') this.setPostData();
 
-    if (this.location == 'comments') {
-      this.thread.userId = this.currentUser['uid'];
-      this.thread.text = this.text;
-      this.thread.time = Timestamp.fromDate(new Date());
-      this.thread.postId = this.CommentToPost.postId;
-      this.thread.channelId = this.CommentToPost.channelId;
-      // this.thread.upload = this.imgUpload;
-      this.data = this.thread;
-      this.sendDataToComments();
-    }
+    if (this.location == 'comments') this.setCommentData();
+  }
 
+
+  setPostData(){
+    this.post.userId = this.currentUser['uid'];
+    this.post.text = this.text;
+    this.post.time = Timestamp.fromDate(new Date());
+    this.post.channelId = this.channelId;
+    this.post.upload = this.imgUploadPost;
+    this.data = this.post;
+    this.sendDataToPost();
+  }
+
+
+  setCommentData(){
+    this.thread.userId = this.currentUser['uid'];
+    this.thread.text = this.text;
+    this.thread.time = Timestamp.fromDate(new Date());
+    this.thread.postId = this.CommentToPost.postId;
+    this.thread.channelId = this.CommentToPost.channelId;
+    this.thread.upload = this.imgUploadThread;
+    this.data = this.thread;
+    this.sendDataToComments();
   }
 
 
@@ -172,36 +175,55 @@ export class CommentBoxComponent implements OnInit {
 
   uploadToPosts(event){
     const randomId = Math.random().toString(36).substring(2);
-    this.refPost = this.afStorage.ref('/images/' + randomId);
-    this.taskPost = this.refPost.put(event.target.files[0]);
-    this.taskPost.snapshotChanges().pipe(
+    this.ref = this.afStorage.ref('/images/' + randomId);
+    this.task = this.ref.put(event.target.files[0]);
+    this.task.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURLPost = this.refPost.getDownloadURL();
+        this.downloadURLPost = this.ref.getDownloadURL();
         this.downloadURLPost.subscribe(url => {
           if (url) {
-            this.uploadStatePost = null;
             this.imgUploadPost = url;
           }
         });
       })
     )
-    .subscribe();
+    .subscribe()
+  }
 
+
+  uploadToThread(event){
+    const randomId = Math.random().toString(36).substring(2);
+    this.ref = this.afStorage.ref('/images/' + randomId);
+    this.task = this.ref.put(event.target.files[0]);
+    this.task.snapshotChanges().pipe(
+      finalize(() => {
+        this.downloadURLThread = this.ref.getDownloadURL();
+        this.downloadURLThread.subscribe(url => {
+          if (url) {
+            this.uploadState = null;
+            this.imgUploadThread = url;
+          }
+        });
+      })
+    )
+    .subscribe();
   }
 
 
   discardUpload() {
     this.imgUploadPost = '';
-    this.refPost.delete();
+    this.imgUploadThread = '';
+    this.ref.delete();
     this.resetUpload();
   }
 
 
   resetUpload() {
     this.downloadURLPost = null;
-    this.uploadStatePost = null;
-    this.refPost = null;
-    this.taskPost = null;
+    this.downloadURLThread = null;
+    this.uploadState = null;
+    this.ref = null;
+    this.task = null;
   }
 
 
