@@ -1,106 +1,53 @@
-.container-toolbar{
-    width: 100vw;
-    max-width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    background-color: #350D36;
-    color: white;
-    &::-webkit-scrollbar {
+.container-toolbar {
+  width: 100vw;
+  max-width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #350D36;
+  color: white;
+
+  &::-webkit-scrollbar {
     width: 10px;
   }
-  
-  /* Track */
-  &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px transparent; 
-    border-radius: 10px;
-  }
-   
-  /* Handle */
-  &::-webkit-scrollbar-thumb {
-    background: gray; 
-    border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
-    background: rgb(164, 164, 164); 
+}
+
+mat-icon {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+button {
+  background-color: unset;
+  border: unset;
+  width: 32px;
+  height: 32px;
+  margin-left: 12px;
+  margin-right: 24px;
+  cursor: pointer;
+}
+
+.container-profil-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 100px;
+  background-color: rgb(22, 138, 167);
+
+  img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 100px;
   }
 }
 
-.toolbar-left{
-    width: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    mat-icon{
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-}
-
-.toolbar-right{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: calc(100vw - 200px);
-
-    .search-field{
-        margin-left: 150px;
-    }
-
-    .toolbar-right-active-side{
-        display: flex;
-        align-items: center;
-
-        button{
-            background-color: unset;
-            border: unset;
-            width: 32px;
-            height: 32px;
-            margin-left: 12px;
-            margin-right: 24px;
-            cursor: pointer;
-        }
-
-        .container-profil-img{
-            width: 32px;
-            height: 32px;
-            border-radius: 100px;
-            background-color: rgb(22, 138, 167);
-
-            img{
-                width: 32px;
-                height: 32px;
-                object-fit: cover;
-                border-radius: 100px;
-            }
-        }
-    }
+.search-field {
+  margin-left: 150px;
 }
 
 .drawer-container {
-    width: 100vw;
-    max-width: 100%;
-    height: calc(100vh - 50px);
-
-    // STYLE SCROLLBAR FUNKTIONIERT NICHT
-    /* Track */
-    &::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 5px transparent; 
-        border-radius: 10px;
-      }
-       
-      /* Handle */
-      &::-webkit-scrollbar-thumb {
-        background: green; 
-        border-radius: 10px;
-      }
-      
-      /* Handle on hover */
-      &::-webkit-scrollbar-thumb:hover {
-        background: rgb(164, 164, 164); 
-      }
-    
+  width: 100vw;
+  max-width: 100%;
+  height: calc(100vh - 50px);
 }
