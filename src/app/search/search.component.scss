@@ -1,10 +1,13 @@
 input{
     border: unset;
     outline: none;
+    width: 200px;
+    background-color: #5b125c;
+    color: white;
 }
 
 i{
-    color: black;
+    color: white;
 }
 
 .searchfield{
@@ -13,4 +16,5 @@ i{
     background-color: white;
     border-radius: 5px;
     padding: 4px;
+    background-color: #5b125c;
 }

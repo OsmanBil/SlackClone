@@ -23,15 +23,22 @@ export class CommentBoxComponent implements OnInit {
 
   form: FormGroup;
   db = getFirestore();
+  data = {};
+  text: string;
 
-  refPost: AngularFireStorageReference;
-  taskPost: AngularFireUploadTask;
-  uploadProgressPost: Observable<number>;
-  uploadStatePost: Observable<string>;
-  imgUploadPost = '';
+  ref: AngularFireStorageReference;
+  task: AngularFireUploadTask;
+  uploadState: Observable<string>;
   downloadURLPost: Observable<string>;
+  downloadURLThread: Observable<string>;
 
-  imageURL2: string;
+  imgUploadThread = '';
+  imgUploadPost = '';
+  loading = false;
+  valid = false;
+
+  channelId: string;
+  currentUser = [];
 
   @ViewChild('editor', {
     static: true
@@ -56,6 +63,17 @@ export class CommentBoxComponent implements OnInit {
     ],
   }
 
+  modulesSmall = {
+    'emoji-shortname': true,
+    'emoji-textarea': false,
+    'emoji-toolbar': true,
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      ['link'],
+      ['emoji']
+    ],
+  }
+
   post = {
     text: '',
     time: Timestamp.fromDate(new Date()),
@@ -72,14 +90,6 @@ export class CommentBoxComponent implements OnInit {
     channelId: '',
     upload: ''
   }
-
-
-  data = {};
-
-  text: string;
-
-  channelId: string;
-  currentUser = [];
 
   constructor(
     private route: ActivatedRoute, 
@@ -100,11 +110,19 @@ export class CommentBoxComponent implements OnInit {
   changedEditor(event: EditorChangeContent | EditorChangeSelection) {
     if (event['event'] == 'text-change') {
       this.text = event['html'];
+      console.log(this.text);
+      if(this.text == null){
+        this.valid = false;
+      }
+      else{
+        this.valid = true;
+      }
     }
   }
 
 
   postToChannel() {
+    this.loading = true;
     this.currentUser = JSON.parse(localStorage.getItem('user'));
     this.route.paramMap.subscribe(paramMap => {
       this.channelId = paramMap.get('id');
@@ -115,27 +133,32 @@ export class CommentBoxComponent implements OnInit {
 
 
   setData() {
-    if (this.location == 'posts') {
-      this.post.userId = this.currentUser['uid'];
-      this.post.text = this.text;
-      this.post.time = Timestamp.fromDate(new Date());
-      this.post.channelId = this.channelId;
-      this.post.upload = this.imgUploadPost;
-      this.data = this.post;
-      this.sendDataToPost();
-    }
+    if (this.location == 'posts') this.setPostData();
 
-    if (this.location == 'comments') {
-      this.thread.userId = this.currentUser['uid'];
-      this.thread.text = this.text;
-      this.thread.time = Timestamp.fromDate(new Date());
-      this.thread.postId = this.CommentToPost.postId;
-      this.thread.channelId = this.CommentToPost.channelId;
-      // this.thread.upload = this.imgUpload;
-      this.data = this.thread;
-      this.sendDataToComments();
-    }
+    if (this.location == 'comments') this.setCommentData();
+  }
 
+
+  setPostData(){
+    this.post.userId = this.currentUser['uid'];
+    this.post.text = this.text;
+    this.post.time = Timestamp.fromDate(new Date());
+    this.post.channelId = this.channelId;
+    this.post.upload = this.imgUploadPost;
+    this.data = this.post;
+    this.sendDataToPost();
+  }
+
+
+  setCommentData(){
+    this.thread.userId = this.currentUser['uid'];
+    this.thread.text = this.text;
+    this.thread.time = Timestamp.fromDate(new Date());
+    this.thread.postId = this.CommentToPost.postId;
+    this.thread.channelId = this.CommentToPost.channelId;
+    this.thread.upload = this.imgUploadThread;
+    this.data = this.thread;
+    this.sendDataToComments();
   }
 
 
@@ -172,36 +195,60 @@ export class CommentBoxComponent implements OnInit {
 
   uploadToPosts(event){
     const randomId = Math.random().toString(36).substring(2);
-    this.refPost = this.afStorage.ref('/images/' + randomId);
-    this.taskPost = this.refPost.put(event.target.files[0]);
-    this.taskPost.snapshotChanges().pipe(
+    this.ref = this.afStorage.ref('/images/' + randomId);
+    this.task = this.ref.put(event.target.files[0]);
+    this.task.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURLPost = this.refPost.getDownloadURL();
+        this.downloadURLPost = this.ref.getDownloadURL();
         this.downloadURLPost.subscribe(url => {
           if (url) {
-            this.uploadStatePost = null;
+            this.uploadState = null;
             this.imgUploadPost = url;
+            this.valid = true;
+          }
+        });
+      })
+    )
+    .subscribe()
+  }
+
+
+  uploadToThread(event){
+    const randomId = Math.random().toString(36).substring(2);
+    this.ref = this.afStorage.ref('/images/' + randomId);
+    this.task = this.ref.put(event.target.files[0]);
+    this.task.snapshotChanges().pipe(
+      finalize(() => {
+        this.downloadURLThread = this.ref.getDownloadURL();
+        this.downloadURLThread.subscribe(url => {
+          if (url) {
+            this.uploadState = null;
+            this.imgUploadThread = url;
+            this.valid = true;
           }
         });
       })
     )
     .subscribe();
-
   }
 
 
   discardUpload() {
     this.imgUploadPost = '';
-    this.refPost.delete();
+    this.imgUploadThread = '';
+    this.ref.delete();
     this.resetUpload();
   }
 
 
   resetUpload() {
+    this.valid = false;
+    this.loading = false;
     this.downloadURLPost = null;
-    this.uploadStatePost = null;
-    this.refPost = null;
-    this.taskPost = null;
+    this.downloadURLThread = null;
+    this.uploadState = null;
+    this.ref = null;
+    this.task = null;
   }
 
 
