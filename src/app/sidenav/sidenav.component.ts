@@ -105,14 +105,14 @@ export class SidenavComponent implements OnInit {
     const otherUsersRef = query(collection(this.db, "chatrooms", chatroom.id, "users"), where("id", "!=", this.localUser.uid));
     const s1 = onSnapshot(otherUsersRef, async (otherUserSnapshot) => {
       otherUserSnapshot.forEach(async (doc2: any) => {
-        for (let x = 0; x < this.chatrooms.length; x++) {
-          if (this.chatrooms[x].userID == doc2.uid) {
-            this.chatrooms[x].newMessageforOtherUser = doc2.data().newMessage
-          }
-          else {
+        // for (let x = 0; x < this.chatrooms.length; x++) {
+        //   if (this.chatrooms[x].userID == doc2.uid) {
+            //this.chatrooms[x].newMessageforOtherUser = doc2.data().newMessage
+          // }
+          // else {
             neededData.newMessageforOtherUser = doc2.data().newMessage
-          }
-        }
+          // }
+       // }
         this.loadOtherUsers(neededData, doc2);
       })
     })

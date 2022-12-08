@@ -9,6 +9,7 @@ import { ChatroomsService } from '../services/chatrooms.service';
 import { limit } from '@angular/fire/firestore';
 import { LightboxComponent } from '../lightbox/lightbox.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SearchService } from '../services/search.service';
 
 @Component({
   selector: 'app-chatroom',
@@ -24,17 +25,19 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
 
   textMessage;
   localUser;
-  otherUserID;
+  // otherUserID: any[] = [];
   numberOfLoadMessages = 10;
   scrollCounter = 0;
 
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
 
+  searchText = '';
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
   constructor(private route: ActivatedRoute, private firestore: AngularFirestore, private router: Router,
+    private search: SearchService,
     private dialog: MatDialog,
     public chatroomService: ChatroomsService) {
 
@@ -48,6 +51,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
       this.loadMessages();
       this.loadUsers();
     })
+    this.setSearchValue();
 
   }
 
@@ -151,6 +155,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
               chatuserData.photoURL = doc2.data().photoURL;
             }
             chatuserData.name.push(doc2.data().displayName);
+           // this.otherUserID.push(doc2.data().id)
             chatuserData.isOnline = doc2.data().isOnline;
             chatuserData.student = 'student';
             this.scrollCounter = 0;
@@ -187,6 +192,12 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     alert('Ist auf der To-Do Liste ;)')
   }
 
+
+  setSearchValue(){
+    this.search.getData().subscribe(s => {                  
+      this.searchText = s; 
+    });
+  }
 
   // OPENS THE LIGHTBOX
   openLightbox(url) {

@@ -25,6 +25,7 @@ import 'quill-emoji/dist/quill-emoji.js';
 })
 export class CommentBoxChatroomComponent implements OnInit {
 
+  
 
   form: FormGroup;
   db = getFirestore();
@@ -36,7 +37,7 @@ export class CommentBoxChatroomComponent implements OnInit {
 
   imageURL2: string;
 
-  @Input() otherUserID = '';
+  @Input() otherUserID: any[] = [];
 
   @ViewChild('editor', {
     static: true
@@ -68,7 +69,7 @@ export class CommentBoxChatroomComponent implements OnInit {
 
   text: string = '';
 
-  bla = '';
+  imageURL = '';
 
   channelId: string;
   currentUser = [];
@@ -119,9 +120,6 @@ export class CommentBoxChatroomComponent implements OnInit {
     const randomId = Math.random().toString(36).substring(2);
     this.ref2 = this.afStorage2.ref('/images/' + randomId);
     this.task2 = this.ref2.put(event.target.files[0]);
-    console.log(event)
-    console.log(this.task2)
-    console.log(this.ref2)
     this.task2.snapshotChanges().pipe(
       finalize(() => {
         this.downloadURL2 = this.ref2.getDownloadURL();
@@ -129,7 +127,7 @@ export class CommentBoxChatroomComponent implements OnInit {
           if (url) {
             this.imageURL2 = url;
             this.uploadState2 = null;
-            this.bla = url;
+            this.imageURL = url;
           }
           console.log(this.imageURL2)
         });
@@ -140,7 +138,7 @@ export class CommentBoxChatroomComponent implements OnInit {
   }
 
   discardUpload() {
-    this.bla = '';
+    this.imageURL = '';
       this.ref2.delete();
     this.resetUpload();
   }
@@ -163,61 +161,36 @@ export class CommentBoxChatroomComponent implements OnInit {
     this.messageData.messageServerTime = serverTimestamp(),
     this.messageData.messageAuthorID = this.localUser.uid;
     this.messageData.messageTime = Timestamp.fromDate(new Date());
-    this.messageData.messageImg = this.bla;
-
-
+    this.messageData.messageImg = this.imageURL;
+    
     await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
+
     this.setnewMessage();
     this.form.reset();
     this.resetUpload();
-    this.bla = '';
+    this.imageURL = '';
   };
 
 
   async setnewMessage() {
-    const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID);
-    await updateDoc(otherUserRef, {
-      newMessage: 0,
+    const otherUsersID = query(collection(this.db, "chatrooms", this.currentChatroomID, "users"), where('id', '!=', this.localUser.uid))
+    const querySnapshotsUsersID = await getDocs(otherUsersID);
+    querySnapshotsUsersID.forEach(async (doc: any) => {
+      this.otherUserID.push(doc.id)
     });
+    for(let i = 0; i < this.otherUserID.length; i++){
+    const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID[i]);
+     await updateDoc(otherUserRef, {
+       newMessage: 0,
+     })   
+    }
     const otherUserRef2 = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.localUser.uid);
     await updateDoc(otherUserRef2, {
       newMessage: increment(1),
     });
   }
 
-  quillEditorRef: any;
-  getEditorInstance(editorInstance: any) {
-    // this.quillEditorRef = editorInstance;
-
-    // console.log(editorInstance);
-
-    // const toolbar = this.quillEditorRef.getModule('toolbar');
-    // // toolbar.addHandler('image', this.imageHandler);
-    // toolbar.addHandler('image', this.uploadImageHandler);
-  }
-
-  uploadImageHandler = () => {
-    console.log("Root image handler", this.quillEditorRef);
-    // const input = document.createElement('input');
-    // input.setAttribute('type', 'file');
-    // input.setAttribute('accept', 'image/*');
-    // input.click();
-    // input.onchange = async () => {
-    //   const file = input.files?.length ? input.files[0] : null;
-
-    //   console.log('User trying to uplaod this:', file);
-
-    //   console.log("this.quillEditorRef", this.quillEditorRef);
-    //   const range = this.quillEditorRef.getSelection();
-    //   // const id = await 
-    //   this.uploadFile(file).subscribe((res: any) => {
-    //     if (res?.status) {
-    //       this.quillEditorRef.insertEmbed(range.index, 'image', res?.image_url);
-    //     }
-    //   });
-    // }
-  }
-
+  
   
 
   openLightbox(url){

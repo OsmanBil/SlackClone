@@ -35,9 +35,10 @@
             This conversation is just between the two of you. Here you can send messages and share files with <b>{{
                 chatuser.name }}</b>
         </div>
-        <div class="load-message-container d-flex flex-column-reverse">
+        <div class="load-message-container d-flex flex-column-reverse" >
             
             <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
+                <div *ngIf="searchText === '' || message['loadMessageAuthor'].toLowerCase().includes(searchText)">
                 <div>
                     <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
                         src="{{ message['loadMessageAuthorImg'] }}">
@@ -52,12 +53,12 @@
                     <img (click)="openLightbox( message['loadMessageImg'] )" class="loadmessage-image" *ngIf=" message['loadMessageImg']"
                      src="{{ message['loadMessageImg'] }}">
                 </div>
-
+                </div>
             </div>
             <div class="button-container d-flex justify-content-center" *ngIf="messages.length >= 10">
             <button class="loadmore-button btn btn-outline-secondary py-0 px-2 mt-3" (click)="loadMoreMessages()">load more messages</button>
             </div>
         </div>
     </div>
-    <app-comment-box-chatroom otherUserID="{{otherUserID}}"></app-comment-box-chatroom>
+    <app-comment-box-chatroom></app-comment-box-chatroom>
 </div>

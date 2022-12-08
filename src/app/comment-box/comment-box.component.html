@@ -1,5 +1,5 @@
 <div class="text-editor">
-    <form [formGroup]="form">
+    <form [formGroup]="form" (keydown.enter)="postToChannel()">
         <quill-editor *ngIf="location == 'posts'" #editor class="content-editor" formControlName="editor" [placeholder]="''" [modules]="modules"
             (onEditorChanged)="changedEditor($event)">
         </quill-editor>
