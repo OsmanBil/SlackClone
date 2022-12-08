@@ -1,8 +1,11 @@
 <div class="text-editor">
     <form [formGroup]="form">
-        <quill-editor #editor class="content-editor" formControlName="editor" [placeholder]="''" [modules]="modules"
+        <quill-editor *ngIf="location == 'posts'" #editor class="content-editor" formControlName="editor" [placeholder]="''" [modules]="modules"
             (onEditorChanged)="changedEditor($event)">
+        </quill-editor>
 
+        <quill-editor *ngIf="location == 'comments'" #editor class="content-editor" formControlName="editor" [placeholder]="''" [modules]="modulesSmall"
+        (onEditorChanged)="changedEditor($event)">
         </quill-editor>
 
         <i *ngIf="valid && !loading" class="material-icons send-icon" matTooltip="Post" (click)="postToChannel()">send</i>

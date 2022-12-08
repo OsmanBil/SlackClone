@@ -63,6 +63,17 @@ export class CommentBoxComponent implements OnInit {
     ],
   }
 
+  modulesSmall = {
+    'emoji-shortname': true,
+    'emoji-textarea': false,
+    'emoji-toolbar': true,
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      ['link'],
+      ['emoji']
+    ],
+  }
+
   post = {
     text: '',
     time: Timestamp.fromDate(new Date()),
