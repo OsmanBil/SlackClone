@@ -1,4 +1,4 @@
-<div *ngFor="let thread of allThreads;let i=index" class="thread-container">
+<!-- <div *ngFor="let thread of allThreads;let i=index" class="thread-container">
     <div class="channel-page">
         <div [routerLink]="['/mainpage/channel/' + thread.id]" class="channel-inner-page">
             <div># {{ thread.channelName}}</div>
@@ -21,7 +21,18 @@
                     </div>
                 </div>
             </div>
-            <!-- <app-comment-box></app-comment-box> -->
         </div>
     </div>
+</div> -->
+
+<div *ngFor="let thread of allThreads;let i=index" class="thread-container">
+
+
+    <div>
+        <div># {{allThreads[0].channelName}}</div>
+        <div>{{allThreads[0].threadName}}</div>
+        <div>{{allThreads[0].comments[0].text}}</div>
+        <div>{{allThreads[0].comments[1].text}}</div>
+    </div>
+
 </div>
