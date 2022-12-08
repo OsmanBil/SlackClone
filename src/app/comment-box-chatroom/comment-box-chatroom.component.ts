@@ -9,11 +9,11 @@ import Quill from 'quill';
 import { VideoHandler, ImageHandler, Options } from 'ngx-quill-upload';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/compat/storage';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 import { increment } from '@angular/fire/firestore';
-
+import { LightboxComponent } from '../lightbox/lightbox.component';
 import 'quill-emoji/dist/quill-emoji.js';
 
 
@@ -93,8 +93,8 @@ export class CommentBoxChatroomComponent implements OnInit {
 
 
   constructor(
-    private firestore: AngularFirestore,
-    private afStorage: AngularFireStorage, private route: ActivatedRoute) {
+    private firestore: AngularFirestore,  private dialog: MatDialog,
+    private afStorage2: AngularFireStorage, private route: ActivatedRoute) {
     this.form = new FormGroup({
       'editor': new FormControl()
     });
@@ -117,14 +117,11 @@ export class CommentBoxChatroomComponent implements OnInit {
 
   upload = (event) => {
     const randomId = Math.random().toString(36).substring(2);
-    this.ref2 = this.afStorage.ref('/images/' + randomId);
+    this.ref2 = this.afStorage2.ref('/images/' + randomId);
     this.task2 = this.ref2.put(event.target.files[0]);
     console.log(event)
     console.log(this.task2)
     console.log(this.ref2)
-    // observe upload progress
-    this.uploadProgress2 = this.task2.percentageChanges();
-    // get notified when the download URL is available
     this.task2.snapshotChanges().pipe(
       finalize(() => {
         this.downloadURL2 = this.ref2.getDownloadURL();
@@ -137,9 +134,8 @@ export class CommentBoxChatroomComponent implements OnInit {
           console.log(this.imageURL2)
         });
       })
-    )
-      .subscribe();
-    this.uploadState2 = this.task2.snapshotChanges().pipe(map(s => s.state));
+    ).subscribe();
+
 
   }
 
@@ -222,13 +218,12 @@ export class CommentBoxChatroomComponent implements OnInit {
     // }
   }
 
-  closeLightbox(){
-    this.lightboxOpen = false;
-  }
+  
 
   openLightbox(url){
-    this.lightboxOpen = true;
-    this.lightboxImg = url;
+    let dialog = this.dialog.open(LightboxComponent);
+    dialog.componentInstance.lightboxImg = url;
+  
   }
 
 }

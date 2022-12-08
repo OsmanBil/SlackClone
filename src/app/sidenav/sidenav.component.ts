@@ -77,7 +77,7 @@ export class SidenavComponent implements OnInit {
           userID: '',
           userImg: '',
           userIsOnline: '',
-          userName: [],
+          userName: '',
           newMessageforOtherUser: '',
         }
         neededData.chatroomID = chatroom.id;
@@ -123,9 +123,9 @@ export class SidenavComponent implements OnInit {
     const x2 = query(collection(this.db, "users"), where("uid", "==", doc2.id));
     const s2 = onSnapshot(x2, async (querySnapshot) => {
       querySnapshot.forEach(async (doc3: any) => {
-       // for (let x = 0; x < this.chatrooms.length; x++) {
+        for (let x = 0; x < this.chatrooms.length; x++) {
           neededData.userID = doc3.data().uid
-          neededData.userName.push(doc3.data().displayName)
+          neededData.userName = doc3.data().displayName;
           neededData.userIsOnline = doc3.data().isOnline;
           if(neededData.numberOfChatUsers > 2){
             neededData.userImg = '/assets/img/group-g4bf838880_640.png';
@@ -133,7 +133,7 @@ export class SidenavComponent implements OnInit {
           else{
           neededData.userImg = doc3.data().photoURL;
           }
-        // }
+       }
       })
     })
   }

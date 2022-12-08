@@ -153,6 +153,7 @@ export class CommentBoxThreadComponent implements OnInit {
       })
     )
       .subscribe();
+      this.uploadStateThread = this.taskThread.snapshotChanges().pipe(map(s => s.state));
   }
 
 

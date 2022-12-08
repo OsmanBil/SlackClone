@@ -51,28 +51,32 @@
     </div>
     <div class="container-channels" *ngIf="messageOpen">
 
-      <div class="d-flex flex-column" *ngFor="let chatroom of chatrooms; let i = index" class="">
+      <div *ngFor="let chatroom of chatrooms; let i = index" class="">
         <!-- <div (click)="openChatroom(chatroom.chatroomID)" >  -->
-        <div class="chat d-flex align-items-center"
+        <div class="chat"
           [ngClass]="{'active-chatroom' : activeChatChannel == ('chatroom' + i) }"
           *ngIf="chatroom.showChatroomInSidebar == true" (click)="showActiveChat('chatroom' + i, i)">
-          <div class="chat-containers d-flex align-items-center" [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]">
+          <div class="d-flex align-items-center" [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]">
             <div class="header-img-container">
               <img class="chatroom-img me-2" src="{{ chatroom.userImg }}">
-              <div *ngIf="chatroom.numberOfChatUsers < 3" [ngClass]="{'header-icon-online' : chatroom.userIsOnline == true}"></div>
+              <div *ngIf="chatroom.numberOfChatUsers < 3"
+                [ngClass]="{'header-icon-online' : chatroom.userIsOnline == true}"></div>
             </div>
-            <div class="user-names-container" >
-              <div class="d-flex user-names" *ngFor="let user of chatroom.userName, let i = index">
-                <span *ngIf="i > 0" class="me-2">, </span>
-                <p class="overflow-hidden d-flex">{{user}}</p>
+            <div class="line-container">
+              <div class="mt-1 user-names">
+                <p>{{ chatroom.userName }}</p>
+                <p class="more-users d-flex align-item-center" *ngIf="chatroom.numberOfChatUsers > 2">
+                  <span>+</span>
+                  <span [innerHTML]="chatroom.numberOfChatUsers - 2"></span>
+                </p>
               </div>
+              <span class="newMessage ms-auto me-2" *ngIf="chatroom.newMessageforOtherUser > 0">{{
+                chatroom.newMessageforOtherUser }}</span>
+                <mat-icon (click)="showChatroomInSidebar(chatroom.chatroomID)" class="close-sidebar-chatroom ms-auto me-2"
+                fontIcon="close"></mat-icon>
             </div>
-            <!-- <span class="mt-1">{{ chatroom.userName }}</span> -->
-            <span class="newMessage ms-auto me-2" *ngIf="chatroom.newMessageforOtherUser > 0">{{
-              chatroom.newMessageforOtherUser }}</span>
+           
           </div>
-          <mat-icon (click)="showChatroomInSidebar(chatroom.chatroomID)" class="close-sidebar-chatroom ms-auto me-2"
-            fontIcon="close"></mat-icon>
         </div>
       </div>
 

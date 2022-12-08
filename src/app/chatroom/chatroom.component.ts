@@ -7,6 +7,8 @@ import { AngularFirestore, } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { ChatroomsService } from '../services/chatrooms.service';
 import { limit } from '@angular/fire/firestore';
+import { LightboxComponent } from '../lightbox/lightbox.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-chatroom',
@@ -16,37 +18,14 @@ import { limit } from '@angular/fire/firestore';
 export class ChatroomComponent implements OnInit, AfterViewChecked {
   db = getFirestore();
   @Input() currentChatroomID;
-  @Input() currentChatroomID2;
   @Input() public messages: any[] = [];
   @Input() public chatusers: any[] = [];
-  @Input() public chatusersID: any[] = [];
-  ligthboxOpen: true;
+
+
   textMessage;
   localUser;
   otherUserID;
-  @Input() activeChatroomID = '';
-
   numberOfLoadMessages = 10;
-  messageData = {
-    messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
-    messageServerTime: serverTimestamp(),
-    messageAuthor: 'server',
-    messageTime: Timestamp.fromDate(new Date()),
-    messageAuthorImg: '',
-    messageAuthorID: '',
-  }
-
-  loadMessageData = {
-    loadMessageText: '',
-    loadMessageTime: Timestamp,
-    loadMessageServerTime: Timestamp,
-    loadMessageAuthor: '',
-    loadMessageAuthorImg: '',
-    loadMessageAuthorID: '',
-    messageID: '',
-    loadMessageImg: ''
-  };
-
   scrollCounter = 0;
 
   @Input() lightboxOpen = false;
@@ -56,33 +35,28 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
   constructor(private route: ActivatedRoute, private firestore: AngularFirestore, private router: Router,
+    private dialog: MatDialog,
     public chatroomService: ChatroomsService) {
 
   }
 
-
-
-
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
-    this.chatusersID = [];
     this.route.paramMap.subscribe(paramMap => {
       this.numberOfLoadMessages = 10;
       this.currentChatroomID = paramMap.get('id');
       this.loadMessages();
       this.loadUsers();
-
     })
-    this.scrollToBottom();
-   
+
   }
 
+  // SCROLLS TO BOTTOM WHEN LOADING IS FINISH, BUT SHOULD ONLY ONCE, THAT`s THE REASON FOR THE COUNTER
   ngAfterViewChecked() {
-    if(this.numberOfLoadMessages == 10 && this.scrollCounter == 0) {
+    if (this.numberOfLoadMessages == 10 && this.scrollCounter == 0) {
       this.scrollToBottom();
       this.scrollCounter++
-    } 
-    
+    }
   }
 
   scrollToBottom(): void {
@@ -91,24 +65,17 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     } catch (err) { }
   }
 
-  scrollToTop(): void {
-    try {
-      this.myScrollContainer.nativeElement.scrollToBottom = this.myScrollContainer.nativeElement.scrollHeight;
-    } catch (err) { }
-  }
+
 
   async loadMoreMessages() {
     this.numberOfLoadMessages += 10;
-    this.chatusersID = [];
     await this.loadMessages();
     await this.loadUsers();
-    this.scrollToTop();
   }
 
   loadMessages() {
     const messagesRef = collection(this.db, "chatrooms", this.currentChatroomID, "messages");
     const messagesQ = query(messagesRef, orderBy("messageServerTime", "desc"), limit(this.numberOfLoadMessages));
-
     const loadedChatID = this.currentChatroomID;
     const unsubscribe = onSnapshot(messagesQ, async (snapshot) => {
       if (loadedChatID != this.currentChatroomID) {
@@ -144,39 +111,55 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  async loadUsers() {
-    const q = collection(this.db, "chatrooms", this.currentChatroomID, "users")
-    const querySnapshotsUsersID = await getDocs(q);
-    this.chatusers = [];
-    this.chatusersID = [];
-    querySnapshotsUsersID.forEach((doc: any) => {
+  // GET NUMBER OF CHATROOM USERS FOR EACH CHATROOM
+  async getNumberOfChatroomUsers(chatuserData) {
+    const localUserOneChatroom = query(collection(this.db, "chatrooms"), where("id", "==", this.currentChatroomID));
+    const localUserOneChatroomDoc = await getDocs(localUserOneChatroom);
+    (localUserOneChatroomDoc).forEach(async (onechatroom: any) => {
+      chatuserData.numberOfChatUsers = onechatroom.data().numberOfUsers
+    });
+  }
 
-      if (doc.data().id !== this.localUser.uid) {
-        this.chatusersID.push({
-          id: doc.data().id,
-        })
-        this.otherUserID = doc.data().id;
-      }
-    })
+  // LOAD ALL USERS, EXCEPT THE LOCAL USER. THEN WITH THE USER ID THE CURRENT NAME AND IMG. IF IT´s A GROUP CHAT THE IMAGE WILL BE A FIXED ONE 
+  async loadUsers() {
+    let chatuserData: any = {
+      id: '',
+      numberOfChatUsers: Number,
+      name: [],
+      photoURL: '',
+      isOnline: '',
+      student: 'student',
+    }
+    await this.getNumberOfChatroomUsers(chatuserData)
+    const otherUsersID = query(collection(this.db, "chatrooms", this.currentChatroomID, "users"), where('id', '!=', this.localUser.uid))
+    const querySnapshotsUsersID = await getDocs(otherUsersID);
     this.chatusers = [];
-    const loadedChatID = this.currentChatroomID;
-    for (let i = 0; i < this.chatusersID.length; i++) {
-      const unsub = onSnapshot(doc(this.db, "users", this.chatusersID[i].id), { includeMetadataChanges: true },
-        (doc: any) => {
+    querySnapshotsUsersID.forEach((doc: any) => {
+      chatuserData.id = doc.data().id;
+      const loadedChatID = this.currentChatroomID;
+      const chatroomOtherUsers = query(collection(this.db, "users"), where('uid', '==', doc.data().id))
+      const unsub = onSnapshot(chatroomOtherUsers, async (chatroomOtherUserID: any) => {
+        chatroomOtherUserID.forEach((doc2: any) => {
           if (loadedChatID != this.currentChatroomID) {
-            unsub()
+            unsub();
           }
           else {
-            this.chatusers = [];
-            let chatuserData = {
-              id: doc.data().id, name: doc.data().displayName, photoURL: doc.data().photoURL,
-              isOnline: doc.data().isOnline, student: 'student',
+            if (chatuserData.numberOfChatUsers > 2) {
+              chatuserData.photoURL = '/assets/img/group-g4bf838880_640.png';
             }
-            this.chatusers.push(chatuserData)
-            this.scrollCounter = 0
+            else {
+              chatuserData.photoURL = doc2.data().photoURL;
+            }
+            chatuserData.name.push(doc2.data().displayName);
+            chatuserData.isOnline = doc2.data().isOnline;
+            chatuserData.student = 'student';
+            this.scrollCounter = 0;
           }
-        })
-    }
+        }
+        )
+      })
+    })
+    this.chatusers.push(chatuserData)
   }
 
   convertTimestamp(timestamp) {
@@ -204,14 +187,11 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     alert('Ist auf der To-Do Liste ;)')
   }
 
-  
-  closeLightbox(){
-    this.lightboxOpen = false;
-  }
 
-  openLightbox(url){
-    this.lightboxOpen = true;
-    this.lightboxImg = url;
+  // OPENS THE LIGHTBOX
+  openLightbox(url) {
+    let dialog = this.dialog.open(LightboxComponent);
+    dialog.componentInstance.lightboxImg = url;
   }
 
 
