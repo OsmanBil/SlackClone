@@ -15,21 +15,23 @@
         </div>
     </div>
 
-    <div class="comments" *ngFor="let comment of comments">
-        <img class="profile-img" src="{{ comment.img }}">
-
-        <div>
-            <div class="general-info-line">
-                <p><b>{{ comment.author }}</b></p>
-                <span>{{ comment.time }}</span>
+    <div class="comment-container" #scrollMe>
+        <div class="comments" *ngFor="let comment of comments">
+            <img class="profile-img" src="{{ comment.img }}">
+    
+            <div>
+                <div class="general-info-line">
+                    <p><b>{{ comment.author }}</b></p>
+                    <span>{{ comment.time }}</span>
+                </div>
+                <div class="post">
+                    <p [innerHTML]="comment.text"></p>
+                </div>
             </div>
-            <div class="post">
-                <p [innerHTML]="comment.text"></p>
-            </div>
+    
+            <img (click)="openLightbox( comment.uploadImg )" class="upload-image" *ngIf=" comment.uploadImg"
+                src="{{ comment.uploadImg }}">
         </div>
-
-        <img (click)="openLightbox( comment.uploadImg )" class="upload-image" *ngIf=" comment.uploadImg"
-            src="{{ comment.uploadImg }}">
     </div>
 </div>
 

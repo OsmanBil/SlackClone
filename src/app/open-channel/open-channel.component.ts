@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Channel } from 'src/models/channel.class';
@@ -15,7 +15,7 @@ import { LightboxComponent } from '../lightbox/lightbox.component';
   templateUrl: './open-channel.component.html',
   styleUrls: ['./open-channel.component.scss']
 })
-export class OpenChannelComponent implements OnInit{
+export class OpenChannelComponent implements OnInit, AfterViewChecked{
 
   
   db = getFirestore();
@@ -28,7 +28,9 @@ export class OpenChannelComponent implements OnInit{
   thread = [];
 
   searchText = '';
+  scrollCounter = 0;
   
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
 
@@ -50,6 +52,21 @@ export class OpenChannelComponent implements OnInit{
       this.loadPosts();
     })
     this.setSearchValue();
+  }
+
+
+  ngAfterViewChecked() {
+    if(this.scrollCounter == 0) {
+      this.scrollToBottom();
+      this.scrollCounter++
+    } 
+  }
+
+
+  scrollToBottom(): void {
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) { }
   }
 
 
@@ -113,6 +130,7 @@ export class OpenChannelComponent implements OnInit{
       });
     });
     this.posts.push(post);
+    this.scrollCounter = 0
   }
 
 

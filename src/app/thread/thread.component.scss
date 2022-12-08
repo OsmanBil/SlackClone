@@ -1,3 +1,8 @@
+.comment-container{
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .comments{
     display: flex;
     margin-bottom: 16px;
@@ -8,7 +13,7 @@
     }
 
     &:last-child{
-        margin-bottom: 60px !important;
+        margin-bottom: 180px !important;
     }
 }
 
