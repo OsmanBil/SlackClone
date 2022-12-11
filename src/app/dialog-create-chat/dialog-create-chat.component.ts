@@ -168,10 +168,6 @@ export class DialogCreateChatComponent implements OnInit {
         this.oldMessages.push(messageData)
       })
     })
-    console.log('oldMessages zum ersten Mal ausgeloogt', this.oldMessages, 'später', this.oldMessages.length);
-    console.log('oldMessages an der Stelle [0]', this.oldMessages[0]);
-    console.log('oldMessages length',this.oldMessages.length);
-    console.log('oldMessages zum zweiten Mal ausgeloogt', this.oldMessages);
     
   }
 

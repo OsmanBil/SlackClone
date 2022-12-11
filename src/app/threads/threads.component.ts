@@ -28,7 +28,7 @@ export class ThreadsComponent implements OnInit {
 
   threadName = '';
   channelName = '';
-  
+
 
   allThreads = [];
 
@@ -37,21 +37,99 @@ export class ThreadsComponent implements OnInit {
   db = getFirestore();
   comments = [];
 
+  localUser;
+  ALLTHREADS: any[] = [];
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, public fr: Firestore) { }
 
   async ngOnInit(): Promise<void> {
-  await  this.loadAll()
-
+    this.localUser = JSON.parse(localStorage.getItem('user'));
+    // await  this.loadAll()
+    this.loadAllThreads();
   }
 
-  async loadAll(){
-   await this.loadComments();
+  async loadAll() {
+
+    await this.loadComments();
     this.loadThread()
-    
 
-    
+
+
   }
+
+  async loadAllThreads() {
+    const userThreads = query(collection(this.db, 'users', this.localUser.uid, 'threads'), orderBy("time"));
+    const userThreadsDocs = await getDocs(userThreads);
+    userThreadsDocs.forEach(async (onethread: any) => {
+      let threadData = {
+        channelID: '',
+        postID: '',
+        time: Timestamp,
+        postAuthorID: '',
+        postAuthorImg: '',
+        postAuthorName: '',
+        postTime: Timestamp,
+        postText: '',
+        postUpload: '',
+        lastTwoComment: [],
+      }
+      
+      threadData.channelID = onethread.data().channelId,
+        threadData.postID = onethread.data().postId,
+        threadData.time = onethread.data().time
+
+      const authorRef = query(collection(this.db, 'channels', threadData.channelID, 'posts'), where('postId', '==', threadData.postID));
+      const authorDocs = await getDocs(authorRef);
+      authorDocs.forEach(async (author: any) => {
+        threadData.postAuthorID = author.data().userId;
+        threadData.postTime = author.data().time;
+        threadData.postText = author.data().text;
+        threadData.postUpload = author.data().upload;
+      })
+
+      const authorUserRef = query(collection(this.db, 'users'), where('uid', '==', threadData.postAuthorID));
+      const authorUserDocs = await getDocs(authorUserRef);
+      authorUserDocs.forEach(async (authorData: any) => {
+        threadData.postAuthorImg = authorData.data().photoURL;
+        threadData.postAuthorName = authorData.data().displayName;
+
+      })
+
+      const commentRef = query(collection(this.db, 'channels', threadData.channelID, 'posts', threadData.postID, 'comments'), orderBy('time', 'desc'), limit(2));
+      const commentDocs = await getDocs(commentRef);
+      commentDocs.forEach(async (comment: any) => {
+        let commendData = {
+          commentLastAuthorID: '',
+          commentLastAuthorImg: '',
+          commentLastAuthorName: '',
+          commentLastTime: '',
+          commentLastText: '',
+          commentLastUpload: '',
+        }
+        commendData.commentLastAuthorID = comment.data().userId;
+        commendData.commentLastText = comment.data().text;
+        commendData.commentLastTime = comment.data().time;
+        commendData.commentLastUpload = comment.data().upload;
+
+        const commentAuthorRef = query(collection(this.db, 'users'), where('uid', '==', commendData.commentLastAuthorID));
+        const commentAuthorDocs = await getDocs(commentAuthorRef);
+        commentAuthorDocs.forEach(async (commentAuthorData: any) => {
+          commendData.commentLastAuthorImg = commentAuthorData.data().photoURL;
+          commendData.commentLastAuthorName = commentAuthorData.data().displayName;
+        })
+        threadData.lastTwoComment.push(commendData)
+      })
+
+      this.ALLTHREADS.push(threadData)
+    });
+
+    console.log(this.ALLTHREADS)
+  }
+
+
+
+
+
 
   loadThread() {
     this.firestore.collection(`channels`).doc(this.channelId).collection('posts').doc(this.postId).get().subscribe(async ref => {
@@ -71,13 +149,13 @@ export class ThreadsComponent implements OnInit {
   }
 
   loadChannelNames() {
-   
+
     this.firestore.collection(`channels`).doc(this.channelId).get().subscribe(async ref => {
-       const doc: any = ref.data();
-     // console.log('Channel Name: #',  doc.channelName)
+      const doc: any = ref.data();
+      // console.log('Channel Name: #',  doc.channelName)
       this.channelName = doc.channelName
-      this.allThreads.push({id: this.channelId, threadName: this.threadName, channelName: doc.channelName, comments : this.comments})
- 
+      this.allThreads.push({ id: this.channelId, threadName: this.threadName, channelName: doc.channelName, comments: this.comments })
+
     });
 
     console.log('allThreads:', this.allThreads)
@@ -87,7 +165,7 @@ export class ThreadsComponent implements OnInit {
 
   async loadComments() {
     let commentRef = collection(this.db, "channels", this.channelId, "posts", this.postId, 'comments');
-    
+
     let q = query(commentRef, orderBy("time"));
     let unsubscribe = onSnapshot(q, async (snapshot) => {
       this.comments = [];
@@ -144,7 +222,7 @@ export class ThreadsComponent implements OnInit {
 
 
 
-  openLightbox(url){
+  openLightbox(url) {
     let dialog = this.dialog.open(LightboxComponent);
     dialog.componentInstance.lightboxImg = url;
   }
@@ -163,7 +241,7 @@ export class ThreadsComponent implements OnInit {
   // import 'firebase/firestore';
   // import { Channel } from 'src/models/channel.class';
   // import { fromEvent, timestamp } from 'rxjs';
-  
+
   // @Component({
   //   selector: 'app-threads',
   //   templateUrl: './threads.component.html',
@@ -180,14 +258,14 @@ export class ThreadsComponent implements OnInit {
   //   localUser;
   //   counter = 0;
   //   userId = '';
-  
+
   //   constructor(private route: ActivatedRoute, public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, public fr: Firestore) { }
-  
+
   //   async ngOnInit(): Promise<void> {
   //     await this.loadUser()
   //     await this.loadThreads();
   //   }
-  
+
   //   async loadThreads() {
   //     let ref = collection(this.db, "users", this.userId, "threads");
   //     let y = query(ref, orderBy("time", "desc"));
@@ -205,7 +283,7 @@ export class ThreadsComponent implements OnInit {
   //       unsubscribe()
   //     });
   //   }
-  
+
   //   loadUser() {
   //     // Get the existing data
   //     var existing = localStorage.getItem('user');
@@ -215,7 +293,7 @@ export class ThreadsComponent implements OnInit {
   //     this.userId = existing['uid'];
   //     // console.log('USER: ', existing['uid'])
   //   }
-  
+
   //   loadChannelNames(counter) {
   //     this.firestore.collection(`channels`).doc(this.channelId).get().subscribe(async ref => {
   //       // const doc: any = ref.data();
@@ -224,7 +302,7 @@ export class ThreadsComponent implements OnInit {
   //       // this.testArray.push({ channelName: this.testVar.channelName })
   //     });
   //   }
-  
+
   //   // loadMessages(counter) {
   //   //     const visitArray = this.firestore.collection("channels").doc(this.channelId).collection("posts").snapshotChanges();
   //   //    visitArray.subscribe(payload => {
@@ -243,7 +321,7 @@ export class ThreadsComponent implements OnInit {
   //   //     }
   //   //   });
   //   // }
-  
+
   //   async loadMessages(counter) {
   //     let ref = collection(this.db, "channels", this.channelId, "posts");
   //     let q = query(ref, orderBy("time", "asc"), limitToLast(2));
@@ -255,7 +333,7 @@ export class ThreadsComponent implements OnInit {
   //       unsubscribe()
   //     });
   //   }
-  
+
   //   async loadFirstMessage(counter) {
   //     let ref = collection(this.db, "channels", this.channelId, "posts");
   //     let y = query(ref, orderBy("time"), limit(1));
@@ -267,7 +345,7 @@ export class ThreadsComponent implements OnInit {
   //       unsubscribe()
   //     });
   //   }
-  
+
   //   async loadAuthor(postDoc, counter) {
   //     let user = query(collection(this.db, "users"), where("uid", "==", postDoc.data()['userId']));
   //     let querySnapshot = await getDocs(user);
@@ -282,8 +360,8 @@ export class ThreadsComponent implements OnInit {
   //       this.allThreads[counter].content.push(post);
   //     });
   //   }
-  
-  
+
+
   //   convertTimestamp(timestamp) {
   //     let date = timestamp.toDate();
   //     let mm = date.getMonth();
@@ -304,9 +382,9 @@ export class ThreadsComponent implements OnInit {
   //     date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
   //     return date;
   //   }
-  
+
   // }
-  
+
 
 
 }

@@ -79,7 +79,8 @@ export class CommentBoxComponent implements OnInit {
     time: Timestamp.fromDate(new Date()),
     userId: '',
     channelId: '',
-    upload: ''
+    upload: '',
+    postId: ''
   }
 
   thread = {
@@ -90,6 +91,8 @@ export class CommentBoxComponent implements OnInit {
     channelId: '',
     upload: ''
   }
+
+  localUser;
 
   constructor(
     private route: ActivatedRoute, 
@@ -104,6 +107,7 @@ export class CommentBoxComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.localUser = JSON.parse(localStorage.getItem('user'));
   }
 
 
@@ -128,7 +132,7 @@ export class CommentBoxComponent implements OnInit {
       this.channelId = paramMap.get('id');
     })
     this.setData();
-    this.setThread();
+    // this.setThread();
   }
 
 
@@ -145,6 +149,7 @@ export class CommentBoxComponent implements OnInit {
     this.post.time = Timestamp.fromDate(new Date());
     this.post.channelId = this.channelId;
     this.post.upload = this.imgUploadPost;
+    this.post.postId = Math.random().toString(36).substring(2);
     this.data = this.post;
     this.sendDataToPost();
   }
@@ -158,21 +163,33 @@ export class CommentBoxComponent implements OnInit {
     this.thread.channelId = this.CommentToPost.channelId;
     this.thread.upload = this.imgUploadThread;
     this.data = this.thread;
+
     this.sendDataToComments();
   }
 
 
   async sendDataToPost() {
-    await addDoc(collection(this.db, "channels", this.channelId, "posts"), this.data);
+    await setDoc(doc(this.db, "channels", this.channelId, "posts", this.post.postId), this.data);
+    await this.setThreadInUser();
     this.form.reset();
     this.resetUpload();
   }
 
+  async setThreadInUser(){
+    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.post.postId), {  channelId: this.channelId, postId: this.post.postId, time: Timestamp.fromDate(new Date()) });
+  }
 
   async sendDataToComments() {
     await addDoc(collection(this.db, "channels", this.CommentToPost.channelId, "posts", this.CommentToPost.postId, "comments"), this.data);
+    await this.setThreadCommentInUser();
     this.form.reset();
     this.resetUpload();
+  }
+
+  async setThreadCommentInUser(){
+    console.log(this.CommentToPost.postId)
+    console.log(this.CommentToPost.channelId)
+    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.CommentToPost.postId), {  channelId: this.CommentToPost.channelId, postId: this.CommentToPost.postId, time: Timestamp.fromDate(new Date()) });
   }
 
 
@@ -180,13 +197,13 @@ export class CommentBoxComponent implements OnInit {
     let ref = collection(this.db, "channels", this.channelId, "posts");
     let y = query(ref, orderBy("time"), limit(1));
     let unsubscribe = onSnapshot(y, (snapshot) => {
-      snapshot.forEach((postDoc) => {
+      snapshot.forEach((postDoc: any) => {
         // Get the existing data
         var existing = localStorage.getItem('user');
         // If no existing data, create an array
         // Otherwise, convert the localStorage string to an array
         existing = existing ? JSON.parse(existing) : {};
-        this.firestore.collection('users').doc(existing['uid']).collection('threads').doc(this.channelId).set({ time: postDoc.data()['time'] })
+        this.firestore.collection('users').doc(existing['uid']).collection('threads').doc(this.channelId).set({ time: postDoc.data()['time'], channelId: this.channelId, postId: postDoc.id })
       });
       unsubscribe()
     });
