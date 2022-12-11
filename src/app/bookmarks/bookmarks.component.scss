@@ -1,0 +1,59 @@
+.bookmarks-container{
+    width: 30vw;
+    min-height: 40vh;
+    input{
+       
+        outline: none;
+     
+        border-radius: 5px;
+        &::placeholder{
+            font-style: italic;
+            font-size: 14px;
+            
+        }
+    }
+}
+
+mat-form-field{
+    width: 100%!important;
+}
+
+.folder-img{
+    height: 50px;
+    width: 80px;
+}
+
+.bookmark-text{
+    background-color: rgb(224, 255, 255);
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.close-lightbox{
+    font-size: 22px;
+    font-weight: light;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    cursor: pointer;
+    &:hover{
+        background-color: lightgrey;
+        border-radius: 100%;
+        color: white;
+        font-weight: bold;
+    };
+}
+
+.add-button{
+    font-size: 16px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    mat-icon{
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

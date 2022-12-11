@@ -3,20 +3,20 @@
         <div class="d-flex align-items-center">
             <div class="header-img-container">
                 <img src="{{ chatuser['photoURL'] }}" class="header-user-img">
-                <div *ngIf="chatuser.numberOfChatUsers < 3" 
-                 [ngClass]="{'header-icon-online' : chatuser.isOnline == true}"></div>
+                <div *ngIf="chatuser.numberOfChatUsers < 3"
+                    [ngClass]="{'header-icon-online' : chatuser.isOnline == true}"></div>
             </div>
             <div class="ms-2 d-flex align-items-center">
-            <div class="d-flex align-items-center" *ngFor="let names of chatuser.name, let i = index">
-                <p *ngIf="i > 0" class="ms-1 fs-5 fw-bold"> / </p>
-                <p class="header-user-name ps-1">{{ names }}</p>
+                <div class="d-flex align-items-center" *ngFor="let names of chatuser.name, let i = index">
+                    <p *ngIf="i > 0" class="ms-1 fs-5 fw-bold"> / </p>
+                    <p class="header-user-name ps-1">{{ names }}</p>
 
-            </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="p-2 add-bookmark-container d-flex align-items-center">
-        <div class="d-flex align-items-center ps-1 pe-3 py-1" (click)="alertlist()">
+        <div class="d-flex align-items-center ps-1 pe-3 py-1" (click)="openBookmarks( currentChatroomID )">
             <mat-icon fontIcon="add"></mat-icon>
             <p>Add bookmark</p>
         </div>
@@ -26,37 +26,50 @@
             <div class="d-flex align-items-start">
                 <img src="{{ chatuser['photoURL'] }}" class="user-img me-2">
                 <div>
-                    <p class="first-message-user-name">{{ chatuser.name }}</p>
-                    <p class="fw-light"><i>{{ chatuser.student }}</i></p>
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center" *ngFor="let names of chatuser.name, let i = index">
+                            <p *ngIf="i > 0" class="ms-1 fs-5 fw-bold"> / </p>
+                            <p class="header-user-name ps-1">{{ names }}</p>
+                        </div>
+                    </div>
+                    <p *ngIf="chatuser.numberOfChatUsers < 3" class="fw-light ps-1 pt-1"><i>{{ chatuser.student }}</i></p>
+                    <p *ngIf="chatuser.numberOfChatUsers > 2" class="fw-light ps-1 pt-1"><i>Groupchat</i></p>
                 </div>
             </div>
         </div>
-        <div *ngFor="let chatuser of chatusers" class="ms-2 text-secondary">
-            This conversation is just between the two of you. Here you can send messages and share files with <b>{{
-                chatuser.name }}</b>
+        <div *ngFor="let chatuser of chatusers" class="ms-2 text-secondary d-flex align-items-center">
+            <p>This conversation is just between the two of you. Here you can send messages and share files with</p>
+             <b><div class="d-flex align-items-center">
+                <div class="d-flex align-items-center" *ngFor="let names of chatuser.name, let i = index">
+                    <p *ngIf="i > 0" class="ms-1 fw-bold"> and </p>
+                    <p class=" ps-1">{{ names }}</p>
+                </div>
+            </div></b>
         </div>
-        <div class="load-message-container d-flex flex-column-reverse" >
-            
+        <div class="load-message-container d-flex flex-column-reverse">
+
             <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
-                <div *ngIf="searchText === '' || message['loadMessageAuthor'].toLowerCase().includes(searchText)">
-                <div>
-                    <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
-                        src="{{ message['loadMessageAuthorImg'] }}">
-                </div>
-                <div [ngClass]="{'server-message' : message['loadMessageAuthor'] == 'server'}">
-                    <div class="d-flex align-items-start" *ngIf="message['loadMessageAuthor'] !== 'server'">
-                        <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
-                        <p>{{ message['loadMessageTime']}}</p>
+                <div
+                    *ngIf="searchText === '' || message['loadMessageText'].toLowerCase().includes(searchText) || message['loadMessageAuthor'].toLowerCase().includes(searchText) ">
+                    <div>
+                        <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
+                            src="{{ message['loadMessageAuthorImg'] }}">
                     </div>
-                    <div [innerHTML]="message['loadMessageText']" class="message-text">
+                    <div [ngClass]="{'server-message' : message['loadMessageAuthor'] == 'server'}">
+                        <div class="d-flex align-items-start" *ngIf="message['loadMessageAuthor'] !== 'server'">
+                            <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
+                            <p>{{ message['loadMessageTime']}}</p>
+                        </div>
+                        <div [innerHTML]="message['loadMessageText']" class="message-text">
+                        </div>
+                        <img (click)="openLightbox( message['loadMessageImg'] )" class="loadmessage-image"
+                            *ngIf=" message['loadMessageImg']" src="{{ message['loadMessageImg'] }}">
                     </div>
-                    <img (click)="openLightbox( message['loadMessageImg'] )" class="loadmessage-image" *ngIf=" message['loadMessageImg']"
-                     src="{{ message['loadMessageImg'] }}">
-                </div>
                 </div>
             </div>
             <div class="button-container d-flex justify-content-center" *ngIf="messages.length >= 10">
-            <button class="loadmore-button btn btn-outline-secondary py-0 px-2 mt-3" (click)="loadMoreMessages()">load more messages</button>
+                <button class="loadmore-button btn btn-outline-secondary py-0 px-2 mt-3"
+                    (click)="loadMoreMessages()">load more messages</button>
             </div>
         </div>
     </div>

@@ -35,7 +35,11 @@
     </div>
     <div class="body-container">
         <div class="latest-messages-container" *ngIf="loadingFinish == true">
+           
             <div *ngFor="let messageEx of oldMessages">
+                <div
+                *ngIf="searchText === '' || messageEx['messageText'].toLowerCase().includes(searchText) || messageEx['messageAuthor'].toLowerCase().includes(searchText) ">
+                
                 <div class="day-container" [routerLink]="['/mainpage/chatroom/' + messageEx.chatroomID]">
                     <p class="day-text">{{ messageEx.messageTime }} Uhr</p>
                     <div class="message-container">
@@ -58,6 +62,7 @@
 
                     </div>
                 </div>
+            </div>
             </div>
         </div>
 

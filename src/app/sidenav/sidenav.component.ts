@@ -105,17 +105,10 @@ export class SidenavComponent implements OnInit {
     const otherUsersRef = query(collection(this.db, "chatrooms", chatroom.id, "users"), where("id", "!=", this.localUser.uid));
     const s1 = onSnapshot(otherUsersRef, async (otherUserSnapshot) => {
       otherUserSnapshot.forEach(async (doc2: any) => {
-        // for (let x = 0; x < this.chatrooms.length; x++) {
-        //   if (this.chatrooms[x].userID == doc2.uid) {
-            //this.chatrooms[x].newMessageforOtherUser = doc2.data().newMessage
-          // }
-          // else {
-            neededData.newMessageforOtherUser = doc2.data().newMessage
-          // }
-       // }
         this.loadOtherUsers(neededData, doc2);
       })
     })
+    this.loadNewMessages(neededData);
   }
 
    // LÄD DIE ANDEREN USERS AUßer DEN LOCAL USER
@@ -123,20 +116,29 @@ export class SidenavComponent implements OnInit {
     const x2 = query(collection(this.db, "users"), where("uid", "==", doc2.id));
     const s2 = onSnapshot(x2, async (querySnapshot) => {
       querySnapshot.forEach(async (doc3: any) => {
-        for (let x = 0; x < this.chatrooms.length; x++) {
           neededData.userID = doc3.data().uid
           neededData.userName = doc3.data().displayName;
           neededData.userIsOnline = doc3.data().isOnline;
+          neededData.newMessageforOtherUser = doc2.data().newMessage
           if(neededData.numberOfChatUsers > 2){
-            neededData.userImg = '/assets/img/group-g4bf838880_640.png';
+            neededData.userImg = '/assets/img/groupchat.png';
           }
           else{
           neededData.userImg = doc3.data().photoURL;
           }
-       }
       })
     })
   }
+
+    // LOAD THE NEW MESSAGE FOR CHATROOM FROM LOCAL USER
+    loadNewMessages(neededData) {
+      const x2 = query(collection(this.db, "users"), where("uid", "==", this.localUser.uid));
+      const s2 = onSnapshot(x2, async (querySnapshot) => {
+        querySnapshot.forEach(async (doc4: any) => {
+            neededData.newMessageforOtherUser = doc4.data().newMessage
+        })
+      })
+    }
 
   // ÜBERPRÜFT DAUERHAFT OB DER CHATROOM IN DER SIDEBAR ANGEZEIGT WERDEN SOLL
   checkIfChatroomIsShownInSidebar(neededData, chatroomID) {

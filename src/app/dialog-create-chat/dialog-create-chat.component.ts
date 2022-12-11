@@ -14,6 +14,7 @@ import { checkActionCode, user } from '@angular/fire/auth';
 import { from, min, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { limit } from '@angular/fire/firestore';
+import { SearchService } from '../services/search.service';
 
 class City {
   name: any;
@@ -80,16 +81,17 @@ export class DialogCreateChatComponent implements OnInit {
 
   localUser: any;
   @Input() loadingFinish = false;
-  constructor(private firestore: AngularFirestore, private router: Router) { }
+
+  searchText = '';
+
+  constructor(private firestore: AngularFirestore, private router: Router, private search: SearchService,) { }
 
   async ngOnInit() {
     this.localUser = JSON.parse(localStorage.getItem('user'));
     await this.loadOldMessages();
-    console.log('oldMessages in onInit als async', this.oldMessages);
-    console.log('oldMessages Stelle [0] in onInit', this.oldMessages[0]);
 
     setTimeout(() => { this.check() }, 500);
-    //this.check2();
+    this.setSearchValue();
   }
 
   
@@ -137,7 +139,7 @@ export class DialogCreateChatComponent implements OnInit {
           messageData.messageOtherUserName.push(doc5.data().displayName)
           if(messageData.messageOtherUserName.length > 1)
           {
-            messageData.messageOtherUserImg = '/assets/img/group-g4bf838880_640.png'
+            messageData.messageOtherUserImg = '/assets/img/groupchat.png'
           }else {
           messageData.messageOtherUserImg = doc5.data().photoURL}
 
@@ -297,7 +299,13 @@ export class DialogCreateChatComponent implements OnInit {
     date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
     return date;
   }
-
+  
+  setSearchValue(){
+    this.search.getData().subscribe(s => {                  
+      this.searchText = s; 
+      
+    });
+  }
 
   // BEISPIELE VON MIHAI
 
@@ -349,8 +357,7 @@ export class DialogCreateChatComponent implements OnInit {
       }
 
     }
-    console.log(this.oldMessages, this.oldMessages.length)
-
+   
   }
 
   async loadOldMessages2() {
@@ -395,8 +402,8 @@ export class DialogCreateChatComponent implements OnInit {
       }
 
     }
-    console.log(this.oldMessages, this.oldMessages[0])
-
   }
+
+ 
 
 }

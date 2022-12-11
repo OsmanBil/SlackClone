@@ -162,13 +162,14 @@ export class CommentBoxChatroomComponent implements OnInit {
     this.messageData.messageAuthorID = this.localUser.uid;
     this.messageData.messageTime = Timestamp.fromDate(new Date());
     this.messageData.messageImg = this.imageURL;
-    
+    if(this.text.length > 0 || this.imageURL.length > 0) {
     await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
-
-    this.setnewMessage();
+    await this.setnewMessage();
+    this.setShownInSidebarToTrue();
     this.form.reset();
     this.resetUpload();
     this.imageURL = '';
+    }
   };
 
 
@@ -190,6 +191,14 @@ export class CommentBoxChatroomComponent implements OnInit {
     });
   }
 
+  async setShownInSidebarToTrue(){
+    for(let i = 0; i < this.otherUserID.length; i++){
+      const otherUserChatroomRef = doc(this.db, "users", this.otherUserID[i], "chatids", this.currentChatroomID);
+       await updateDoc(otherUserChatroomRef, {
+         shownInSidebar: true,
+       })   
+      }
+  }
   
   
 

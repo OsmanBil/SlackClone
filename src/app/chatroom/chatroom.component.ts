@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ChatroomsService } from '../services/chatrooms.service';
 import { limit } from '@angular/fire/firestore';
 import { LightboxComponent } from '../lightbox/lightbox.component';
+import { BookmarksComponent } from '../bookmarks/bookmarks.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchService } from '../services/search.service';
 
@@ -25,7 +26,6 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
 
   textMessage;
   localUser;
-  // otherUserID: any[] = [];
   numberOfLoadMessages = 10;
   scrollCounter = 0;
 
@@ -46,6 +46,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
     this.route.paramMap.subscribe(paramMap => {
+      this.searchText = '';
       this.numberOfLoadMessages = 10;
       this.currentChatroomID = paramMap.get('id');
       this.loadMessages();
@@ -149,7 +150,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
           }
           else {
             if (chatuserData.numberOfChatUsers > 2) {
-              chatuserData.photoURL = '/assets/img/group-g4bf838880_640.png';
+              chatuserData.photoURL = '/assets/img/groupchat.png';
             }
             else {
               chatuserData.photoURL = doc2.data().photoURL;
@@ -196,6 +197,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   setSearchValue(){
     this.search.getData().subscribe(s => {                  
       this.searchText = s; 
+
     });
   }
 
@@ -205,5 +207,9 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     dialog.componentInstance.lightboxImg = url;
   }
 
+  openBookmarks(chatroomID){
+    let dialog = this.dialog.open(BookmarksComponent);
+    dialog.componentInstance.currentChatroomID = chatroomID;
+  }
 
 }

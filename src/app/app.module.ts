@@ -54,6 +54,7 @@ import { ThreadComponent } from './thread/thread.component';
 import { ChannelDetailsComponent } from './channel-details/channel-details.component';
 import { SearchComponent } from './search/search.component';
 import { LightboxComponent } from './lightbox/lightbox.component';
+import { BookmarksComponent } from './bookmarks/bookmarks.component';
 
 
 
@@ -82,6 +83,7 @@ import { LightboxComponent } from './lightbox/lightbox.component';
     ChannelDetailsComponent,
     SearchComponent,
     LightboxComponent,
+    BookmarksComponent,
   ],
   imports: [
     BrowserModule,

@@ -34,8 +34,8 @@
 
     </div>
 
-    <div class="add-channel">
-      <mat-icon fontIcon="add_circle" (click)="openDialogCreateChannel()"></mat-icon>
+    <div class="add-channel" (click)="openDialogCreateChannel()">
+      <mat-icon fontIcon="add_circle" ></mat-icon>
       <span>Create new Channel</span>
     </div>
   </div>
@@ -79,7 +79,11 @@
           </div>
         </div>
       </div>
-
+    
+    </div>
+    <div class="add-channel" [routerLink]="['/mainpage/']">
+      <mat-icon fontIcon="add_circle" ></mat-icon>
+      <span>Create new Chat</span>
     </div>
   </div>
 </div>
