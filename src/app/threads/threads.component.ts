@@ -31,7 +31,7 @@ export class ThreadsComponent implements OnInit {
 
 
   allThreads = [];
-
+  thread = [];
 
 
   db = getFirestore();
@@ -61,8 +61,11 @@ export class ThreadsComponent implements OnInit {
     const userThreads = query(collection(this.db, 'users', this.localUser.uid, 'threads'), orderBy("time"));
     const userThreadsDocs = await getDocs(userThreads);
     userThreadsDocs.forEach(async (onethread: any) => {
+
+
       let threadData = {
         channelID: '',
+        channelName: this.channelName,
         postID: '',
         time: Timestamp,
         postAuthorID: '',
@@ -75,12 +78,14 @@ export class ThreadsComponent implements OnInit {
       }
       
       threadData.channelID = onethread.data().channelId,
-        threadData.postID = onethread.data().postId,
-        threadData.time = onethread.data().time
+        threadData.postID = onethread.data().postId
+        // threadData.time = this.convertTimestamp(onethread.data().time);
+        // threadData.postTime = this.convertTimestamp(onethread.data().postTime);
 
       const authorRef = query(collection(this.db, 'channels', threadData.channelID, 'posts'), where('postId', '==', threadData.postID));
       const authorDocs = await getDocs(authorRef);
       authorDocs.forEach(async (author: any) => {
+        threadData.channelName = author.data().channelName,
         threadData.postAuthorID = author.data().userId;
         threadData.postTime = author.data().time;
         threadData.postText = author.data().text;
@@ -125,6 +130,21 @@ export class ThreadsComponent implements OnInit {
 
     console.log(this.ALLTHREADS)
   }
+
+
+
+  openComments(post) {
+    this.thread = post;
+  }
+
+
+
+
+
+
+
+
+
 
 
 
