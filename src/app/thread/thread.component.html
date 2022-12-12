@@ -27,10 +27,9 @@
                 <div class="post">
                     <p [innerHTML]="comment.text"></p>
                 </div>
-            </div>
-    
-            <img (click)="openLightbox( comment.uploadImg )" class="upload-image" *ngIf=" comment.uploadImg"
+                <img (click)="openLightbox( comment.uploadImg )" class="upload-image" *ngIf=" comment.uploadImg"
                 src="{{ comment.uploadImg }}">
+            </div>
         </div>
     </div>
 </div>

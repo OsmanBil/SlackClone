@@ -25,18 +25,52 @@
     </div>
 </div> -->
 
-<div [routerLink]="'/mainpage/channel/6NhmwuByf70BmK4RfLuP'" [queryParams]="{sendedPostID: '1pz1r8vtjox'}">
-    <button class="btn btn-success">Link</button>
-</div>
-
-<div *ngFor="let thread of allThreads;let i=index" class="thread-container">
 
 
-    <div>
-        <div># {{allThreads[0].channelName}}</div>
-        <div>{{allThreads[0].threadName}}</div>
-        <div>{{allThreads[0].comments[0].text}}</div>
-        <div>{{allThreads[0].comments[1].text}}</div>
+<div class="thread-container" *ngFor="let post of ALLTHREADS; index as i">
+    <div class="channel-page">
+        <div class="channel-inner-page">
+            <div># {{post.channelName}}</div>
+            <div class="post-container" #scrollMe>
+                <div class="posts">
+                    <img class="profile-img" src="{{ post.postAuthorImg }}">
+                    <div>
+                        <div class="general-info-line">
+                            <p><b>{{ post.postAuthorName }}</b></p>
+                            <span>{{ post.postTime }}</span>
+                        </div>
+                        <div class="post">
+                            <p [innerHTML]="post.postText"></p>
+                        </div>
+                        <img (click)="openLightbox( post['uploadImg'] )" class="upload-image" *ngIf=" post['uploadImg']"
+                            src="{{ post['uploadImg'] }}">
+                    </div>
+                </div>
+                <a class="pd-left pd-top" id="{{ post.postId }}"
+                    [routerLink]="'/mainpage/channel/' + ALLTHREADS[i].channelID"
+                    [queryParams]="{sendedPostID: ALLTHREADS[i].postID}">weiter zum Post</a>
+
+
+
+
+                    <div class="comments-container">
+                    <div class="comments" *ngFor="let comment of post.lastTwoComment.reverse(); index as a">
+                        <img class="profile-img" src="{{ comment.commentLastAuthorImg }}">
+                        <div>
+                            <div class="general-info-line">
+                                <p><b>{{ comment.commentLastAuthorName }}</b></p>
+                                <span>{{ comment.commentLastTime }}</span>
+                            </div>
+                            <div class="post">
+                                <p [innerHTML]="comment.commentLastText"></p>
+                            </div>
+                            <img (click)="openLightbox( post['uploadImg'] )" class="upload-image" *ngIf=" post['uploadImg']"
+                                src="{{ post['uploadImg'] }}">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-
 </div>
