@@ -42,6 +42,7 @@ export class CommentBoxComponent implements OnInit {
   loading = false;
   valid = false;
 
+  channelName = '';
   channelId: string;
   currentUser = [];
 
@@ -54,7 +55,7 @@ export class CommentBoxComponent implements OnInit {
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
 
-  
+
   modules = {
     'emoji-shortname': true,
     'emoji-textarea': false,
@@ -85,7 +86,8 @@ export class CommentBoxComponent implements OnInit {
     userId: '',
     channelId: '',
     upload: '',
-    postId: ''
+    postId: '',
+    channelName: ''
   }
 
   thread = {
@@ -100,11 +102,10 @@ export class CommentBoxComponent implements OnInit {
   localUser;
 
   constructor(
-    private route: ActivatedRoute, 
-    private firestore: AngularFirestore, 
+    private route: ActivatedRoute,
+    private firestore: AngularFirestore,
     private afStorage: AngularFireStorage,
-    private dialog: MatDialog) 
-    {
+    private dialog: MatDialog) {
     this.form = new FormGroup({
       'editor': new FormControl()
     });
@@ -120,10 +121,10 @@ export class CommentBoxComponent implements OnInit {
     if (event['event'] == 'text-change') {
       this.text = event['html'];
       console.log(this.text);
-      if(this.text == null){
+      if (this.text == null) {
         this.valid = false;
       }
-      else{
+      else {
         this.valid = true;
       }
     }
@@ -148,19 +149,25 @@ export class CommentBoxComponent implements OnInit {
   }
 
 
-  setPostData(){
-    this.post.userId = this.currentUser['uid'];
-    this.post.text = this.text? this.text : '';
-    this.post.time = Timestamp.fromDate(new Date());
-    this.post.channelId = this.channelId;
-    this.post.upload = this.imgUploadPost;
-    this.post.postId = Math.random().toString(36).substring(2);
-    this.data = this.post;
-    this.sendDataToPost();
+  async setPostData() {
+    this.firestore.collection(`channels`).doc(this.channelId).get().subscribe(async ref => {
+      const doc: any = ref.data();
+      this.channelName = doc.channelName;
+
+      this.post.userId = this.currentUser['uid'];
+      this.post.text = this.text;
+      this.post.time = Timestamp.fromDate(new Date());
+      this.post.channelId = this.channelId;
+      this.post.upload = this.imgUploadPost;
+      this.post.postId = Math.random().toString(36).substring(2);
+      this.post.channelName = this.channelName;
+      this.data = this.post;
+      this.sendDataToPost();
+    });
   }
 
 
-  setCommentData(){
+  setCommentData() {
     this.thread.userId = this.currentUser['uid'];
     this.thread.text = this.text? this.text : '';
     this.thread.time = Timestamp.fromDate(new Date());
@@ -179,9 +186,8 @@ export class CommentBoxComponent implements OnInit {
     this.resetUploadPost();
   }
 
-
-  async setThreadInUser(){
-    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.post.postId), {  channelId: this.channelId, postId: this.post.postId, time: Timestamp.fromDate(new Date()) });
+  async setThreadInUser() {
+    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.post.postId), { channelId: this.channelId, postId: this.post.postId, time: Timestamp.fromDate(new Date()) });
   }
 
 
@@ -192,11 +198,10 @@ export class CommentBoxComponent implements OnInit {
     this.resetUploadThread();
   }
 
-
-  async setThreadCommentInUser(){
+  async setThreadCommentInUser() {
     console.log(this.CommentToPost.postId)
     console.log(this.CommentToPost.channelId)
-    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.CommentToPost.postId), {  channelId: this.CommentToPost.channelId, postId: this.CommentToPost.postId, time: Timestamp.fromDate(new Date()) });
+    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.CommentToPost.postId), { channelId: this.CommentToPost.channelId, postId: this.CommentToPost.postId, time: Timestamp.fromDate(new Date()) });
   }
 
 
@@ -217,7 +222,7 @@ export class CommentBoxComponent implements OnInit {
   }
 
 
-  uploadToPosts(event){
+  uploadToPosts(event) {
     const randomId = Math.random().toString(36).substring(2);
     this.PostRef = this.afStorage.ref('/images/' + randomId);
     this.PostTask = this.PostRef.put(event.target.files[0]);
@@ -233,11 +238,11 @@ export class CommentBoxComponent implements OnInit {
         });
       })
     )
-    .subscribe()
+      .subscribe()
   }
 
 
-  uploadToThread(event){
+  uploadToThread(event) {
     const randomId = Math.random().toString(36).substring(2);
     this.CommentRef = this.afStorage.ref('/images/' + randomId);
     this.CommentTask = this.CommentRef.put(event.target.files[0]);
@@ -253,7 +258,7 @@ export class CommentBoxComponent implements OnInit {
         });
       })
     )
-    .subscribe();
+      .subscribe();
   }
 
 
@@ -292,7 +297,7 @@ export class CommentBoxComponent implements OnInit {
   }
 
 
-  openLightbox(url){
+  openLightbox(url) {
     let dialog = this.dialog.open(LightboxComponent);
     dialog.componentInstance.lightboxImg = url;
   }
