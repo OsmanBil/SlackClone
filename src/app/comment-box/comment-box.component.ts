@@ -155,7 +155,7 @@ export class CommentBoxComponent implements OnInit {
       this.channelName = doc.channelName;
 
       this.post.userId = this.currentUser['uid'];
-      this.post.text = this.text;
+      this.post.text = this.text? this.text : '';
       this.post.time = Timestamp.fromDate(new Date());
       this.post.channelId = this.channelId;
       this.post.upload = this.imgUploadPost;
