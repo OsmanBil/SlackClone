@@ -13,10 +13,10 @@ import { User } from '../services/user';
 })
 export class DialogEditUserComponent implements OnInit {
 
-  ref: AngularFireStorageReference;
-  task: AngularFireUploadTask;
-  uploadProgress: Observable<number>;
-  uploadState: Observable<string>;
+  ProfileRef: AngularFireStorageReference;
+  ProfileTask: AngularFireUploadTask;
+  ProfileUploadProgress: Observable<number>;
+  ProfileUploadState: Observable<string>;
   downloadURL: Observable<string>;
   imageURL: string;
 
@@ -35,30 +35,30 @@ export class DialogEditUserComponent implements OnInit {
 
   upload = (event) => {
     const randomId = Math.random().toString(36).substring(2);
-    this.ref = this.afStorage.ref('/images/' + randomId);
-    this.task = this.ref.put(event.target.files[0]);
+    this.ProfileRef = this.afStorage.ref('/images/' + randomId);
+    this.ProfileTask = this.ProfileRef.put(event.target.files[0]);
 
     // observe upload progress
-    this.uploadProgress = this.task.percentageChanges();
+    this.ProfileUploadProgress = this.ProfileTask.percentageChanges();
     // get notified when the download URL is available
-    this.task.snapshotChanges().pipe(
+    this.ProfileTask.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURL = this.ref.getDownloadURL();
+        this.downloadURL = this.ProfileRef.getDownloadURL();
         this.downloadURL.subscribe(url => {
           if (url) {
             this.imageURL = url;
-            this.uploadState = null;
+            this.ProfileUploadState = null;
           }
         });
       })
     )
       .subscribe();
-    this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
+    this.ProfileUploadState = this.ProfileTask.snapshotChanges().pipe(map(s => s.state));
   }
 
 
   discardUpload() {
-    this.ref.delete();
+    this.ProfileRef.delete();
     this.resetUpload();
   }
 
@@ -79,9 +79,9 @@ export class DialogEditUserComponent implements OnInit {
 
   resetUpload() {
     this.downloadURL = null;
-    this.uploadState = null;
-    this.ref = null;
-    this.task = null;
+    this.ProfileUploadState = null;
+    this.ProfileRef = null;
+    this.ProfileTask = null;
   }
 
 

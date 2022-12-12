@@ -26,9 +26,14 @@ export class CommentBoxComponent implements OnInit {
   data = {};
   text: string;
 
-  ref: AngularFireStorageReference;
-  task: AngularFireUploadTask;
-  uploadState: Observable<string>;
+  PostRef: AngularFireStorageReference;
+  PostTask: AngularFireUploadTask;
+  PostUploadState: Observable<string>;
+
+  CommentRef: AngularFireStorageReference;
+  CommentTask: AngularFireUploadTask;
+  CommentUploadState: Observable<string>;
+
   downloadURLPost: Observable<string>;
   downloadURLThread: Observable<string>;
 
@@ -145,7 +150,7 @@ export class CommentBoxComponent implements OnInit {
 
   setPostData(){
     this.post.userId = this.currentUser['uid'];
-    this.post.text = this.text;
+    this.post.text = this.text? this.text : '';
     this.post.time = Timestamp.fromDate(new Date());
     this.post.channelId = this.channelId;
     this.post.upload = this.imgUploadPost;
@@ -157,13 +162,12 @@ export class CommentBoxComponent implements OnInit {
 
   setCommentData(){
     this.thread.userId = this.currentUser['uid'];
-    this.thread.text = this.text;
+    this.thread.text = this.text? this.text : '';
     this.thread.time = Timestamp.fromDate(new Date());
     this.thread.postId = this.CommentToPost.postId;
     this.thread.channelId = this.CommentToPost.channelId;
     this.thread.upload = this.imgUploadThread;
     this.data = this.thread;
-
     this.sendDataToComments();
   }
 
@@ -172,19 +176,22 @@ export class CommentBoxComponent implements OnInit {
     await setDoc(doc(this.db, "channels", this.channelId, "posts", this.post.postId), this.data);
     await this.setThreadInUser();
     this.form.reset();
-    this.resetUpload();
+    this.resetUploadPost();
   }
+
 
   async setThreadInUser(){
     await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.post.postId), {  channelId: this.channelId, postId: this.post.postId, time: Timestamp.fromDate(new Date()) });
   }
 
+
   async sendDataToComments() {
     await addDoc(collection(this.db, "channels", this.CommentToPost.channelId, "posts", this.CommentToPost.postId, "comments"), this.data);
     await this.setThreadCommentInUser();
     this.form.reset();
-    this.resetUpload();
+    this.resetUploadThread();
   }
+
 
   async setThreadCommentInUser(){
     console.log(this.CommentToPost.postId)
@@ -212,14 +219,14 @@ export class CommentBoxComponent implements OnInit {
 
   uploadToPosts(event){
     const randomId = Math.random().toString(36).substring(2);
-    this.ref = this.afStorage.ref('/images/' + randomId);
-    this.task = this.ref.put(event.target.files[0]);
-    this.task.snapshotChanges().pipe(
+    this.PostRef = this.afStorage.ref('/images/' + randomId);
+    this.PostTask = this.PostRef.put(event.target.files[0]);
+    this.PostTask.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURLPost = this.ref.getDownloadURL();
+        this.downloadURLPost = this.PostRef.getDownloadURL();
         this.downloadURLPost.subscribe(url => {
           if (url) {
-            this.uploadState = null;
+            this.PostUploadState = null;
             this.imgUploadPost = url;
             this.valid = true;
           }
@@ -232,14 +239,14 @@ export class CommentBoxComponent implements OnInit {
 
   uploadToThread(event){
     const randomId = Math.random().toString(36).substring(2);
-    this.ref = this.afStorage.ref('/images/' + randomId);
-    this.task = this.ref.put(event.target.files[0]);
-    this.task.snapshotChanges().pipe(
+    this.CommentRef = this.afStorage.ref('/images/' + randomId);
+    this.CommentTask = this.CommentRef.put(event.target.files[0]);
+    this.CommentTask.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURLThread = this.ref.getDownloadURL();
+        this.downloadURLThread = this.CommentRef.getDownloadURL();
         this.downloadURLThread.subscribe(url => {
           if (url) {
-            this.uploadState = null;
+            this.CommentUploadState = null;
             this.imgUploadThread = url;
             this.valid = true;
           }
@@ -250,22 +257,38 @@ export class CommentBoxComponent implements OnInit {
   }
 
 
-  discardUpload() {
+  discardUploadPost() {
     this.imgUploadPost = '';
-    this.imgUploadThread = '';
-    this.ref.delete();
-    this.resetUpload();
+    this.PostRef.delete();
+    this.resetUploadPost();
   }
 
 
-  resetUpload() {
+  discardUploadThread(){
+    this.imgUploadThread = '';
+    this.CommentRef.delete();
+    this.resetUploadThread();
+  }
+
+
+  resetUploadPost() {
     this.valid = false;
     this.loading = false;
     this.downloadURLPost = null;
+    this.PostUploadState = null;
+    this.PostRef = null;
+    this.PostTask = null;
+
+  }
+
+
+  resetUploadThread(){
+    this.valid = false;
+    this.loading = false;
     this.downloadURLThread = null;
-    this.uploadState = null;
-    this.ref = null;
-    this.task = null;
+    this.CommentUploadState = null;
+    this.CommentRef = null;
+    this.CommentTask = null;
   }
 
 

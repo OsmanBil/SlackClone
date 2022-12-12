@@ -30,14 +30,14 @@
     <div class="upload-image-container" *ngIf="downloadURLPost">
         <div class="position-relative">
             <img (click)="openLightbox(imgUploadPost)" [src]="imgUploadPost" class="">
-            <i (click)="discardUpload()" class="material-icons">close</i>
+            <i (click)="discardUploadPost()" class="material-icons">close</i>
         </div>
     </div>
 
     <div class="upload-image-container" *ngIf="downloadURLThread">
         <div class="position-relative">
             <img (click)="openLightbox(imgUploadThread)" [src]="imgUploadThread" class="">
-            <i (click)="discardUpload()" class="material-icons">close</i>
+            <i (click)="discardUploadThread()" class="material-icons">close</i>
         </div>
     </div>
 </div>

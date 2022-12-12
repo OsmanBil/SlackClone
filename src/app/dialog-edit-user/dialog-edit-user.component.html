@@ -42,8 +42,8 @@
                         <input type="file" id="file" (change)="upload($event)" accept=".png,.jpg" />
                     </div>
 
-                    <progress max="100" [value]="(uploadProgress | async)"
-                        *ngIf="uploadState | async; let state"></progress>
+                    <progress max="100" [value]="(ProfileUploadProgress | async)"
+                        *ngIf="ProfileUploadState | async; let state"></progress>
 
                     <section class="control-bar" *ngIf="downloadURL | async; let state">
                         <button (click)="discardUpload()" [disabled]="state === 'running'">Discard</button>
