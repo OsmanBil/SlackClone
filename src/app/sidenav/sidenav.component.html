@@ -25,7 +25,7 @@
     <div class="container-channels" *ngIf="channelOpen">
       <div class="" *ngFor="let channel of channels, let i = index">
         <div class="channel" [ngClass]="{'active-chatroom' : activeChatChannel == ('channel' + i) }"
-          (click)="showActive('channel' + i, i)" [routerLink]="['/mainpage/channel/' + channel.channelId]">
+          (click)="showActive('channel' + i, i)" [routerLink]="['/mainpage/channel/' + channel.channelId]" [queryParams]="{sendedPostID: ''}">
           <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
           <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
           <span>{{ channel['channelName'] }}</span>

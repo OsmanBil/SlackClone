@@ -34,6 +34,7 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
 
+  sendedPostID = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -46,6 +47,11 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
 
   ngOnInit(): void {
     this.posts = [];
+    this.route.queryParams.subscribe(
+      params => {
+        this.sendedPostID =  params['sendedPostID'];
+      }
+    )
     this.route.paramMap.subscribe(paramMap => {
       this.channelId = paramMap.get('id');
       this.loadChannel();
@@ -57,9 +63,22 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
 
   ngAfterViewChecked() {
     if(this.scrollCounter == 0) {
-      this.scrollToBottom();
-      this.scrollCounter++
-    } 
+      if(this.sendedPostID.length == 0){
+        this.scrollToBottom();
+      } else {
+        setTimeout(() => { this.scrollToPost() }, 500);
+      }
+     
+       this.scrollCounter++
+     } 
+  }
+
+  scrollToPost(){
+    document.getElementById(this.sendedPostID).scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest"
+    });
   }
 
 
