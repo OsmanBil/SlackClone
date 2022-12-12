@@ -81,13 +81,14 @@ export class ThreadsComponent implements OnInit {
         threadData.postID = onethread.data().postId
         // threadData.time = this.convertTimestamp(onethread.data().time);
         // threadData.postTime = this.convertTimestamp(onethread.data().postTime);
+        
 
       const authorRef = query(collection(this.db, 'channels', threadData.channelID, 'posts'), where('postId', '==', threadData.postID));
       const authorDocs = await getDocs(authorRef);
       authorDocs.forEach(async (author: any) => {
         threadData.channelName = author.data().channelName,
         threadData.postAuthorID = author.data().userId;
-        threadData.postTime = author.data().time;
+        threadData.postTime = this.convertTimestamp(author.data().time);
         threadData.postText = author.data().text;
         threadData.postUpload = author.data().upload;
       })
@@ -113,7 +114,10 @@ export class ThreadsComponent implements OnInit {
         }
         commendData.commentLastAuthorID = comment.data().userId;
         commendData.commentLastText = comment.data().text;
-        commendData.commentLastTime = comment.data().time;
+
+        
+
+        commendData.commentLastTime = this.convertTimestamp(comment.data().time);
         commendData.commentLastUpload = comment.data().upload;
 
         const commentAuthorRef = query(collection(this.db, 'users'), where('uid', '==', commendData.commentLastAuthorID));
