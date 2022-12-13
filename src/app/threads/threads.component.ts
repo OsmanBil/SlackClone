@@ -75,6 +75,7 @@ export class ThreadsComponent implements OnInit {
         postText: '',
         postUpload: '',
         lastTwoComment: [],
+        uploadImg: ''
       }
       
       threadData.channelID = onethread.data().channelId,
@@ -91,6 +92,8 @@ export class ThreadsComponent implements OnInit {
         threadData.postTime = this.convertTimestamp(author.data().time);
         threadData.postText = author.data().text;
         threadData.postUpload = author.data().upload;
+        threadData.uploadImg = author.data().upload;
+        
       })
 
       const authorUserRef = query(collection(this.db, 'users'), where('uid', '==', threadData.postAuthorID));
@@ -132,7 +135,7 @@ export class ThreadsComponent implements OnInit {
       this.ALLTHREADS.push(threadData)
     });
 
-    console.log(this.ALLTHREADS)
+    //console.log(this.ALLTHREADS)
   }
 
 
