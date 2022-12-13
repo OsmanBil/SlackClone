@@ -241,3 +241,18 @@ mat-icon{
     width: 100%;
     overflow: hidden;
 }
+
+
+@media(max-width: 645px){
+    .sidenave{
+        width: 100%;
+    }
+
+    .container-head{
+        justify-content: flex-start;
+
+        mat-icon{
+            margin-left: 5px;
+        }
+    }
+}

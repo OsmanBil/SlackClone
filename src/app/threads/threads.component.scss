@@ -79,8 +79,17 @@
     box-shadow: 0px 2px 8px -1px rgb(0 0 0 / 20%);
     border-radius: 10px;
 
+    .infos{
+        img{
+            height: 200px;
+        }
+    }
+
+
     img{
         margin-right: 16px;
+
+
     }
 
     &:first-child{

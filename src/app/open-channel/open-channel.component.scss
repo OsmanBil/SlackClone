@@ -114,3 +114,8 @@ app-comment-box{
     border: 1px solid black;
 }
 
+@media(max-width: 680px){
+    .mat-drawer{
+        width: 100%;
+    }
+}

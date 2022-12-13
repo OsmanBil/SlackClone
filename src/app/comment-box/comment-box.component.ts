@@ -137,6 +137,9 @@ export class CommentBoxComponent implements OnInit {
     this.route.paramMap.subscribe(paramMap => {
       this.channelId = paramMap.get('id');
     })
+    this.firestore.collection(`channels`).doc(this.channelId).get().subscribe(async ref => {
+      const doc: any = ref.data();
+      this.channelName = doc.channelName;});
     this.setData();
     // this.setThread();
   }
@@ -150,10 +153,6 @@ export class CommentBoxComponent implements OnInit {
 
 
   async setPostData() {
-    this.firestore.collection(`channels`).doc(this.channelId).get().subscribe(async ref => {
-      const doc: any = ref.data();
-      this.channelName = doc.channelName;
-
       this.post.userId = this.currentUser['uid'];
       this.post.text = this.text? this.text : '';
       this.post.time = Timestamp.fromDate(new Date());
@@ -163,7 +162,6 @@ export class CommentBoxComponent implements OnInit {
       this.post.channelName = this.channelName;
       this.data = this.post;
       this.sendDataToPost();
-    });
   }
 
 
@@ -186,6 +184,7 @@ export class CommentBoxComponent implements OnInit {
     this.resetUploadPost();
   }
 
+
   async setThreadInUser() {
     await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.post.postId), { channelId: this.channelId, postId: this.post.postId, time: Timestamp.fromDate(new Date()) });
   }
@@ -197,6 +196,7 @@ export class CommentBoxComponent implements OnInit {
     this.form.reset();
     this.resetUploadThread();
   }
+
 
   async setThreadCommentInUser() {
     console.log(this.CommentToPost.postId)
@@ -283,7 +283,6 @@ export class CommentBoxComponent implements OnInit {
     this.PostUploadState = null;
     this.PostRef = null;
     this.PostTask = null;
-
   }
 
 
