@@ -176,7 +176,7 @@ export class SidenavComponent implements OnInit {
   // SHOWS IN SIDEBAR WHICH CHANNEL IS ACTIVE
   showActive(value, positionInArray) {
     this.activeChatChannel = value;
-    if(this.innerWidth < 910){
+    if(this.innerWidth < 645){
       this.sidenavService.closeSidenav();
     }
   }
@@ -188,6 +188,9 @@ export class SidenavComponent implements OnInit {
     await updateDoc(otherUserRef, {
       newMessage: 0,
     });
+    if(this.innerWidth < 645){
+      this.sidenavService.closeSidenav();
+    }
   }
 
   // HIDE THE CHATROOM IN SIDEBAR WHEN THE USER CLICKS THE CLOSE IMG
