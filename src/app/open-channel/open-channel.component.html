@@ -1,9 +1,9 @@
 <mat-drawer-container class="drawer-container" autosize>
 
-    <mat-drawer #drawer class="example-sidenav" mode="side" position="end">
+    <mat-drawer #threadContainer class="example-sidenav" mode="side" position="end">
         <div class="head">
             <h2>Thread</h2>
-            <i (click)="drawer.close()"  class="material-icons">close</i>
+            <i (click)="closeThreads()" class="material-icons">close</i>
         </div>
         <app-thread [post]="thread"></app-thread>
     </mat-drawer>
@@ -41,7 +41,7 @@
                             <img (click)="openLightbox( post['uploadImg'] )" class="upload-image" *ngIf=" post['uploadImg']"
                             src="{{ post['uploadImg'] }}">
         
-                            <div (click)="drawer.open()" class="open-thread">
+                            <div class="open-thread">
                                 <p (click)="openComments(post)">Comments</p>
                             </div>
                         </div>

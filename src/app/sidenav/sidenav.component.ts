@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCreateChannelComponent } from '../dialog-create-channel/dialog-create-channel.component';
@@ -10,6 +10,7 @@ import { user } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ChatroomsService } from '../services/chatrooms.service';
+import { SidenavToggleService } from '../services/sidenav-toggle.service';
 
 
 @Component({
@@ -29,13 +30,25 @@ export class SidenavComponent implements OnInit {
   localUser;
   activeChatChannel = '';
   otherUserID = '';
+  innerWidth: number;
 
-  constructor(public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute,
-    public chatroomService: ChatroomsService) { }
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+  this.innerWidth = window.innerWidth;
+}
+
+  constructor(
+    public dialog: MatDialog, 
+    private firestore: AngularFirestore, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    public chatroomService: ChatroomsService,
+    public sidenavService: SidenavToggleService) { }
 
 
   ngOnInit(): void {
     this.loadChatroomData();
+    this.innerWidth = window.innerWidth;
   }
 
 
@@ -163,6 +176,9 @@ export class SidenavComponent implements OnInit {
   // SHOWS IN SIDEBAR WHICH CHANNEL IS ACTIVE
   showActive(value, positionInArray) {
     this.activeChatChannel = value;
+    if(this.innerWidth < 910){
+      this.sidenavService.closeSidenav();
+    }
   }
 
   // SHOWS IN SIDEBAR WHICH CHANNEL IS ACTIVE 

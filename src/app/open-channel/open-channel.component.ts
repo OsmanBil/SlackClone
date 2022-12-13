@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Channel } from 'src/models/channel.class';
@@ -8,6 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ChannelDetailsComponent } from '../channel-details/channel-details.component';
 import { SearchService } from '../services/search.service';
 import { LightboxComponent } from '../lightbox/lightbox.component';
+import { MatDrawer } from '@angular/material/sidenav';
+import { SidenavToggleService } from '../services/sidenav-toggle.service';
 
 
 @Component({
@@ -15,7 +17,7 @@ import { LightboxComponent } from '../lightbox/lightbox.component';
   templateUrl: './open-channel.component.html',
   styleUrls: ['./open-channel.component.scss']
 })
-export class OpenChannelComponent implements OnInit, AfterViewChecked{
+export class OpenChannelComponent implements OnInit, AfterViewInit, AfterViewChecked{
 
   
   db = getFirestore();
@@ -29,10 +31,17 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
 
   searchText = '';
   scrollCounter = 0;
+  innerWidth: any;
   
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @ViewChild('threadContainer') public threadDrawer: MatDrawer;
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+  this.innerWidth = window.innerWidth;
+}
 
   sendedPostID = '';
 
@@ -41,7 +50,8 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
     private firestore: AngularFirestore,
     private dialog: MatDialog,
     public router: Router,
-    private search: SearchService
+    private search: SearchService,
+    public sidenavService: SidenavToggleService
   ) {  }
 
 
@@ -58,6 +68,12 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
       this.loadPosts();
     })
     this.setSearchValue();
+    this.innerWidth = window.innerWidth;
+  }
+
+
+  ngAfterViewInit(): void {
+    this.sidenavService.setThread(this.threadDrawer);
   }
 
 
@@ -110,9 +126,9 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
   loadPosts() {
     let postRef = collection(this.db, "channels", this.channelId, "posts");
     let q = query(postRef, orderBy("time"));
-    const loadedChatID = this.channelId;
+    const loadedID = this.channelId;
     let unsubscribe = onSnapshot(q, async (snapshot) => {
-      if (loadedChatID != this.channelId) {
+      if (loadedID != this.channelId) {
         unsubscribe()
       }
       else {
@@ -184,11 +200,21 @@ export class OpenChannelComponent implements OnInit, AfterViewChecked{
 
   openComments(post) {
     this.thread = post;
+    if(this.innerWidth < 910){
+      this.sidenavService.openThread();
+    }
+    else{
+      this.threadDrawer.open();
+    }
   }
 
 
   openLightbox(url){
     let dialog = this.dialog.open(LightboxComponent);
     dialog.componentInstance.lightboxImg = url;
+  }
+
+  closeThreads(){
+    this.threadDrawer.close();
   }
 }

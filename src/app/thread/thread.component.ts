@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { getFirestore } from '@firebase/firestore';
 import { collection, getDocs, orderBy, onSnapshot, query, where } from "firebase/firestore";
 import { LightboxComponent } from '../lightbox/lightbox.component';
+import { SidenavToggleService } from '../services/sidenav-toggle.service';
 
 
 @Component({
@@ -13,7 +14,6 @@ import { LightboxComponent } from '../lightbox/lightbox.component';
 export class ThreadComponent implements OnChanges {
 
   @Input() post: any;
-
 
   db = getFirestore();
   comments = [];
