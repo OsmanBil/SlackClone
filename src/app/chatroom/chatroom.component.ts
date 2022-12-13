@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { getFirestore } from '@firebase/firestore';
-import { collection, addDoc, increment, Unsubscribe, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, getDocsFromCache, addDoc, increment, Unsubscribe, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { Observable } from 'rxjs';
 import { AngularFirestore, } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { ChatroomsService } from '../services/chatrooms.service';
-import { limit } from '@angular/fire/firestore';
+import { deleteDoc, limit } from '@angular/fire/firestore';
 import { LightboxComponent } from '../lightbox/lightbox.component';
 import { BookmarksComponent } from '../bookmarks/bookmarks.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,6 +22,8 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   @Input() currentChatroomID;
   @Input() public messages: any[] = [];
   @Input() public chatusers: any[] = [];
+  @Input() public bookmarks: any[] = [];
+
 
 
   textMessage;
@@ -33,6 +35,8 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   @Input() lightboxImg = '';
 
   searchText = '';
+  userNamesAsString = '';
+  @Input() userNamesAsStringWithoutAnd = '';
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
@@ -51,10 +55,12 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
       this.currentChatroomID = paramMap.get('id');
       this.loadMessages();
       this.loadUsers();
+      this.loadBookmarks();
     })
     this.setSearchValue();
 
   }
+
 
   // SCROLLS TO BOTTOM WHEN LOADING IS FINISH, BUT SHOULD ONLY ONCE, THAT`s THE REASON FOR THE COUNTER
   ngAfterViewChecked() {
@@ -70,6 +76,29 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     } catch (err) { }
   }
 
+  async loadBookmarks() {
+
+    const bookmarksRef = collection(this.db, 'chatrooms', this.currentChatroomID, 'bookmarks');
+    const loadedChatID = this.currentChatroomID;
+    const unsubscribe2 = onSnapshot(bookmarksRef, async (bookmarksDocs) => {
+      if (loadedChatID != this.currentChatroomID) {
+        unsubscribe2()
+      } else {
+        this.bookmarks = [];
+        bookmarksDocs.forEach((doc: any) => {
+          let bookmarkData = {
+            link: '',
+            name: '',
+            id: '',
+          }
+          bookmarkData.link = doc.data().link;
+          bookmarkData.name = doc.data().name;
+          bookmarkData.id = doc.id
+          this.bookmarks.push(bookmarkData)
+        })
+      }
+    })
+  }
 
 
   async loadMoreMessages() {
@@ -134,16 +163,20 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
       photoURL: '',
       isOnline: '',
       student: 'student',
+      namesAsString: '',
     }
     await this.getNumberOfChatroomUsers(chatuserData)
     const otherUsersID = query(collection(this.db, "chatrooms", this.currentChatroomID, "users"), where('id', '!=', this.localUser.uid))
     const querySnapshotsUsersID = await getDocs(otherUsersID);
     this.chatusers = [];
+
     querySnapshotsUsersID.forEach((doc: any) => {
+      this.userNamesAsString = '';
       chatuserData.id = doc.data().id;
       const loadedChatID = this.currentChatroomID;
       const chatroomOtherUsers = query(collection(this.db, "users"), where('uid', '==', doc.data().id))
       const unsub = onSnapshot(chatroomOtherUsers, async (chatroomOtherUserID: any) => {
+
         chatroomOtherUserID.forEach((doc2: any) => {
           if (loadedChatID != this.currentChatroomID) {
             unsub();
@@ -156,15 +189,17 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
               chatuserData.photoURL = doc2.data().photoURL;
             }
             chatuserData.name.push(doc2.data().displayName);
-           // this.otherUserID.push(doc2.data().id)
+            this.userNamesAsString += doc2.data().displayName + ' ' + 'and' + ' ';
             chatuserData.isOnline = doc2.data().isOnline;
             chatuserData.student = 'student';
             this.scrollCounter = 0;
           }
         }
         )
+        this.userNamesAsStringWithoutAnd = this.userNamesAsString.substring(0, this.userNamesAsString.length - 4)
       })
     })
+
     this.chatusers.push(chatuserData)
   }
 
@@ -194,9 +229,9 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   }
 
 
-  setSearchValue(){
-    this.search.getData().subscribe(s => {                  
-      this.searchText = s; 
+  setSearchValue() {
+    this.search.getData().subscribe(s => {
+      this.searchText = s;
 
     });
   }
@@ -207,9 +242,13 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     dialog.componentInstance.lightboxImg = url;
   }
 
-  openBookmarks(chatroomID){
+  openBookmarks(chatroomID) {
     let dialog = this.dialog.open(BookmarksComponent);
     dialog.componentInstance.currentChatroomID = chatroomID;
+  }
+
+  async deleteBookmark(deletBookmarkID){
+    await deleteDoc(doc(this.db, 'chatrooms', this.currentChatroomID, 'bookmarks', deletBookmarkID))
   }
 
 }
