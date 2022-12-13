@@ -32,6 +32,8 @@ export class OpenChannelComponent implements OnInit, AfterViewInit, AfterViewChe
   searchText = '';
   scrollCounter = 0;
   innerWidth: any;
+  innerHeight: number;
+  panelOpenState = false;
   
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   @ViewChild('threadContainer') public threadDrawer: MatDrawer;
@@ -41,6 +43,7 @@ export class OpenChannelComponent implements OnInit, AfterViewInit, AfterViewChe
   @HostListener('window:resize', ['$event'])
   onResize() {
   this.innerWidth = window.innerWidth;
+  this.innerHeight = window.innerHeight;
 }
 
   sendedPostID = '';
@@ -69,6 +72,7 @@ export class OpenChannelComponent implements OnInit, AfterViewInit, AfterViewChe
     })
     this.setSearchValue();
     this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
   }
 
 

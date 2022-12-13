@@ -50,7 +50,20 @@
                 </div>
             </div>
 
-            <app-comment-box location="posts"></app-comment-box>
+            <app-comment-box location="posts" *ngIf="innerHeight > 600"></app-comment-box>
+
+            <mat-accordion *ngIf="innerHeight < 600">
+                <mat-expansion-panel 
+                  (opened)="panelOpenState = true" 
+                  (closed)="panelOpenState = false">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Text Editor
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <app-comment-box location="posts"></app-comment-box>
+                </mat-expansion-panel>
+              </mat-accordion>
         </div>
 
 

@@ -1,4 +1,4 @@
-input{
+input {
     border: unset;
     outline: none;
     width: 200px;
@@ -6,15 +6,28 @@ input{
     color: white;
 }
 
-i{
+i {
     color: white;
 }
 
-.searchfield{
+.searchfield {
     display: flex;
     align-items: center;
     background-color: white;
     border-radius: 5px;
     padding: 4px;
     background-color: #5b125c;
+}
+
+
+@media(max-width: 360px) {
+    input {
+        width: 150px;
+    }
+}
+
+@media(max-width: 300px) {
+    input {
+        width: 125px;
+    }
 }

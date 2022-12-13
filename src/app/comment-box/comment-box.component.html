@@ -1,6 +1,10 @@
 <div class="text-editor">
     <form [formGroup]="form" (keydown.enter)="postToChannel()">
-        <quill-editor *ngIf="location == 'posts'" #editor class="content-editor" formControlName="editor" [placeholder]="''" [modules]="modules"
+        <quill-editor *ngIf="location == 'posts' && innerWidth >= 450" #editor class="content-editor" formControlName="editor" [placeholder]="''" [modules]="modules"
+            (onEditorChanged)="changedEditor($event)">
+        </quill-editor>
+
+        <quill-editor *ngIf="location == 'posts' && innerWidth < 450" #editor class="content-editor" formControlName="editor" [placeholder]="''" [modules]="modulesSmall"
             (onEditorChanged)="changedEditor($event)">
         </quill-editor>
 
