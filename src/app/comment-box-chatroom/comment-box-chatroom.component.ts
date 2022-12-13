@@ -67,7 +67,7 @@ export class CommentBoxChatroomComponent implements OnInit {
     userId: '',
   }
 
-  text: string = '';
+  @Input() text: string = '';
 
   imageURL = '';
 
@@ -129,7 +129,6 @@ export class CommentBoxChatroomComponent implements OnInit {
             this.uploadState2 = null;
             this.imageURL = url;
           }
-          console.log(this.imageURL2)
         });
       })
     ).subscribe();
