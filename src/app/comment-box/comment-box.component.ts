@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EditorChangeContent, EditorChangeSelection, QuillEditorComponent } from 'ngx-quill';
@@ -46,6 +46,8 @@ export class CommentBoxComponent implements OnInit {
   channelId: string;
   currentUser = [];
 
+  innerWidth: number;
+
   @ViewChild('editor', {
     static: true
   }) editor: QuillEditorComponent
@@ -54,6 +56,11 @@ export class CommentBoxComponent implements OnInit {
   @Input() CommentToPost: any;
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+  this.innerWidth = window.innerWidth;
+}
 
 
   modules = {
@@ -114,6 +121,7 @@ export class CommentBoxComponent implements OnInit {
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
+    this.innerWidth = window.innerWidth;
   }
 
 
@@ -137,9 +145,6 @@ export class CommentBoxComponent implements OnInit {
     this.route.paramMap.subscribe(paramMap => {
       this.channelId = paramMap.get('id');
     })
-    this.firestore.collection(`channels`).doc(this.channelId).get().subscribe(async ref => {
-      const doc: any = ref.data();
-      this.channelName = doc.channelName;});
     this.setData();
     // this.setThread();
   }
@@ -147,7 +152,6 @@ export class CommentBoxComponent implements OnInit {
 
   setData() {
     if (this.location == 'posts') this.setPostData();
-
     if (this.location == 'comments') this.setCommentData();
   }
 

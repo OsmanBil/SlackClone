@@ -28,6 +28,7 @@ import { MainpageComponent } from './mainpage/mainpage.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { DialogCreateChannelComponent } from './dialog-create-channel/dialog-create-channel.component';
 import { MatCardModule} from '@angular/material/card'; 
+import {MatExpansionModule} from '@angular/material/expansion';
 
 
 
@@ -103,6 +104,7 @@ import { BookmarksComponent } from './bookmarks/bookmarks.component';
     MatMenuModule,
     MatCardModule,
     MatSlideToggleModule,
+    MatExpansionModule,
     QuillModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebase),
     provideFirebaseApp(() => initializeApp(environment.firebase)),

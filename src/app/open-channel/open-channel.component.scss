@@ -12,13 +12,14 @@
     position: relative
 }
 
-app-comment-box{
+app-comment-box, mat-expansion-panel{
     position: absolute;
     bottom: 32px;
     right: 32px;
     left: 32px;
     z-index: 10;
 }
+
 
 .post-container{
     overflow-x: hidden;
@@ -48,6 +49,10 @@ app-comment-box{
 
     &:last-child{
         margin-bottom: 8px;
+    }
+
+    p{
+        word-break: break-word;
     }
 }
 
@@ -117,5 +122,31 @@ app-comment-box{
 @media(max-width: 680px){
     .mat-drawer{
         width: 100%;
+    }
+}
+
+@media(max-width: 380px){
+    .general-info-line{
+        flex-direction: column;
+    
+        span{
+            margin-left: unset;
+        }
+    }
+
+    .channel-page{
+        padding: 16px;
+    }
+
+    app-comment-box{
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+    }
+}
+
+@media(max-height: 600px){
+    .post-container{
+        height: calc(100% - 110px);
     }
 }

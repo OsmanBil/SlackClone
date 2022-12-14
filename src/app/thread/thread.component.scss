@@ -15,6 +15,10 @@
     &:last-child{
         margin-bottom: 180px !important;
     }
+
+    p{
+        word-break: break-all;
+    }
 }
 
 .posts{
@@ -23,6 +27,10 @@
     box-shadow: 0px 2px 8px -1px rgb(0 0 0 / 20%);
     border-radius: 10px;
     background-color: rgba(0,0,0,0.05);
+
+    p{
+        word-break: break-word;
+    }
 }
 
 .general-info-line{
@@ -45,8 +53,8 @@
 app-comment-box{
     position: absolute;
     bottom: 32px;
-    right: 32px;
-    left: 32px;
+    right: 8px;
+    left: 8px;
     z-index: 10;
 }
 
@@ -59,4 +67,20 @@ app-comment-box{
     border-radius: 10px!important;
     box-sizing:unset;
     border: 1px solid black;
+}
+
+@media(max-width: 380px){
+    app-comment-box{
+        bottom: 16px;
+    }
+}
+
+@media(max-width: 315px){
+    .general-info-line{
+        flex-direction: column;
+    
+        span{
+            margin-left: unset;
+        }
+    }
 }
