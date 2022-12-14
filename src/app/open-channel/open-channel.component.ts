@@ -10,16 +10,22 @@ import { SearchService } from '../services/search.service';
 import { LightboxComponent } from '../lightbox/lightbox.component';
 import { MatDrawer } from '@angular/material/sidenav';
 import { SidenavToggleService } from '../services/sidenav-toggle.service';
-
+import { MarkPostService } from '../services/mark-post.service';
 
 @Component({
   selector: 'app-open-channel',
   templateUrl: './open-channel.component.html',
-  styleUrls: ['./open-channel.component.scss']
+  styleUrls: ['./open-channel.component.scss'],
+  styles: [
+    ` 
+    .greenClass { background-color:  rgb(199, 197, 197) }
+    `
+  ]
 })
 export class OpenChannelComponent implements OnInit, AfterViewInit, AfterViewChecked{
 
-  
+  postIdFrom = this.markPostService.message1;
+
   db = getFirestore();
   channelId = '';
   channel: Channel = new Channel();
@@ -54,7 +60,8 @@ export class OpenChannelComponent implements OnInit, AfterViewInit, AfterViewChe
     private dialog: MatDialog,
     public router: Router,
     private search: SearchService,
-    public sidenavService: SidenavToggleService
+    public sidenavService: SidenavToggleService,
+    public markPostService: MarkPostService
   ) {  }
 
 
