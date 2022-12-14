@@ -1,5 +1,5 @@
 <div class="active-chat-container">
-    <div *ngFor="let chatuser of chatusers" class="header-container p-2 d-flex align-items-center">
+    <div *ngFor="let chatuser of chatusers" class="header-container d-flex align-items-center py-3">
         <div class="d-flex align-items-center">
             <div class="header-img-container">
                 <img src="{{ chatuser['photoURL'] }}" class="header-user-img">
@@ -11,43 +11,48 @@
             </div>
         </div>
     </div>
-    
-    <div class="p-2 add-bookmark-container d-flex align-items-center">
-       
-        <div class="bookmark-under-container d-flex align-items-center ps-1 pe-3 py-1" (click)="openBookmarks(currentChatroomID)">
-          
+
+    <div class="add-bookmark-container d-flex align-items-center">
+
+        <div class="bookmark-under-container d-flex align-items-center ps-1 pe-3 py-1"
+            (click)="openBookmarks(currentChatroomID)">
+
             <mat-icon fontIcon="add"></mat-icon>
             <p>Add bookmark</p>
         </div>
         <div *ngFor="let bookmark of bookmarks" class="d-flex align-items-center ps-2 pe-1 ">
-            <a class=" fw-bold text-dark d-flex align-items-center text-decoration-none" target="_blank" href="{{bookmark.link}}"> 
+            <a class=" fw-bold text-dark d-flex align-items-center text-decoration-none" target="_blank"
+                href="{{bookmark.link}}">
                 <mat-icon class="text-decoration-none">bookmark</mat-icon>{{bookmark.name}}
             </a>
             <mat-icon (click)="deleteBookmark(bookmark.id)" class="fw-bold">close</mat-icon>
-            
+
         </div>
     </div>
     <div class="messages-container" #scrollMe>
-        <div *ngFor="let chatuser of chatusers" class="one-message p-2 d-flex align-items-start">
-            <div class="d-flex align-items-start">
-                <img src="{{ chatuser['photoURL'] }}" class="user-img me-2">
-                <div>
-                    <div class="fs-5 fw-bold">
-                        {{ userNamesAsStringWithoutAnd }}
+        <div class="other-user">
+            <div *ngFor="let chatuser of chatusers" class="one-message p-2 d-flex align-items-start">
+                <div class="d-flex align-items-start">
+                    <img src="{{ chatuser['photoURL'] }}" class="user-img me-2">
+                    <div>
+                        <div class="fs-5 fw-bold">
+                            {{ userNamesAsStringWithoutAnd }}
+                        </div>
+                        <p *ngIf="chatuser.numberOfChatUsers < 3" class="fw-light ps-1 pt-1"><i>{{ chatuser.student
+                                }}</i>
+                        </p>
+                        <p *ngIf="chatuser.numberOfChatUsers > 2" class="fw-light ps-1 pt-1"><i>Groupchat</i></p>
                     </div>
-                    <p *ngIf="chatuser.numberOfChatUsers < 3" class="fw-light ps-1 pt-1"><i>{{ chatuser.student }}</i>
-                    </p>
-                    <p *ngIf="chatuser.numberOfChatUsers > 2" class="fw-light ps-1 pt-1"><i>Groupchat</i></p>
                 </div>
             </div>
         </div>
-        <div class="ms-2 text-secondary d-flex align-items-center flex-wrap">
-            <p>This conversation is just between the two of you. Here you can send
-                messages and share files with <b>{{ userNamesAsStringWithoutAnd }}</b></p>
+            <div class="mt-3 text-secondary d-flex justify-content-center align-items-center flex-wrap">
+                <p>This conversation is just between the two of you. Here you can send
+                    messages and share files with <b>{{ userNamesAsStringWithoutAnd }}</b></p>
 
-        </div>
+            </div>
+        
         <div class="load-message-container d-flex flex-column-reverse">
-
             <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
                 <div class="d-flex align-items-start"
                     *ngIf="searchText === '' || message['loadMessageText'].toLowerCase().includes(searchText) || message['loadMessageAuthor'].toLowerCase().includes(searchText) ">
@@ -68,7 +73,7 @@
                 </div>
             </div>
             <div class="button-container d-flex justify-content-center" *ngIf="messages.length >= 10">
-                <button class="loadmore-button btn btn-outline-secondary py-0 px-2 mt-3"
+                <button class="loadmore-button btn btn-outline-secondary py-0 px-2 my-3"
                     (click)="loadMoreMessages()">load
                     more messages</button>
             </div>
@@ -76,16 +81,14 @@
     </div>
     <app-comment-box-chatroom *ngIf="innerHeight > 600"></app-comment-box-chatroom>
     <mat-accordion *ngIf="innerHeight < 600">
-        <mat-expansion-panel 
-          (opened)="panelOpenState = true" 
-          (closed)="panelOpenState = false">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Text Editor
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <app-comment-box-chatroom location="posts"></app-comment-box-chatroom>
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Text Editor
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <app-comment-box-chatroom location="posts"></app-comment-box-chatroom>
         </mat-expansion-panel>
-      </mat-accordion>
+    </mat-accordion>
 
 </div>

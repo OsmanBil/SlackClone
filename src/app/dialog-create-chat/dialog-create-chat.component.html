@@ -53,8 +53,11 @@
                             </div>
                             <div class="d-flex flex-column">
                                 <p>{{ messageEx['messageAuthor'] }}:</p>
-                                <p *ngIf=" messageEx['messageText'].length > 0"><i class="d-flex"
-                                        [innerHTML]="'&bdquo;' + messageEx['messageText'] + '&rdquo;'"></i></p>
+                                <p 
+                                *ngIf=" messageEx['messageText'] != null">
+                                    <i class="d-flex"
+                                        [innerHTML]="'&bdquo;' + messageEx['messageText'] + '&rdquo;'"></i>
+                                    </p>
                             </div>
                             <img class="loadmessage-image" *ngIf=" messageEx['messageImg']"
                                 src="{{ messageEx['messageImg'] }}">

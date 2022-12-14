@@ -6,7 +6,7 @@ quill-editor{
     position: relative;
     border: 1px solid rgba(0,0,0,0.2);
     border-radius: 10px;
-    background-color: #f7f7f7;
+    background-color: white;
 }
 
 .send-icon{
@@ -50,7 +50,6 @@ input[type="file"] {
     align-items: center;
     justify-content: center;
     width: min-content;
-    background-color: #f7f7f7;
     border-radius: 10px;
 
     div{

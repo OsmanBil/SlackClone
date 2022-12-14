@@ -1,42 +1,44 @@
-quill-editor{
+quill-editor {
     width: 100%;
-    display: block;
+    
 }
 
-form{
+.text-editor{
     position: relative;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background-color: white;
 }
 
-.send-icon{
+
+.send-icon {
     position: absolute;
     right: 12px;
     bottom: 16px;
 
-    &:hover{
+    &:hover {
         color: #A161A3;
         cursor: pointer;
     }
 }
 
-.send-icon2{
+.send-icon2 {
     position: absolute;
     right: 12px;
     top: 8px;
-    label{
+
+    label {
         cursor: pointer;
     }
-    &:hover{
+
+    &:hover {
         color: #A161A3;
-       
+
     }
 }
 
-.form-container{
-    position: absolute;
-    width: calc(100% - 80px);
-    left: 32px;
-    bottom: 32px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+.form-container {
+   
     border-radius: 10px;
 }
 
@@ -44,32 +46,35 @@ input[type="file"] {
     display: none;
 }
 
-.upload-image-container{
+.upload-image-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    top: auto;
-    bottom: -54px;
-    right: -38px;
     width: min-content;
-    div{
+    border-radius: 10px;
+
+    div {
         position: relative;
-        &:hover{
-            i{
+
+        &:hover {
+            i {
                 display: flex
             }
         }
     }
-    img{
+
+    img {
         height: 60px;
         width: 50px;
         object-fit: cover;
         border: 2px solid black;
         cursor: pointer;
         border-radius: 10px;
+        margin-bottom: 8px;
+        margin-left: 8px;
     }
-    i{
+
+    i {
         display: none;
         align-items: center;
         justify-content: center;
@@ -84,7 +89,8 @@ input[type="file"] {
         top: -5px;
         right: -5px;
         border: 1px solid transparent;
-        &:hover{
+
+        &:hover {
             cursor: pointer;
             color: black;
             background-color: white;
@@ -94,9 +100,6 @@ input[type="file"] {
     }
 }
 
-.set-height{
-    height: 140px;
-}
 
 .lightbox-container {
     display: flex;
@@ -111,7 +114,7 @@ input[type="file"] {
     z-index: 9999;
 }
 
-.close-lightbox{
+.close-lightbox {
     position: absolute;
     top: 16px;
     right: 16px;
@@ -123,7 +126,8 @@ input[type="file"] {
     padding: 4px;
     background-color: black;
     border-radius: 100%;
-    &:hover{
+
+    &:hover {
         cursor: pointer;
         color: black;
         background-color: white;

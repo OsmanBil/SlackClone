@@ -1,29 +1,31 @@
-<form class="form-container" [formGroup]="form"  (keydown.enter)="addMessage()" >
-    <quill-editor [ngClass]="{'set-height' : downloadURL2}"
-     #editor class="content-editor" formControlName="editor" [placeholder]="''" [modules]="modules"
-        (onEditorChanged)="changedEditor($event)"
-        *ngIf="innerWidth >= 450"
-        >
-    </quill-editor>
+<div class="text-editor">
+    <form class="form-container" [formGroup]="form" (keydown.enter)="addMessage()">
+        <quill-editor  formControlName="editor"
+            [placeholder]="''" [modules]="modules" (onEditorChanged)="changedEditor($event)" *ngIf="innerWidth >= 450">
+        </quill-editor>
+        <quill-editor  formControlName="editor"
+            [placeholder]="''" [modules]="modulesSmall" (onEditorChanged)="changedEditor($event)"
+            *ngIf="innerWidth < 450">
+        </quill-editor>
 
 
-    <i class="material-icons send-icon" matTooltip="Post" *ngIf="valid" (click)="addMessage()">send</i>
-    
-    <div class="send-icon2">
-        <label for="fileChatroom" class="upload-file">
-            <i class="material-icons" matTooltip="add image">add</i>
-           
-        </label>
-        <input class="send-icon2" type="file" id="fileChatroom" (change)="upload($event)" accept=".png,.jpg">
-    </div>    
-    
+        <i class="material-icons send-icon" matTooltip="Post" *ngIf="valid" (click)="addMessage()">send</i>
 
-</form>
+        <div class="send-icon2">
+            <label for="fileChatroom" class="upload-file">
+                <i class="material-icons" matTooltip="add image">add</i>
 
-<div class="upload-image-container" *ngIf="downloadURL2 | async; let url">
-    <div class="position-relative">
-        <img (click)="openLightbox(url)" [src]="url" class="">
-        <i (click)="discardUpload()" class="material-icons">close</i>
+            </label>
+            <input class="send-icon2" type="file" id="fileChatroom" (change)="upload($event)" accept=".png,.jpg">
+        </div>
+
+
+    </form>
+
+    <div class="upload-image-container" *ngIf="downloadURL2 | async; let url">
+        <div class="position-relative">
+            <img (click)="openLightbox(url)" [src]="url" class="">
+            <i (click)="discardUpload()" class="material-icons">close</i>
+        </div>
     </div>
 </div>
-

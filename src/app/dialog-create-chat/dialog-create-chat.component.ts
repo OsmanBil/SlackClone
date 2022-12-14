@@ -172,13 +172,6 @@ export class DialogCreateChatComponent implements OnInit {
   }
 
 
-
-  check2() {
-    console.log(this.oldMessages[0])
-    console.log(this.oldMessages)
-  }
-
-
   check() {
     this.oldMessages.sort((a, b) => b.messageServerTime - a.messageServerTime)
     this.loadingFinish = true;

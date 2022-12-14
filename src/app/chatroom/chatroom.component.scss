@@ -6,6 +6,7 @@
 }
 
 .header-container{
+    padding-left: 32px;
     background-color: white;
     border-bottom: 1.5px solid lightgrey;
 }
@@ -43,6 +44,7 @@
 .add-bookmark-container {
     background-color: white;
     border-bottom: 1.5px solid lightgrey;   
+    padding-left: 32px;
     div{
 
         &:hover{
@@ -78,7 +80,13 @@
 
 }
 
+.other-user{
+    border-bottom: 2px solid lightgrey;
+    padding: 10px 0;
+}
+
 .one-message {
+    margin-left: 32px;
     background-color: white;
     img{
         height: 30px;
@@ -147,4 +155,12 @@
         color: black;
         background-color: white;
     }
+}
+
+app-comment-box-chatroom, mat-expansion-panel{
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    left: 32px;
+    z-index: 10;
 }

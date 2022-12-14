@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, HostListener } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EditorChangeContent, EditorChangeSelection, QuillEditorComponent } from 'ngx-quill';
@@ -74,11 +74,11 @@ export class CommentBoxChatroomComponent implements OnInit {
   imageURL = '';
   channelId: string;
   currentUser = [];
-
+  innerWidth = 450;
 
 
   messageData = {
-    messageText: 'This conversation is just between you and your choosen user. Here you can send messages and share files.',
+    messageText: '',
     messageServerTime: serverTimestamp(),
 
     messageTime: Timestamp.fromDate(new Date()),
@@ -93,6 +93,10 @@ export class CommentBoxChatroomComponent implements OnInit {
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
 
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+  this.innerWidth = window.innerWidth;
+}
 
   constructor(
     private firestore: AngularFirestore,  private dialog: MatDialog,
@@ -105,6 +109,7 @@ export class CommentBoxChatroomComponent implements OnInit {
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
+    this.innerWidth = window.innerWidth
   }
 
 
@@ -165,7 +170,10 @@ export class CommentBoxChatroomComponent implements OnInit {
     this.route.paramMap.subscribe(paramMap => {
       this.currentChatroomID = paramMap.get('id');
     });
-    this.messageData.messageText = this.text;
+    if(this.text != null){
+      this.messageData.messageText = this.text;
+    }
+    
     this.messageData.messageServerTime = serverTimestamp(),
     this.messageData.messageAuthorID = this.localUser.uid;
     this.messageData.messageTime = Timestamp.fromDate(new Date());
@@ -187,23 +195,23 @@ export class CommentBoxChatroomComponent implements OnInit {
       this.otherUserID.push(doc.id)
     });
     for(let i = 0; i < this.otherUserID.length; i++){
-    const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID[i]);
-     await updateDoc(otherUserRef, {
-       newMessage: 0,
-     })   
+    // const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID[i]);
+    //  await updateDoc(otherUserRef, {
+    //    newMessage: 0,
+    //  })   
     }
     const otherUserRef2 = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.localUser.uid);
-    await updateDoc(otherUserRef2, {
-      newMessage: increment(1),
-    });
+    // await updateDoc(otherUserRef2, {
+    //   newMessage: increment(1),
+    // });
   }
 
   async setShownInSidebarToTrue(){
     for(let i = 0; i < this.otherUserID.length; i++){
       const otherUserChatroomRef = doc(this.db, "users", this.otherUserID[i], "chatids", this.currentChatroomID);
-       await updateDoc(otherUserChatroomRef, {
-         shownInSidebar: true,
-       })   
+      //  await updateDoc(otherUserChatroomRef, {
+      //    shownInSidebar: true,
+      //  })   
       }
   }
   
