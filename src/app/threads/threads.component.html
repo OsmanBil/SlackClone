@@ -34,7 +34,7 @@
             <div class="post-container" #scrollMe>
                 <div class="posts">
                     <img class="profile-img" src="{{ post.postAuthorImg }}">
-                    <div class="infos">
+                    <div>
                         <div class="general-info-line">
                             <p><b>{{ post.postAuthorName }}</b></p>
                             <span>{{ post.postTime }}</span>
@@ -46,9 +46,9 @@
                             src="{{ post['uploadImg'] }}">
                     </div>
                 </div>
-                <a class="pd-left pd-top" id="{{ post.postId }}"
+                <a class="pd-left pd-top" id="{{ post.postId }}" 
                     [routerLink]="'/mainpage/channel/' + ALLTHREADS[i].channelID"
-                    [queryParams]="{sendedPostID: ALLTHREADS[i].postID}">weiter zum Post</a>
+                    [queryParams]="{sendedPostID: ALLTHREADS[i].postID}" (click)="setMarkedPostId(post.postID)">weiter zum Post</a>
 
 
 

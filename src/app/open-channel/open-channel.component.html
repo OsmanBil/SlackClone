@@ -24,7 +24,7 @@
 
             <div class="post-container" #scrollMe>
                 <div *ngFor="let post of posts; index as i">
-                    <div class="posts" id="{{ post.postId }}" *ngIf="searchText === '' || 
+                    <div [ngClass]="{greenClass: post.postId == postIdFrom}" class="posts" id="{{ post.postId }}" *ngIf="searchText === '' || 
                     post.author.toLowerCase().includes(searchText) ||
                     post.text.toLowerCase().includes(searchText)">
                         <img class="profile-img" src="{{ post.img }}">
