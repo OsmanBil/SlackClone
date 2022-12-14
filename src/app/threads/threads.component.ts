@@ -77,23 +77,32 @@ export class ThreadsComponent implements OnInit {
         lastTwoComment: [],
         uploadImg: ''
       }
-      
+
       threadData.channelID = onethread.data().channelId,
         threadData.postID = onethread.data().postId
-        // threadData.time = this.convertTimestamp(onethread.data().time);
-        // threadData.postTime = this.convertTimestamp(onethread.data().postTime);
-        
+      // threadData.time = this.convertTimestamp(onethread.data().time);
+      // threadData.postTime = this.convertTimestamp(onethread.data().postTime);
+
+
+      //Hier Funktion zum Abrufen für den Channelnamen
+      const docRef = doc(this.db, "channels", threadData.channelID);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        this.channelName = docSnap.data()['channelName'];
+        threadData.channelName = this.channelName;
+      }
+      //Ende der Funktion
 
       const authorRef = query(collection(this.db, 'channels', threadData.channelID, 'posts'), where('postId', '==', threadData.postID));
       const authorDocs = await getDocs(authorRef);
       authorDocs.forEach(async (author: any) => {
-        threadData.channelName = author.data().channelName,
         threadData.postAuthorID = author.data().userId;
         threadData.postTime = this.convertTimestamp(author.data().time);
         threadData.postText = author.data().text;
         threadData.postUpload = author.data().upload;
         threadData.uploadImg = author.data().upload;
-        
+
       })
 
       const authorUserRef = query(collection(this.db, 'users'), where('uid', '==', threadData.postAuthorID));
@@ -118,7 +127,7 @@ export class ThreadsComponent implements OnInit {
         commendData.commentLastAuthorID = comment.data().userId;
         commendData.commentLastText = comment.data().text;
 
-        
+
 
         commendData.commentLastTime = this.convertTimestamp(comment.data().time);
         commendData.commentLastUpload = comment.data().upload;

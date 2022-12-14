@@ -145,9 +145,6 @@ export class CommentBoxComponent implements OnInit {
     this.route.paramMap.subscribe(paramMap => {
       this.channelId = paramMap.get('id');
     })
-    this.firestore.collection(`channels`).doc(this.channelId).get().subscribe(async ref => {
-      const doc: any = ref.data();
-      this.channelName = doc.channelName;});
     this.setData();
     // this.setThread();
   }
@@ -155,7 +152,6 @@ export class CommentBoxComponent implements OnInit {
 
   setData() {
     if (this.location == 'posts') this.setPostData();
-
     if (this.location == 'comments') this.setCommentData();
   }
 
