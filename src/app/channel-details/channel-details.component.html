@@ -45,7 +45,7 @@
                 <mat-label>Edit description</mat-label>
                 <mat-select [(ngModel)]="channel.privacy" name="privacy" [disabled]="loading">
                     <mat-option value="Private">Private</mat-option>
-                    <mat-option value="Public">Public</mat-option>
+                    <!-- <mat-option value="Public">Public</mat-option> -->
                 </mat-select>
             </mat-form-field>
         </td>
@@ -58,7 +58,7 @@
 
 <div mat-dialog-actions>
     <button class="button-cancel" [disabled]="loading" mat-button (click)="dialogRef.close()" matTooltip="Close whitout saving">
-        <span>Discard changes</span>
+        <span>Discard</span>
     </button>
     <button class="button-save" [disabled]="loading" mat-button (click)="save()" matTooltip="Close and save changes">
         <span>Done</span>

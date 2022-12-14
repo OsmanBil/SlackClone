@@ -128,3 +128,34 @@ button{
         font-size: 16px;
     }
 }
+
+@media(max-width: 650px){
+    .container-dialog-content{
+        flex-direction: column;
+    }
+
+    .container-user-details{
+        padding: unset;
+        border: unset;
+    }
+
+    .container-profile-picture{
+        margin: unset;
+    }
+}
+
+@media(max-width: 300px){
+    .container-toggle-online{
+        margin-top: 0;
+    }
+
+    button{
+        font-size: 12px;
+        margin-left: 8px;
+    }
+
+    .picture{
+        width: 80px;
+        height: 80px;
+    }
+}
