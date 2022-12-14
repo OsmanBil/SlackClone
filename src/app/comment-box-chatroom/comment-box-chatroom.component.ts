@@ -35,7 +35,6 @@ export class CommentBoxChatroomComponent implements OnInit {
   uploadProgress2: Observable<number>;
   uploadState2: Observable<string>;
 
-  imageURL2: string;
 
   @Input() otherUserID: any[] = [];
 
@@ -55,22 +54,24 @@ export class CommentBoxChatroomComponent implements OnInit {
       ['link'],
       ['emoji']
     ],
-
-
-
-
+  }
+  modulesSmall = {
+    'emoji-shortname': true,
+    'emoji-textarea': false,
+    'emoji-toolbar': true,
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      ['link'],
+      ['emoji']
+    ],
   }
 
-  data = {
-    text: '',
-    time: Timestamp.fromDate(new Date()),
-    userId: '',
-  }
 
-  @Input() text: string = '';
+
+  @Input() text: string;
+  @Input() valid: boolean = false;
 
   imageURL = '';
-
   channelId: string;
   currentUser = [];
 
@@ -84,8 +85,8 @@ export class CommentBoxChatroomComponent implements OnInit {
     messageAuthorImg: '',
     messageAuthorID: '',
     messageImg: '',
-
   }
+
   localUser;
   currentChatroomID;
   downloadURL2!: Observable<string>;
@@ -113,7 +114,14 @@ export class CommentBoxChatroomComponent implements OnInit {
   changedEditor(event: EditorChangeContent | EditorChangeSelection) {
     if (event['event'] == 'text-change') {
       this.text = event['html'];
+      if(this.text == null){
+        this.valid = false;
+      } else {
+        this.valid = true
+      }
+
     }
+    
   }
 
   upload = (event) => {
@@ -125,9 +133,9 @@ export class CommentBoxChatroomComponent implements OnInit {
         this.downloadURL2 = this.ref2.getDownloadURL();
         this.downloadURL2.subscribe(url => {
           if (url) {
-            this.imageURL2 = url;
             this.uploadState2 = null;
             this.imageURL = url;
+            this.valid = true;
           }
         });
       })
@@ -147,6 +155,7 @@ export class CommentBoxChatroomComponent implements OnInit {
   resetUpload() {
     this.downloadURL2 = null;
     this.uploadState2 = null;
+    this.valid = false;
     this.ref2 = null;
     this.task2 = null;
   }
@@ -161,14 +170,13 @@ export class CommentBoxChatroomComponent implements OnInit {
     this.messageData.messageAuthorID = this.localUser.uid;
     this.messageData.messageTime = Timestamp.fromDate(new Date());
     this.messageData.messageImg = this.imageURL;
-    if(this.text.length > 0 || this.imageURL.length > 0) {
     await addDoc(collection(this.db, "chatrooms", this.currentChatroomID, "messages"), this.messageData);
     await this.setnewMessage();
     this.setShownInSidebarToTrue();
     this.form.reset();
     this.resetUpload();
     this.imageURL = '';
-    }
+    
   };
 
 

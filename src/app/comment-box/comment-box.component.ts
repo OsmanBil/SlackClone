@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EditorChangeContent, EditorChangeSelection, QuillEditorComponent } from 'ngx-quill';
@@ -62,7 +62,7 @@ export class CommentBoxComponent implements OnInit {
   this.innerWidth = window.innerWidth;
 }
 
-
+  
   modules = {
     'emoji-shortname': true,
     'emoji-textarea': false,
@@ -93,8 +93,7 @@ export class CommentBoxComponent implements OnInit {
     userId: '',
     channelId: '',
     upload: '',
-    postId: '',
-    channelName: ''
+    postId: ''
   }
 
   thread = {
@@ -109,10 +108,11 @@ export class CommentBoxComponent implements OnInit {
   localUser;
 
   constructor(
-    private route: ActivatedRoute,
-    private firestore: AngularFirestore,
+    private route: ActivatedRoute, 
+    private firestore: AngularFirestore, 
     private afStorage: AngularFireStorage,
-    private dialog: MatDialog) {
+    private dialog: MatDialog) 
+    {
     this.form = new FormGroup({
       'editor': new FormControl()
     });
@@ -121,7 +121,6 @@ export class CommentBoxComponent implements OnInit {
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
-    this.innerWidth = window.innerWidth;
   }
 
 
@@ -129,10 +128,10 @@ export class CommentBoxComponent implements OnInit {
     if (event['event'] == 'text-change') {
       this.text = event['html'];
       console.log(this.text);
-      if (this.text == null) {
+      if(this.text == null){
         this.valid = false;
       }
-      else {
+      else{
         this.valid = true;
       }
     }
@@ -152,31 +151,32 @@ export class CommentBoxComponent implements OnInit {
 
   setData() {
     if (this.location == 'posts') this.setPostData();
+
     if (this.location == 'comments') this.setCommentData();
   }
 
 
-  async setPostData() {
-      this.post.userId = this.currentUser['uid'];
-      this.post.text = this.text? this.text : '';
-      this.post.time = Timestamp.fromDate(new Date());
-      this.post.channelId = this.channelId;
-      this.post.upload = this.imgUploadPost;
-      this.post.postId = Math.random().toString(36).substring(2);
-      this.post.channelName = this.channelName;
-      this.data = this.post;
-      this.sendDataToPost();
+  setPostData(){
+    this.post.userId = this.currentUser['uid'];
+    this.post.text = this.text;
+    this.post.time = Timestamp.fromDate(new Date());
+    this.post.channelId = this.channelId;
+    this.post.upload = this.imgUploadPost;
+    this.post.postId = Math.random().toString(36).substring(2);
+    this.data = this.post;
+    this.sendDataToPost();
   }
 
 
-  setCommentData() {
+  setCommentData(){
     this.thread.userId = this.currentUser['uid'];
-    this.thread.text = this.text? this.text : '';
+    this.thread.text = this.text;
     this.thread.time = Timestamp.fromDate(new Date());
     this.thread.postId = this.CommentToPost.postId;
     this.thread.channelId = this.CommentToPost.channelId;
     this.thread.upload = this.imgUploadThread;
     this.data = this.thread;
+
     this.sendDataToComments();
   }
 
@@ -185,27 +185,22 @@ export class CommentBoxComponent implements OnInit {
     await setDoc(doc(this.db, "channels", this.channelId, "posts", this.post.postId), this.data);
     await this.setThreadInUser();
     this.form.reset();
-    this.resetUploadPost();
+    this.resetUpload();
   }
 
-
-  async setThreadInUser() {
-    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.post.postId), { channelId: this.channelId, postId: this.post.postId, time: Timestamp.fromDate(new Date()) });
+  async setThreadInUser(){
+    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.post.postId), {  channelId: this.channelId, postId: this.post.postId, time: Timestamp.fromDate(new Date()) });
   }
-
 
   async sendDataToComments() {
     await addDoc(collection(this.db, "channels", this.CommentToPost.channelId, "posts", this.CommentToPost.postId, "comments"), this.data);
     await this.setThreadCommentInUser();
     this.form.reset();
-    this.resetUploadThread();
+    this.resetUpload();
   }
 
-
-  async setThreadCommentInUser() {
-    console.log(this.CommentToPost.postId)
-    console.log(this.CommentToPost.channelId)
-    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.CommentToPost.postId), { channelId: this.CommentToPost.channelId, postId: this.CommentToPost.postId, time: Timestamp.fromDate(new Date()) });
+  async setThreadCommentInUser(){
+    await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.CommentToPost.postId), {  channelId: this.CommentToPost.channelId, postId: this.CommentToPost.postId, time: Timestamp.fromDate(new Date()) });
   }
 
 
@@ -226,81 +221,66 @@ export class CommentBoxComponent implements OnInit {
   }
 
 
-  uploadToPosts(event) {
+  uploadToPosts(event){
     const randomId = Math.random().toString(36).substring(2);
-    this.PostRef = this.afStorage.ref('/images/' + randomId);
-    this.PostTask = this.PostRef.put(event.target.files[0]);
-    this.PostTask.snapshotChanges().pipe(
+    this.ref = this.afStorage.ref('/images/' + randomId);
+    this.task = this.ref.put(event.target.files[0]);
+    this.task.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURLPost = this.PostRef.getDownloadURL();
+        this.downloadURLPost = this.ref.getDownloadURL();
         this.downloadURLPost.subscribe(url => {
           if (url) {
-            this.PostUploadState = null;
+            this.uploadState = null;
             this.imgUploadPost = url;
             this.valid = true;
           }
         });
       })
     )
-      .subscribe()
+    .subscribe()
   }
 
 
-  uploadToThread(event) {
+  uploadToThread(event){
     const randomId = Math.random().toString(36).substring(2);
-    this.CommentRef = this.afStorage.ref('/images/' + randomId);
-    this.CommentTask = this.CommentRef.put(event.target.files[0]);
-    this.CommentTask.snapshotChanges().pipe(
+    this.ref = this.afStorage.ref('/images/' + randomId);
+    this.task = this.ref.put(event.target.files[0]);
+    this.task.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURLThread = this.CommentRef.getDownloadURL();
+        this.downloadURLThread = this.ref.getDownloadURL();
         this.downloadURLThread.subscribe(url => {
           if (url) {
-            this.CommentUploadState = null;
+            this.uploadState = null;
             this.imgUploadThread = url;
             this.valid = true;
           }
         });
       })
     )
-      .subscribe();
+    .subscribe();
   }
 
 
-  discardUploadPost() {
+  discardUpload() {
     this.imgUploadPost = '';
-    this.PostRef.delete();
-    this.resetUploadPost();
-  }
-
-
-  discardUploadThread(){
     this.imgUploadThread = '';
-    this.CommentRef.delete();
-    this.resetUploadThread();
+    this.ref.delete();
+    this.resetUpload();
   }
 
 
-  resetUploadPost() {
+  resetUpload() {
     this.valid = false;
     this.loading = false;
     this.downloadURLPost = null;
-    this.PostUploadState = null;
-    this.PostRef = null;
-    this.PostTask = null;
-  }
-
-
-  resetUploadThread(){
-    this.valid = false;
-    this.loading = false;
     this.downloadURLThread = null;
-    this.CommentUploadState = null;
-    this.CommentRef = null;
-    this.CommentTask = null;
+    this.uploadState = null;
+    this.ref = null;
+    this.task = null;
   }
 
 
-  openLightbox(url) {
+  openLightbox(url){
     let dialog = this.dialog.open(LightboxComponent);
     dialog.componentInstance.lightboxImg = url;
   }

@@ -74,5 +74,18 @@
             </div>
         </div>
     </div>
-    <app-comment-box-chatroom></app-comment-box-chatroom>
+    <app-comment-box-chatroom *ngIf="innerHeight > 600"></app-comment-box-chatroom>
+    <mat-accordion *ngIf="innerHeight < 600">
+        <mat-expansion-panel 
+          (opened)="panelOpenState = true" 
+          (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Text Editor
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <app-comment-box-chatroom location="posts"></app-comment-box-chatroom>
+        </mat-expansion-panel>
+      </mat-accordion>
+
 </div>

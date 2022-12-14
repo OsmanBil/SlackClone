@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, AfterViewChecked, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { getFirestore } from '@firebase/firestore';
 import { collection, getDocsFromCache, addDoc, increment, Unsubscribe, getDocs, doc, orderBy, Timestamp, setDoc, serverTimestamp, updateDoc, getDoc, onSnapshot, query, where } from "firebase/firestore";
@@ -24,12 +24,19 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
   @Input() public chatusers: any[] = [];
   @Input() public bookmarks: any[] = [];
 
-
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+  this.innerWidth = window.innerWidth;
+  this.innerHeight = window.innerHeight;
+}
 
   textMessage;
   localUser;
   numberOfLoadMessages = 10;
   scrollCounter = 0;
+  panelOpenState = false
+  innerWidth: Number;
+  innerHeight: Number;
 
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
@@ -58,7 +65,8 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
       this.loadBookmarks();
     })
     this.setSearchValue();
-
+    this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
   }
 
 
@@ -247,7 +255,7 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     dialog.componentInstance.currentChatroomID = chatroomID;
   }
 
-  async deleteBookmark(deletBookmarkID){
+  async deleteBookmark(deletBookmarkID) {
     await deleteDoc(doc(this.db, 'chatrooms', this.currentChatroomID, 'bookmarks', deletBookmarkID))
   }
 
