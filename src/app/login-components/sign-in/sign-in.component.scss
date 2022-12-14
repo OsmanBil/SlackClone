@@ -1,3 +1,7 @@
+.mat-card{
+  width: 80vw;
+}
+
 .mat-card-title {
   color: white;
   padding-bottom: 20px;
@@ -72,4 +76,10 @@ span {
 
 .full-width {
   width: 100%;
+}
+
+@media(max-width: 330px){
+  img {
+    height: 36px;
+  }
 }
