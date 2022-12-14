@@ -1,5 +1,6 @@
 quill-editor{
     width: 100%;
+    display: block;
 }
 
 form{
@@ -33,8 +34,10 @@ form{
 .form-container{
     position: absolute;
     width: calc(100% - 80px);
-    left: 40px;
-    bottom: 20px;
+    left: 32px;
+    bottom: 32px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
 }
 
 input[type="file"] {
@@ -47,8 +50,8 @@ input[type="file"] {
     justify-content: center;
     position: relative;
     top: auto;
-    bottom: -80px;
-    right: -50px;
+    bottom: -54px;
+    right: -38px;
     width: min-content;
     div{
         position: relative;
@@ -92,7 +95,7 @@ input[type="file"] {
 }
 
 .set-height{
-    height: 120px;
+    height: 140px;
 }
 
 .lightbox-container {

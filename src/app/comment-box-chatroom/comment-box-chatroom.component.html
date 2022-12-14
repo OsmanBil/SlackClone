@@ -5,7 +5,7 @@
     </quill-editor>
 
 
-    <i class="material-icons send-icon" matTooltip="Post" (click)="addMessage()">send</i>
+    <i class="material-icons send-icon" matTooltip="Post" *ngIf="text.length > 0 || imageURL.length > 0" (click)="addMessage()">send</i>
     
     <div class="send-icon2">
         <label for="fileChatroom" class="upload-file">

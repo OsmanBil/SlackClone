@@ -2,6 +2,7 @@
     height: calc(100vh - 50px);
     width: 100%;
     border-right: 1px solid gray;
+    background-color: white;
 }
 
 .header-container{
@@ -70,35 +71,15 @@
 }
 
 .messages-container{
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
-    height: 58vh;
+    height: 56vh;
     /* width */
-&::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  /* Track */
-  &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px transparent; 
-    border-radius: 10px;
-  }
-   
-  /* Handle */
-  &::-webkit-scrollbar-thumb {
-    background: gray; 
-    border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
-    background: rgb(164, 164, 164); 
-  }
+
 }
 
 .one-message {
     background-color: white;
-    border-radius: 5px;
     img{
         height: 30px;
         width: 30px;
