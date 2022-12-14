@@ -109,7 +109,8 @@ export class CommentBoxChatroomComponent implements OnInit {
 
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
-    this.innerWidth = window.innerWidth
+    this.innerWidth = window.innerWidth;
+    this.otherUserID = [];
   }
 
 
@@ -191,27 +192,29 @@ export class CommentBoxChatroomComponent implements OnInit {
   async setnewMessage() {
     const otherUsersID = query(collection(this.db, "chatrooms", this.currentChatroomID, "users"), where('id', '!=', this.localUser.uid))
     const querySnapshotsUsersID = await getDocs(otherUsersID);
+    this.otherUserID = [];
     querySnapshotsUsersID.forEach(async (doc: any) => {
+     
       this.otherUserID.push(doc.id)
     });
     for(let i = 0; i < this.otherUserID.length; i++){
-    // const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID[i]);
-    //  await updateDoc(otherUserRef, {
-    //    newMessage: 0,
-    //  })   
+     const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID[i]);
+      await updateDoc(otherUserRef, {
+        newMessage: 0,
+      })   
     }
     const otherUserRef2 = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.localUser.uid);
-    // await updateDoc(otherUserRef2, {
-    //   newMessage: increment(1),
-    // });
+     await updateDoc(otherUserRef2, {
+      newMessage: increment(1),
+     });
   }
 
   async setShownInSidebarToTrue(){
     for(let i = 0; i < this.otherUserID.length; i++){
       const otherUserChatroomRef = doc(this.db, "users", this.otherUserID[i], "chatids", this.currentChatroomID);
-      //  await updateDoc(otherUserChatroomRef, {
-      //    shownInSidebar: true,
-      //  })   
+         await updateDoc(otherUserChatroomRef, {
+           shownInSidebar: true,
+         })   
       }
   }
   

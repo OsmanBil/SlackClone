@@ -1,6 +1,10 @@
 .bookmarks-container{
-    width: 30vw;
+    width:  calc(40vw - 48px);
     min-height: 40vh;
+    max-height: calc(95vh - 48px);
+    display: flex;
+    flex-direction: column;
+  
     input{
        
         outline: none;
@@ -15,7 +19,18 @@
 }
 
 mat-form-field{
-    width: 100%!important;
+    width: calc(40vw - 48px);
+}
+
+.bottom-container{
+    width: calc(40vw - 48px);
+}
+.header-container{
+    width: calc(40vw - 48px);
+}
+
+mat-form-field-wrapper{
+    margin: 0;
 }
 
 .folder-img{
@@ -55,5 +70,42 @@ mat-form-field{
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+}
+
+.header-container{
+    p{
+        font-size: 20px;
+    }
+}
+
+@media(max-width: 1000px) {
+    .bookmarks-container{
+        width: calc(80vw - 48px);
+        min-height: 40vh;
+        input{
+            width: 50%;
+        
+        }
+    }
+    mat-form-field{
+        width: calc(80vw - 48px);
+    }
+    .bottom-container{
+        width: calc(80vw - 48px);
+    }
+    .header-container{
+        width: calc(80vw - 48px);
+    }
+}
+
+@media(max-width: 450px) {
+    .folder-img{
+        display: none;
+    }
+    .header-container{
+        p{
+            font-size: 20px;
+        }
     }
 }

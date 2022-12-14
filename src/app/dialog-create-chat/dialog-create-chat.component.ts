@@ -105,7 +105,7 @@ export class DialogCreateChatComponent implements OnInit {
       let messageData = {
         chatroomID: '',
         chatroomNumberUsers: '',
-        messageText: '',
+        messageText: null,
         messageImg: '',
         messageServerTime: Timestamp,
         messageAuthor: '',
@@ -154,7 +154,12 @@ export class DialogCreateChatComponent implements OnInit {
         messageData.messageAuthorID = doc2.data().messageAuthorID
         messageData.messageTime = this.convertTimestamp(doc2.data().messageTime)
         messageData.messageServerTime = doc2.data().messageServerTime
-        messageData.messageText = doc2.data().messageText
+      
+        if( doc2.data().messageText == ''){
+          messageData.messageText = null
+        } else {
+          messageData.messageText = doc2.data().messageText
+        }
         messageData.messageImg = doc2.data().messageImg
 
         // FOR THE LAST MESSAGE LOAD THE IMG AND NAME OF THE AUTHOR OF THE LAST MESSAGE
@@ -294,6 +299,13 @@ export class DialogCreateChatComponent implements OnInit {
       this.searchText = s; 
       
     });
+  }
+
+  async setShownInSidebarToTrue(currentChatroomID){
+      const otherUserChatroomRef = doc(this.db, "users", this.localUser.uid, "chatids", currentChatroomID);
+         await updateDoc(otherUserChatroomRef, {
+           shownInSidebar: true,
+         })   
   }
 
   // BEISPIELE VON MIHAI

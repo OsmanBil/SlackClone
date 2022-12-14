@@ -49,6 +49,7 @@ export class SidenavComponent implements OnInit {
   ngOnInit(): void {
     this.loadChatroomData();
     this.innerWidth = window.innerWidth;
+
   }
 
 
@@ -186,9 +187,9 @@ export class SidenavComponent implements OnInit {
     this.activeChatChannel = value;
     console.log( this.chatrooms[positionInArray].chatroomID, 'and', positionInArray)
     const otherUserRef = doc(this.db, "chatrooms", this.chatrooms[positionInArray].chatroomID, "users", this.chatrooms[positionInArray].userID);
-    // await updateDoc(otherUserRef, {
-    //   newMessage: 0,
-    // });
+    await updateDoc(otherUserRef, {
+      newMessage: 0,
+    });
     if(this.innerWidth < 645){
       this.sidenavService.closeSidenav();
     }
@@ -197,9 +198,9 @@ export class SidenavComponent implements OnInit {
   // HIDE THE CHATROOM IN SIDEBAR WHEN THE USER CLICKS THE CLOSE IMG
   showChatroomInSidebar(chatroomid) {
     const chatroomRef = doc(this.db, "users", this.localUser.uid, "chatids", chatroomid);
-    // updateDoc(chatroomRef, {
-    //   shownInSidebar: false,
-    // });
+    updateDoc(chatroomRef, {
+      shownInSidebar: false,
+    });
   }
 
   // OPENS THE CHATROOM WHEN THE USER CLICKS ON IT

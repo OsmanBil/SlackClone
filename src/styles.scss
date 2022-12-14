@@ -100,3 +100,12 @@ p {
 ::-webkit-scrollbar-thumb:hover {
     background: rgb(164, 164, 164);
 }
+
+@media(max-width: 450px) {
+    .mat-form-field-wrapper {
+        padding-bottom: 10px;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+}

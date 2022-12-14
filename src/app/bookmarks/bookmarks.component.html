@@ -1,7 +1,7 @@
-<form class="bookmarks-container m-1">
+<form class="bookmarks-container">
 
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <p class="fs-5 fw-bold">Add a bookmarkt to this channel</p>
+    <div class="header-container d-flex align-items-center justify-content-between mb-4">
+        <p class="fw-bold">Add a bookmarkt to this channel</p>
         <i class="material-icons close-lightbox" (click)="dialogRef.close()">close</i>
     </div>
     <div class="mb-2">
@@ -20,7 +20,8 @@
             </mat-form-field>
         </div>
     </div>
-    <div class="d-flex align-items-center mx-3 mb-4">
+    <div class="bottom-container">
+    <div class="d-flex align-items-center mx-0 mx-sm-3 mb-sm-4 mb-2">
         <img class="folder-img me-3" src="/assets/img/folder.png">
         <div class="bookmark-text">
             <p class="fw-bold pb-1">Bookmark important links for your team</p>
@@ -31,5 +32,6 @@
         <button  [disabled]="link.length == 0 || linkName.length == 0" class="btn btn-success add-button ms-auto" (click)="addBookmark()">
            <mat-icon class="">add</mat-icon> add bookmark</button>
        
+    </div>
     </div>
 </form>

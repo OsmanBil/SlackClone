@@ -31,7 +31,7 @@
     </div>
     <div class="messages-container" #scrollMe>
         <div class="other-user">
-            <div *ngFor="let chatuser of chatusers" class="one-message p-2 d-flex align-items-start">
+            <div *ngFor="let chatuser of chatusers" class="student-container p-2 d-flex align-items-start">
                 <div class="d-flex align-items-start">
                     <img src="{{ chatuser['photoURL'] }}" class="user-img me-2">
                     <div>
@@ -46,8 +46,8 @@
                 </div>
             </div>
         </div>
-            <div class="mt-3 text-secondary d-flex justify-content-center align-items-center flex-wrap">
-                <p>This conversation is just between the two of you. Here you can send
+            <div class="conversation-container mt-3 text-secondary d-flex justify-content-center align-items-center flex-wrap">
+                <p class="text-center">This conversation is just between the two of you. Here you can send
                     messages and share files with <b>{{ userNamesAsStringWithoutAnd }}</b></p>
 
             </div>
@@ -61,9 +61,9 @@
                             src="{{ message['loadMessageAuthorImg'] }}">
                     </div>
                     <div [ngClass]="{'server-message' : message['loadMessageAuthor'] == 'server'}">
-                        <div class="d-flex align-items-start" *ngIf="message['loadMessageAuthor'] !== 'server'">
+                        <div class="message-header" *ngIf="message['loadMessageAuthor'] !== 'server'">
                             <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
-                            <p>{{ message['loadMessageTime']}}</p>
+                            <p>{{ message['loadMessageTime']}} Uhr</p>
                         </div>
                         <div [innerHTML]="message['loadMessageText']" class="message-text">
                         </div>

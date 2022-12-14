@@ -36,7 +36,9 @@ export class SidenavToggleService {
 
 
   public closeThread() {
+    if(this.threadDrawer){
     this.threadDrawer.close();
+    }
   }
 
 
