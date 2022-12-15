@@ -59,7 +59,7 @@
         <div class="d-flex flex-column-reverse">
         <div class="load-message-container" *ngFor="let message of messages">
             <div  class="one-message my-2 p-2 d-flex align-items-start"
-                *ngIf="searchText === '' || message['loadMessageText'].toLowerCase().includes(searchText) || message['loadMessageAuthor'].toLowerCase().includes(searchText) ">
+                *ngIf="searchText === '' || message['loadMessageText']?.toLowerCase().includes(searchText) || message['loadMessageAuthor']?.toLowerCase().includes(searchText) ">
                 <div>
                     <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
                         src="{{ message['loadMessageAuthorImg'] }}">
