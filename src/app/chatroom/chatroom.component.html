@@ -46,49 +46,49 @@
                 </div>
             </div>
         </div>
-            <div class="conversation-container mt-3 text-secondary d-flex justify-content-center align-items-center flex-wrap">
-                <p class="text-center">This conversation is just between the two of you. Here you can send
-                    messages and share files with <b>{{ userNamesAsStringWithoutAnd }}</b></p>
+        <div
+            class="conversation-container mt-3 text-secondary d-flex justify-content-center align-items-center flex-wrap">
+            <p class="text-center">This conversation is just between the two of you. Here you can send
+                messages and share files with <b>{{ userNamesAsStringWithoutAnd }}</b></p>
 
-            </div>
-        
-        <div class="load-message-container d-flex flex-column-reverse">
-            <div *ngFor="let message of messages" class="one-message my-2 p-2 d-flex align-items-start">
-                <div class="d-flex align-items-start"
-                    *ngIf="searchText === '' || message['loadMessageText']?.toLowerCase().includes(searchText) || message['loadMessageAuthor']?.toLowerCase().includes(searchText) ">
-                    <div>
-                        <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
-                            src="{{ message['loadMessageAuthorImg'] }}">
+        </div>
+        <div class="button-container d-flex justify-content-center" *ngIf="messages.length >= 10">
+            <button class="loadmore-button btn btn-outline-secondary py-0 px-2 my-3" (click)="loadMoreMessages()">load
+                more messages</button>
+        </div>
+        <div class="d-flex flex-column-reverse">
+        <div class="load-message-container" *ngFor="let message of messages">
+            <div  class="one-message my-2 p-2 d-flex align-items-start"
+                *ngIf="searchText === '' || message['loadMessageText'].toLowerCase().includes(searchText) || message['loadMessageAuthor'].toLowerCase().includes(searchText) ">
+                <div>
+                    <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
+                        src="{{ message['loadMessageAuthorImg'] }}">
+                </div>
+                <div [ngClass]="{'server-message' : message['loadMessageAuthor'] == 'server'}">
+                    <div class="message-header" *ngIf="message['loadMessageAuthor'] !== 'server'">
+                        <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
+                        <p>{{ message['loadMessageTime']}} Uhr</p>
                     </div>
-                    <div [ngClass]="{'server-message' : message['loadMessageAuthor'] == 'server'}">
-                        <div class="message-header" *ngIf="message['loadMessageAuthor'] !== 'server'">
-                            <p class="me-1"><b>{{ message['loadMessageAuthor']}}</b></p>
-                            <p>{{ message['loadMessageTime']}} Uhr</p>
-                        </div>
-                        <div [innerHTML]="message['loadMessageText']" class="message-text">
-                        </div>
-                        <img (click)="openLightbox( message['loadMessageImg'] )" class="loadmessage-image"
-                            *ngIf=" message['loadMessageImg']" src="{{ message['loadMessageImg'] }}">
+                    <div [innerHTML]="message['loadMessageText']" class="message-text">
                     </div>
+                    <img (click)="openLightbox( message['loadMessageImg'] )" class="loadmessage-image"
+                        *ngIf=" message['loadMessageImg']" src="{{ message['loadMessageImg'] }}">
                 </div>
             </div>
-            <div class="button-container d-flex justify-content-center" *ngIf="messages.length >= 10">
-                <button class="loadmore-button btn btn-outline-secondary py-0 px-2 my-3"
-                    (click)="loadMoreMessages()">load
-                    more messages</button>
-            </div>
         </div>
-    </div>
-    <app-comment-box-chatroom *ngIf="innerHeight > 600"></app-comment-box-chatroom>
-    <mat-accordion *ngIf="innerHeight < 600">
-        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Text Editor
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <app-comment-box-chatroom location="posts"></app-comment-box-chatroom>
-        </mat-expansion-panel>
-    </mat-accordion>
+        </div>
+       
 
-</div>
+        <app-comment-box-chatroom *ngIf="innerHeight > 600"></app-comment-box-chatroom>
+        <mat-accordion *ngIf="innerHeight < 600">
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Text Editor
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <app-comment-box-chatroom location="posts"></app-comment-box-chatroom>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+    </div>

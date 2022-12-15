@@ -84,7 +84,7 @@
 .messages-container {
     overflow-y: auto;
     overflow-x: hidden;
-    height: 56vh;
+    height: calc(100% - 290px);
     /* width */
 
 }
@@ -141,6 +141,7 @@
 
 .lightbox-container {
     display: flex;
+    flex-direction: column-reverse;
     align-items: center;
     justify-content: center;
     background-color: black;

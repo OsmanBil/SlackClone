@@ -122,7 +122,7 @@ export class SidenavComponent implements OnInit {
         this.loadOtherUsers(neededData, doc2);
       })
     })
-    this.loadNewMessages(neededData);
+    this.loadNewMessages(neededData, chatroom);
   }
 
    // LÄD DIE ANDEREN USERS AUßer DEN LOCAL USER
@@ -133,7 +133,6 @@ export class SidenavComponent implements OnInit {
           neededData.userID = doc3.data().uid
           neededData.userName = doc3.data().displayName;
           neededData.userIsOnline = doc3.data().isOnline;
-          neededData.newMessageforOtherUser = doc2.data().newMessage
           if(neededData.numberOfChatUsers > 2){
             neededData.userImg = '/assets/img/groupchat.png';
           }
@@ -145,8 +144,8 @@ export class SidenavComponent implements OnInit {
   }
 
     // LOAD THE NEW MESSAGE FOR CHATROOM FROM LOCAL USER
-    loadNewMessages(neededData) {
-      const x2 = query(collection(this.db, "users"), where("uid", "==", this.localUser.uid));
+    loadNewMessages(neededData, chatroom) {
+      const x2 = query(collection(this.db, "chatrooms", chatroom.id, "users"), where("id", "==", this.localUser.uid));
       const s2 = onSnapshot(x2, async (querySnapshot) => {
         querySnapshot.forEach(async (doc4: any) => {
             neededData.newMessageforOtherUser = doc4.data().newMessage
@@ -185,8 +184,7 @@ export class SidenavComponent implements OnInit {
   // SHOWS IN SIDEBAR WHICH CHANNEL IS ACTIVE 
   async showActiveChat(value, positionInArray) {
     this.activeChatChannel = value;
-    console.log( this.chatrooms[positionInArray].chatroomID, 'and', positionInArray)
-    const otherUserRef = doc(this.db, "chatrooms", this.chatrooms[positionInArray].chatroomID, "users", this.chatrooms[positionInArray].userID);
+    const otherUserRef = doc(this.db, "chatrooms", this.chatrooms[positionInArray].chatroomID, "users", this.localUser.uid);
     await updateDoc(otherUserRef, {
       newMessage: 0,
     });

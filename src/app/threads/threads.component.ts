@@ -40,6 +40,7 @@ export class ThreadsComponent implements OnInit {
 
   localUser;
   ALLTHREADS: any[] = [];
+  searchText = '';
 
   constructor(public markPostService: MarkPostService, private route: ActivatedRoute, public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, public fr: Firestore) { }
 

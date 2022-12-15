@@ -200,12 +200,12 @@ export class CommentBoxChatroomComponent implements OnInit {
     for(let i = 0; i < this.otherUserID.length; i++){
      const otherUserRef = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.otherUserID[i]);
       await updateDoc(otherUserRef, {
-        newMessage: 0,
+        newMessage: increment(1),
       })   
     }
     const otherUserRef2 = doc(this.db, "chatrooms", this.currentChatroomID, "users", this.localUser.uid);
      await updateDoc(otherUserRef2, {
-      newMessage: increment(1),
+      newMessage: 0,
      });
   }
 
