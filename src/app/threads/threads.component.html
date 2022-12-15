@@ -29,7 +29,9 @@
 
 <div class="thread-container" *ngFor="let post of ALLTHREADS; index as i">
     <div class="channel-page"
-        *ngIf="searchText === '' || post.postAuthorName.toLowerCase().includes(searchText) || post.postText.toLowerCase().includes(searchText) || post.channelName.toLowerCase().includes(searchText) || post?.lastTwoComment[0]?.commentLastText?.toLowerCase().includes(searchText) || post?.lastTwoComment[1]?.commentLastText?.toLowerCase().includes(searchText)">
+        *ngIf="searchText === '' || post.postAuthorName?.toLowerCase().includes(searchText) || post.postText?.toLowerCase().includes(searchText) || post.channelName?.toLowerCase().includes(searchText)     
+        || post?.lastTwoComment[0]?.commentLastText?.toLowerCase().includes(searchText) || post?.lastTwoComment[1]?.commentLastText?.toLowerCase().includes(searchText)">
+
         <div class="channel-inner-page">
             <div># {{post.channelName}}</div>
             <div class="post-container" #scrollMe>

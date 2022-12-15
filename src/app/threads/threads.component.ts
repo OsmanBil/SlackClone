@@ -46,7 +46,7 @@ export class ThreadsComponent implements OnInit {
   constructor(private search: SearchService, public markPostService: MarkPostService, private route: ActivatedRoute, public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, public fr: Firestore) { }
 
   async ngOnInit(): Promise<void> {
-   
+    this.searchText = '';
     this.localUser = JSON.parse(localStorage.getItem('user'));
     // await  this.loadAll()
     this.loadAllThreads();
@@ -74,6 +74,7 @@ export class ThreadsComponent implements OnInit {
   }
 
   async loadAllThreads() {
+    
     const userThreads = query(collection(this.db, 'users', this.localUser.uid, 'threads'), orderBy("time"));
     const userThreadsDocs = await getDocs(userThreads);
     userThreadsDocs.forEach(async (onethread: any) => {
