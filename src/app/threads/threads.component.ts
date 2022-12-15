@@ -15,8 +15,6 @@ import { fromEvent, timestamp } from 'rxjs';
 import { LightboxComponent } from '../lightbox/lightbox.component';
 import { async } from '@angular/core/testing';
 import { MarkPostService } from '../services/mark-post.service';
-import { SearchService } from '../services/search.service';
-
 
 @Component({
   selector: 'app-threads',
@@ -35,7 +33,7 @@ export class ThreadsComponent implements OnInit {
 
   allThreads = [];
   thread = [];
-  searchText = '';
+
 
   db = getFirestore();
   comments = [];
@@ -43,14 +41,12 @@ export class ThreadsComponent implements OnInit {
   localUser;
   ALLTHREADS: any[] = [];
 
-  constructor(private search: SearchService, public markPostService: MarkPostService, private route: ActivatedRoute, public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, public fr: Firestore) { }
+  constructor(public markPostService: MarkPostService, private route: ActivatedRoute, public dialog: MatDialog, private firestore: AngularFirestore, private router: Router, public fr: Firestore) { }
 
   async ngOnInit(): Promise<void> {
-   
     this.localUser = JSON.parse(localStorage.getItem('user'));
     // await  this.loadAll()
     this.loadAllThreads();
-    this.setSearchValue();
   }
 
   async loadAll() {
@@ -60,12 +56,6 @@ export class ThreadsComponent implements OnInit {
 
 
 
-  }
-
-  setSearchValue(){
-    this.search.getData().subscribe(s => {                  
-      this.searchText = s; 
-    });
   }
 
   setMarkedPostId(id: string){
