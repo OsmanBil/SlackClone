@@ -27,12 +27,12 @@
 
 
 
-<div class="thread-container" *ngFor="let post of ALLTHREADS; index as i">
-    <div class="channel-page">
+<div class="thread-container" *ngFor="let post of ALLTHREADS; index as i" >
+    <div class="channel-page" *ngIf="searchText === '' || post.postAuthorName.toLowerCase().includes(searchText) || post.postText.toLowerCase().includes(searchText)">
         <div class="channel-inner-page">
             <div># {{post.channelName}}</div>
             <div class="post-container" #scrollMe>
-                <div class="posts">
+                <div class="posts" >
                     <img class="profile-img" src="{{ post.postAuthorImg }}">
                     <div>
                         <div class="general-info-line">
@@ -53,8 +53,8 @@
 
 
 
-                    <div class="comments-container">
-                    <div class="comments" *ngFor="let comment of post.lastTwoComment.reverse(); index as a">
+                    <div class="comments-container" >
+                    <div class="comments" *ngFor="let comment of post.lastTwoComment.reverse(); index as a" >
                         <img class="profile-img" src="{{ comment.commentLastAuthorImg }}">
                         <div>
                             <div class="general-info-line">
