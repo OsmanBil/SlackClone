@@ -56,6 +56,7 @@ import { ChannelDetailsComponent } from './channel-details/channel-details.compo
 import { SearchComponent } from './search/search.component';
 import { LightboxComponent } from './lightbox/lightbox.component';
 import { BookmarksComponent } from './bookmarks/bookmarks.component';
+import { ImpressumComponent } from './impressum/impressum.component';
 
 
 
@@ -85,6 +86,7 @@ import { BookmarksComponent } from './bookmarks/bookmarks.component';
     SearchComponent,
     LightboxComponent,
     BookmarksComponent,
+    ImpressumComponent,
   ],
   imports: [
     BrowserModule,

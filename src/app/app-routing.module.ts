@@ -16,6 +16,7 @@ import { CommentBoxComponent } from './comment-box/comment-box.component';
 import { ThreadsComponent } from './threads/threads.component';
 
 import { CommentBoxChatroomComponent } from './comment-box-chatroom/comment-box-chatroom.component';
+import { ImpressumComponent } from './impressum/impressum.component';
 
 
 const routes: Routes = [
@@ -30,6 +31,7 @@ const routes: Routes = [
       { path: 'threads', component: ThreadsComponent },
       { path: 'chatroom/:id', component: ChatroomComponent },
       { path: 'channel/:id', component: OpenChannelComponent},
+      { path: 'impressum', component: ImpressumComponent},
     ]
   },
   { path: 'register-user', component: SignUpComponent },

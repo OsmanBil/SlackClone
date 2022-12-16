@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     width: 240px;
-    min-height: calc(100vh - 50px);
+    height: calc(100vh - 50px);
     background-color: #3F0E40;
     color: rgb(230, 226, 226); 
     letter-spacing: 0.5px;
@@ -242,6 +242,21 @@ mat-icon{
     overflow: hidden;
 }
 
+//border
+.container-border{
+position: absolute;
+bottom: 0;
+    width: 240px;
+    height: 40px;
+    left: 0;
+    border-top: 1px solid #522653;
+    background-color: #3F0E40;
+    color: white;
+}
+
+.empty-Div{
+    min-height: 30px;
+}
 
 @media(max-width: 645px){
     .sidenave{

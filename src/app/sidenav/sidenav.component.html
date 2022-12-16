@@ -25,7 +25,8 @@
     <div class="container-channels" *ngIf="channelOpen">
       <div class="" *ngFor="let channel of channels, let i = index">
         <div class="channel" [ngClass]="{'active-chatroom' : activeChatChannel == ('channel' + i) }"
-          (click)="showActive('channel' + i, i)" [routerLink]="['/mainpage/channel/' + channel.channelId]" [queryParams]="{sendedPostID: ''}">
+          (click)="showActive('channel' + i, i)" [routerLink]="['/mainpage/channel/' + channel.channelId]"
+          [queryParams]="{sendedPostID: ''}">
           <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
           <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
           <span>{{ channel['channelName'] }}</span>
@@ -35,7 +36,7 @@
     </div>
 
     <div class="add-channel" (click)="openDialogCreateChannel()">
-      <mat-icon fontIcon="add_circle" ></mat-icon>
+      <mat-icon fontIcon="add_circle"></mat-icon>
       <span>Create new Channel</span>
     </div>
   </div>
@@ -53,8 +54,7 @@
 
       <div *ngFor="let chatroom of chatrooms; let i = index" class="">
         <!-- <div (click)="openChatroom(chatroom.chatroomID)" >  -->
-        <div class="chat"
-          [ngClass]="{'active-chatroom' : activeChatChannel == ('chatroom' + i) }"
+        <div class="chat" [ngClass]="{'active-chatroom' : activeChatChannel == ('chatroom' + i) }"
           *ngIf="chatroom.showChatroomInSidebar == true" (click)="showActiveChat('chatroom' + i, i)">
           <div class="d-flex align-items-center" [routerLink]="['/mainpage/chatroom/' + chatroom.chatroomID]">
             <div class="header-img-container">
@@ -72,18 +72,27 @@
               </div>
               <span class="newMessage ms-auto me-2" *ngIf="chatroom.newMessageforOtherUser > 0">{{
                 chatroom.newMessageforOtherUser }}</span>
-                <mat-icon (click)="showChatroomInSidebar(chatroom.chatroomID)" class="close-sidebar-chatroom ms-auto me-2"
+              <mat-icon (click)="showChatroomInSidebar(chatroom.chatroomID)" class="close-sidebar-chatroom ms-auto me-2"
                 fontIcon="close"></mat-icon>
             </div>
-           
           </div>
         </div>
       </div>
-    
     </div>
+
     <div class="add-channel" [routerLink]="['/mainpage/']">
-      <mat-icon fontIcon="add_circle" ></mat-icon>
+      <mat-icon fontIcon="add_circle"></mat-icon>
       <span>Create new Chat</span>
     </div>
+  </div>
+<div class="empty-Div"></div>
+
+</div>
+
+<div class="container-border">
+  <div class="container-threads" [routerLink]="['/mainpage/impressum/']"
+    [ngClass]="{'active-chatroom' : activeChatChannel == ('impressum') }" (click)="showActive('impressum', '0')">
+    <mat-icon fontIcon="assignment"></mat-icon>
+    <span>Impressum/ Datenschutz</span>
   </div>
 </div>
