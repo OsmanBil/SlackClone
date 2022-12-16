@@ -26,7 +26,7 @@
 </div> -->
 
 
-
+<div class="d-flex flex-column-reverse">
 <div class="thread-container" *ngFor="let post of ALLTHREADS; index as i">
     <div class="channel-page" *ngIf="searchText === '' 
         || post.postAuthorName.toLowerCase().includes(searchText) 
@@ -37,7 +37,7 @@
         <div></div>
 
         <div class="channel-inner-page">
-            <div># {{post.channelName}}</div>
+            <div class="fw-bold"># {{post.channelName}}</div>
             <div class="post-container" #scrollMe>
                 <div class="posts">
                     <img class="profile-img" src="{{ post.postAuthorImg }}">
@@ -88,11 +88,10 @@
                         </div>
                     </div>
 
-
-
                 </div>
 
             </div>
         </div>
     </div>
+</div>
 </div>
