@@ -28,9 +28,13 @@
 
 
 <div class="thread-container" *ngFor="let post of ALLTHREADS; index as i">
-    <div class="channel-page"
-        *ngIf="searchText === '' || post.postAuthorName?.toLowerCase().includes(searchText) || post.postText?.toLowerCase().includes(searchText) || post.channelName?.toLowerCase().includes(searchText)     
-        || post?.lastTwoComment[0]?.commentLastText?.toLowerCase().includes(searchText) || post?.lastTwoComment[1]?.commentLastText?.toLowerCase().includes(searchText)">
+    <div class="channel-page" *ngIf="searchText === '' 
+        || post.postAuthorName.toLowerCase().includes(searchText) 
+        || post.postText.toLowerCase().includes(searchText) 
+        || post.channelName.toLowerCase().includes(searchText)
+        || post.lastTwoComment[0]?.commentLastText.toLowerCase().includes(searchText)      
+        || post.lastTwoComment[1]?.commentLastText.toLowerCase().includes(searchText)">
+        <div></div>
 
         <div class="channel-inner-page">
             <div># {{post.channelName}}</div>
@@ -54,21 +58,43 @@
                     [queryParams]="{sendedPostID: ALLTHREADS[i].postID}" (click)="setMarkedPostId(post.postID)">weiter
                     zum Post</a>
                 <div class="comments-container">
-                    <div class="comments" *ngFor="let comment of post.lastTwoComment.reverse(); index as a">
 
-                            <img class="profile-img" src="{{ comment.commentLastAuthorImg }}">
-                            <div>
-                                <div class="general-info-line">
-                                    <p><b>{{ comment.commentLastAuthorName }}</b></p>
-                                    <span>{{ comment.commentLastTime }}</span>
-                                </div>
-                                <div class="post">
-                                    <p [innerHTML]="comment.commentLastText"></p>
-                                </div>
-                                <img (click)="openLightbox( post['uploadImg'] )" class="upload-image"
-                                    *ngIf=" post['uploadImg']" src="{{ post['uploadImg'] }}">
+
+                    
+
+                    <div class="comments" *ngIf="(post.lastTwoComment[1] | keyvalue)?.length"  >
+
+                        <img class="profile-img" src="{{ post.lastTwoComment[1].commentLastAuthorImg }}">
+                        <div>
+                            <div class="general-info-line" >
+                                <p><b>{{ post.lastTwoComment[1]?.commentLastAuthorName }}</b></p>
+                                <span>{{ post.lastTwoComment[1]?.commentLastTime }}</span>
                             </div>
+                            <div class="post">
+                                <p [innerHTML]="post.lastTwoComment[1]?.commentLastText"></p>
+                            </div>
+                            <img (click)="openLightbox( post['uploadImg'] )" class="upload-image"
+                                *ngIf=" post['uploadImg']" src="{{ post['uploadImg'] }}">
+                        </div>
                     </div>
+
+                    <div class="comments" *ngIf="(post.lastTwoComment[0] | keyvalue)?.length">
+                        <img class="profile-img" src="{{ post.lastTwoComment[0]?.commentLastAuthorImg }}">
+                        <div>
+                            <div class="general-info-line">
+                                <p><b>{{ post.lastTwoComment[0]?.commentLastAuthorName }}</b></p>
+                                <span>{{ post.lastTwoComment[0]?.commentLastTime }}</span>
+                            </div>
+                            <div class="post">
+                                <p [innerHTML]="post.lastTwoComment[0]?.commentLastText"></p>
+                            </div>
+                            <img (click)="openLightbox( post['uploadImg'] )" class="upload-image"
+                                *ngIf=" post['uploadImg']" src="{{ post['uploadImg'] }}">
+                        </div>
+                    </div>
+
+
+
                 </div>
 
             </div>
