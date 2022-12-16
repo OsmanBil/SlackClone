@@ -10,7 +10,7 @@ export class SearchService {
   private subject: Subject<string> = new BehaviorSubject<string>('');
  
   sendData(searchtext: string) {
-      this.subject.next(searchtext);
+      this.subject.next(searchtext.toLowerCase());
   }
 
 
