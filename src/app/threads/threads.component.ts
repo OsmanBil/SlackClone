@@ -155,12 +155,15 @@ export class ThreadsComponent implements OnInit {
           commendData.commentLastAuthorName = commentAuthorData.data().displayName;
         })
         threadData.lastTwoComment.push(commendData)
+        console.log(threadData.lastTwoComment)
       })
 
       this.ALLTHREADS.push(threadData)
+      
     });
 
     //console.log(this.ALLTHREADS)
+    
   }
 
 

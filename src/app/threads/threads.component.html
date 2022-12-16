@@ -58,12 +58,7 @@
                     [queryParams]="{sendedPostID: ALLTHREADS[i].postID}" (click)="setMarkedPostId(post.postID)">weiter
                     zum Post</a>
                 <div class="comments-container">
-
-
-                    
-
                     <div class="comments" *ngIf="(post.lastTwoComment[1] | keyvalue)?.length"  >
-
                         <img class="profile-img" src="{{ post.lastTwoComment[1].commentLastAuthorImg }}">
                         <div>
                             <div class="general-info-line" >
@@ -71,10 +66,10 @@
                                 <span>{{ post.lastTwoComment[1]?.commentLastTime }}</span>
                             </div>
                             <div class="post">
-                                <p [innerHTML]="post.lastTwoComment[1]?.commentLastText"></p>
+                                <p [innerHTML]=""></p>
                             </div>
                             <img (click)="openLightbox( post['uploadImg'] )" class="upload-image"
-                                *ngIf=" post['uploadImg']" src="{{ post['uploadImg'] }}">
+                            *ngIf=" post.lastTwoComment[1]['commentLastUpload']"  src="{{ post.lastTwoComment[1]['commentLastUpload'] }}">
                         </div>
                     </div>
 
@@ -89,7 +84,7 @@
                                 <p [innerHTML]="post.lastTwoComment[0]?.commentLastText"></p>
                             </div>
                             <img (click)="openLightbox( post['uploadImg'] )" class="upload-image"
-                                *ngIf=" post['uploadImg']" src="{{ post['uploadImg'] }}">
+                            *ngIf=" post.lastTwoComment[0]['commentLastUpload']"  src="{{ post.lastTwoComment[0]['commentLastUpload'] }}">
                         </div>
                     </div>
 
