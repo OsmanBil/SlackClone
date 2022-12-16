@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { getFirestore } from '@firebase/firestore';
 import { collection, getDocs, orderBy, onSnapshot, query, where } from "firebase/firestore";
@@ -11,17 +11,29 @@ import { SidenavToggleService } from '../services/sidenav-toggle.service';
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss']
 })
-export class ThreadComponent implements OnChanges {
+export class ThreadComponent implements OnChanges, OnInit {
 
   @Input() post: any;
 
   db = getFirestore();
   comments = [];
+  panelOpenState = false;
+  innerWidth: number;
+  innerHeight: number;
   
   @Input() lightboxImg = '';
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+  this.innerWidth = window.innerWidth;
+  this.innerHeight = window.innerHeight;
+}
 
   constructor(private dialog: MatDialog) { }
 
+  ngOnInit(){
+    this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
+  }
 
   ngOnChanges() {
     if (this.post.length == 0) {

@@ -4,6 +4,10 @@
     overflow-y: auto;
 }
 
+pre{
+    width:200px !important;
+}
+
 .comments{
     display: flex;
     margin-bottom: 16px;
@@ -20,6 +24,14 @@
     p{
         word-break: break-word;
     }
+}
+
+mat-expansion-panel{
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    left: 8px;
+    z-index: 10;
 }
 
 .posts{
@@ -42,6 +54,10 @@
         margin-left: 12px;
         font-size: 12px;
     }
+}
+
+.post{
+    max-width: 200px;
 }
 
 .profile-img{

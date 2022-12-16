@@ -12,6 +12,10 @@
     position: relative
 }
 
+pre{
+    width:200px;
+}
+
 app-comment-box, mat-expansion-panel{
     position: absolute;
     bottom: 32px;
@@ -142,7 +146,7 @@ app-comment-box, mat-expansion-panel{
         padding: 16px;
     }
 
-    app-comment-box{
+    app-comment-box, mat-expansion-panel{
         bottom: 16px;
         right: 16px;
         left: 16px;

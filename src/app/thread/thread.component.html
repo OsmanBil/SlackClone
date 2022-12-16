@@ -34,4 +34,16 @@
     </div>
 </div>
 
-<app-comment-box [CommentToPost]="post" location="comments"></app-comment-box>
+<app-comment-box *ngIf="innerHeight > 600" [CommentToPost]="post" location="comments"></app-comment-box>
+<mat-accordion *ngIf="innerHeight < 600">
+    <mat-expansion-panel 
+      (opened)="panelOpenState = true" 
+      (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Write something
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-comment-box [CommentToPost]="post" location="comments"></app-comment-box>
+    </mat-expansion-panel>
+  </mat-accordion>
