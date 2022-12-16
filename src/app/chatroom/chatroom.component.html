@@ -46,8 +46,8 @@
                 </div>
             </div>
         </div>
-        <div
-            class="conversation-container mt-3 text-secondary d-flex justify-content-center align-items-center flex-wrap">
+        <div 
+            class="conversation-container pt-3 text-secondary d-flex justify-content-center align-items-center flex-wrap">
             <p class="text-center">This conversation is just between the two of you. Here you can send
                 messages and share files with <b>{{ userNamesAsStringWithoutAnd }}</b></p>
 
@@ -56,7 +56,7 @@
             <button class="loadmore-button btn btn-outline-secondary py-0 px-2 my-3" (click)="loadMoreMessages()">load
                 more messages</button>
         </div>
-        <div class="d-flex flex-column-reverse">
+        <div class="d-flex flex-column-reverse" style="background-color: #eeeeee;">
         <div class="load-message-container" *ngFor="let message of messages">
             <div  class="one-message my-2 p-2 d-flex align-items-start"
                 *ngIf="searchText === '' || message['loadMessageText']?.toLowerCase().includes(searchText) || message['loadMessageAuthor']?.toLowerCase().includes(searchText) ">
@@ -78,7 +78,7 @@
         </div>
         </div>
        
-
+        <div class="comment-box-container">
         <app-comment-box-chatroom *ngIf="innerHeight > 600"></app-comment-box-chatroom>
         <mat-accordion *ngIf="innerHeight < 600">
             <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
@@ -90,5 +90,5 @@
                 <app-comment-box-chatroom location="posts"></app-comment-box-chatroom>
             </mat-expansion-panel>
         </mat-accordion>
-
+        </div>
     </div>
