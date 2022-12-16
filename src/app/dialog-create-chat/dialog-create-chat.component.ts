@@ -264,8 +264,9 @@ export class DialogCreateChatComponent implements OnInit {
         this.userData.id = currentUser.uid;
       });
       await setDoc(doc(this.db, "chatrooms", this.roomid, "users", this.userData.id), this.userData);
-      this.router.navigateByUrl('/mainpage/chatroom/' + this.userData.id);
+      setTimeout(() => { this.router.navigateByUrl('/mainpage/chatroom/' + this.roomid) }, 500);
     }
+  
   }
 
   // SET THE CHATROOM ID IN EVERY USER BY FIREBASE
