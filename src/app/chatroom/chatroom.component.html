@@ -57,8 +57,8 @@
                 more messages</button>
         </div>
         <div class="d-flex flex-column-reverse" style="background-color: #eeeeee;">
-        <div class="load-message-container" *ngFor="let message of messages">
-            <div  class="one-message my-2 p-2 d-flex align-items-start"
+        <div class="load-message-container" *ngFor="let message of messages, let i = index">
+            <div id="{{message.id}}"  class="one-message my-2 p-2 d-flex align-items-start"
                 *ngIf="searchText === '' || message['loadMessageText']?.toLowerCase().includes(searchText) || message['loadMessageAuthor']?.toLowerCase().includes(searchText) ">
                 <div>
                     <img *ngIf="message['loadMessageAuthor'] !== 'server'" class="one-message-img me-2"
@@ -79,7 +79,7 @@
         </div>
        
         <div class="comment-box-container">
-        <app-comment-box-chatroom *ngIf="innerHeight > 600"></app-comment-box-chatroom>
+        <app-comment-box-chatroom (scrollcounterChanges)="scrollToBottom2($event)" *ngIf="innerHeight > 600"></app-comment-box-chatroom>
         <mat-accordion *ngIf="innerHeight < 600">
             <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                 <mat-expansion-panel-header>
@@ -87,7 +87,7 @@
                         Text Editor
                     </mat-panel-title>
                 </mat-expansion-panel-header>
-                <app-comment-box-chatroom location="posts"></app-comment-box-chatroom>
+                <app-comment-box-chatroom (scrollcounterChanges)="scrollToBottom2($event)" location="posts"></app-comment-box-chatroom>
             </mat-expansion-panel>
         </mat-accordion>
         </div>

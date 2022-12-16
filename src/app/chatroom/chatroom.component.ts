@@ -84,6 +84,14 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     } catch (err) { }
   }
 
+  scrollToBottom2(value: any): void {
+    
+      this.scrollToBottom();
+      console.log(value)
+    
+  }
+
+
   async loadBookmarks() {
 
     const bookmarksRef = collection(this.db, 'chatrooms', this.currentChatroomID, 'bookmarks');

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, HostListener, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EditorChangeContent, EditorChangeSelection, QuillEditorComponent } from 'ngx-quill';
@@ -76,6 +76,9 @@ export class CommentBoxChatroomComponent implements OnInit {
   currentUser = [];
   innerWidth = 450;
 
+  scrollcounter = 0;
+
+  @Output() scrollcounterChanges: EventEmitter<any> = new EventEmitter<any>();
 
   messageData = {
     messageText: '',
@@ -185,9 +188,9 @@ export class CommentBoxChatroomComponent implements OnInit {
     this.form.reset();
     this.resetUpload();
     this.imageURL = '';
-    
-  };
-
+    this.scrollcounterChanges.emit(this.scrollcounter);
+    // this.scrollToPost();
+    };
 
   async setnewMessage() {
     const otherUsersID = query(collection(this.db, "chatrooms", this.currentChatroomID, "users"), where('id', '!=', this.localUser.uid))
@@ -225,5 +228,14 @@ export class CommentBoxChatroomComponent implements OnInit {
     dialog.componentInstance.lightboxImg = url;
   
   }
+
+  scrollToPost(){
+    document.getElementById('5').scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest"
+    });
+  }
+
 
 }
