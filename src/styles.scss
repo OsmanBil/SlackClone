@@ -101,6 +101,17 @@ p {
     background: rgb(164, 164, 164);
 }
 
+
+
+@media(max-height: 600px) {
+    #emoji-palette {
+        top: -100px!important;
+        left: -30px!important;
+        width: 350px;
+        max-width: 350px;
+    }
+}
+
 @media(max-width: 450px) {
     .mat-form-field-wrapper {
         padding-bottom: 10px;

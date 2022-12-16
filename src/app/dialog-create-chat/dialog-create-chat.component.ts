@@ -79,7 +79,7 @@ export class DialogCreateChatComponent implements OnInit {
   localUserRef;
   localUserSnap;
 
-  localUser: any;
+  @Input() localUser: any;
   @Input() loadingFinish = false;
 
   searchText = '';
@@ -193,7 +193,9 @@ export class DialogCreateChatComponent implements OnInit {
     this.foundUsers = [];
     querySnapshot.forEach((doc) => {
       const founduser: any = { name: doc.data()['displayName'], imageUrl: doc.data()['photoURL'], id: doc.id };
+      if(founduser.id != this.localUser.uid){
       this.foundUsers.push(founduser)
+      }
     });
   }
 
@@ -228,6 +230,7 @@ export class DialogCreateChatComponent implements OnInit {
     } else {
       this.setUsersForRoom();
       this.setChatroomsInUsers();
+      
     }
   }
 
@@ -261,6 +264,7 @@ export class DialogCreateChatComponent implements OnInit {
         this.userData.id = currentUser.uid;
       });
       await setDoc(doc(this.db, "chatrooms", this.roomid, "users", this.userData.id), this.userData);
+      this.router.navigateByUrl('/mainpage/chatroom/' + this.userData.id);
     }
   }
 

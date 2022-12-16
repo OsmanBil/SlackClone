@@ -119,6 +119,7 @@
     margin-right: 10px;
     display: flex;
     align-items: center;
+   
 }
 
 .want-to-chat-user{
@@ -127,6 +128,8 @@
         align-items: center;
         background: rgb(193, 230, 242);
         font-weight: 600;
+        padding: 5px;
+        border-radius: 10px;
         p{
             margin-right: 15px;
         }    
