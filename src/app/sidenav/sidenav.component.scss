@@ -28,6 +28,14 @@
       }
 }
 
+.sidenav-inner-container{
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    height: calc(100vh - 143px);
+    overflow-y: scroll!important;
+}
+
 .container-workspace{
     display: flex;
     align-items: center;
@@ -36,7 +44,7 @@
     letter-spacing: 1px;
     border-top: 1px solid #522653;
     border-bottom: 1px solid #522653;
-    padding: 12px 0;
+    height: 50px;
     padding-left: 18px;
     color: white;
 }
@@ -244,9 +252,7 @@ mat-icon{
 
 //border
 .container-border{
-position: absolute;
-bottom: 0;
-    width: 240px;
+
     height: 40px;
     left: 0;
     border-top: 1px solid #522653;
@@ -259,7 +265,7 @@ bottom: 0;
 }
 
 @media(max-width: 645px){
-    .sidenave{
+    .sidenave, .sidenav-inner-container{
         width: 100%;
     }
     .container-workspace{
