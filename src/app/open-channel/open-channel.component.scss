@@ -119,6 +119,10 @@ app-comment-box, mat-expansion-panel{
     border: 1px solid black;
 }
 
+.mat-drawer{
+    width: 300px;
+}
+
 @media(max-width: 680px){
     .mat-drawer{
         width: 100%;
