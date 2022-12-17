@@ -70,7 +70,7 @@ mat-icon{
 }
 
 // THREADS
-.container-threads{
+.container-threads, .container-imprint{
     display: flex;
     align-items: center;
     padding: 6px 0;
@@ -278,6 +278,15 @@ mat-icon{
         padding-left: 20px;
         mat-icon{
             font-size: 22px;
+            margin-right: 8px;
+        }
+    }
+
+    .container-imprint{
+        font-size: 16px;
+        padding-left: 20px;
+        mat-icon{
+            font-size: 18px;
             margin-right: 8px;
         }
     }
