@@ -1,31 +1,3 @@
-<!-- <div *ngFor="let thread of allThreads;let i=index" class="thread-container">
-    <div class="channel-page">
-        <div [routerLink]="['/mainpage/channel/' + thread.id]" class="channel-inner-page">
-            <div># {{ thread.channelName}}</div>
-            <div class="posts-container" >
-                <div class="posts" *ngFor="let post of thread.content let first=first;" >
-                    <div class="pd-left display-row" >
-                        <img class="profile-img" src="{{ post.img }}">
-                        <div>
-                            <div class="display-row ">
-                                <p class="pd-left-s"><b>{{ post.author }}</b></p>
-                                <p class="pd-left-s">{{ post.time }}</p>
-                            </div>
-                            <div class="post pd-left-s">
-                                <p [innerHTML]="post.text"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pd-top" *ngIf="first">
-                        <a class="pd-left pd-top" [routerLink]="['/mainpage/channel/' + thread.id]" >weitere Antworten anzeigen</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-
 <div class="d-flex flex-column-reverse">
 <div class="thread-container" *ngFor="let post of ALLTHREADS; index as i">
     <div class="channel-page" *ngIf="searchText === '' 
