@@ -89,6 +89,30 @@ app-comment-box{
     }
 }
 
+@media(max-width: 600px){
+    .post{
+        max-width: 400px;
+    }
+}
+
+@media(max-width: 500px){
+    .post{
+        max-width: 300px;
+    }
+}
+
+@media(max-width: 400px){
+    .post{
+        max-width: 200px;
+    }
+}
+
+@media(max-width: 320px){
+    .post{
+        max-width: 150px;
+    }
+}
+
 @media(max-width: 380px){
     app-comment-box{
         bottom: 16px;
