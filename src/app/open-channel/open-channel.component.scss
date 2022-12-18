@@ -70,6 +70,10 @@ app-comment-box, mat-expansion-panel{
     }
 }
 
+.post{
+    max-width: 75vw;
+}
+
 .open-thread{
     p{
         color: rgb(19 19 189);
@@ -133,6 +137,30 @@ app-comment-box, mat-expansion-panel{
     }
 }
 
+@media(max-height: 600px){
+    .post-container{
+        height: calc(100% - 110px);
+    }
+}
+
+@media(max-width: 530px){
+    .post{
+        max-width: 300px;
+    }
+}
+
+@media(max-width: 465px){
+    .post{
+        max-width: 250px;
+    }
+}
+
+@media(max-width: 410px){
+    .post{
+        max-width: 200px;
+    }
+}
+
 @media(max-width: 380px){
     .general-info-line{
         flex-direction: column;
@@ -153,8 +181,8 @@ app-comment-box, mat-expansion-panel{
     }
 }
 
-@media(max-height: 600px){
-    .post-container{
-        height: calc(100% - 110px);
+@media(max-width: 350px){
+    .post{
+        max-width: 150px;
     }
 }
