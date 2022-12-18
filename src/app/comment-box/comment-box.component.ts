@@ -11,11 +11,15 @@ import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask 
 import { finalize, map, ObjectUnsubscribedError, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { LightboxComponent } from '../lightbox/lightbox.component';
+
+
 @Component({
   selector: 'app-comment-box',
   templateUrl: './comment-box.component.html',
   styleUrls: ['./comment-box.component.scss']
 })
+
+
 export class CommentBoxComponent implements OnInit {
   form: FormGroup;
   db = getFirestore();
@@ -37,17 +41,22 @@ export class CommentBoxComponent implements OnInit {
   channelId: string;
   currentUser = [];
   innerWidth: number;
+
   @ViewChild('editor', {
     static: true
   }) editor: QuillEditorComponent
+
   @Input() location: string;
   @Input() CommentToPost: any;
   @Input() lightboxOpen = false;
   @Input() lightboxImg = '';
+
   @HostListener('window:resize', ['$event'])
   onResize() {
   this.innerWidth = window.innerWidth;
 }
+
+
   modules = {
     'emoji-shortname': true,
     'emoji-textarea': false,
@@ -60,6 +69,8 @@ export class CommentBoxComponent implements OnInit {
       ['emoji']
     ],
   }
+
+
   modulesSmall = {
     'emoji-shortname': true,
     'emoji-textarea': false,
@@ -70,6 +81,8 @@ export class CommentBoxComponent implements OnInit {
       ['emoji']
     ],
   }
+
+
   post = {
     text: '',
     time: Timestamp.fromDate(new Date()),
@@ -79,6 +92,8 @@ export class CommentBoxComponent implements OnInit {
     postId: '',
     channelName: ''
   }
+
+
   thread = {
     text: '',
     time: Timestamp.fromDate(new Date()),
@@ -87,7 +102,10 @@ export class CommentBoxComponent implements OnInit {
     channelId: '',
     upload: ''
   }
+
+
   localUser;
+
   constructor(
     private route: ActivatedRoute,
     private firestore: AngularFirestore,
@@ -97,14 +115,17 @@ export class CommentBoxComponent implements OnInit {
       'editor': new FormControl()
     });
   }
+
+
   ngOnInit(): void {
     this.localUser = JSON.parse(localStorage.getItem('user'));
     this.innerWidth = window.innerWidth;
   }
+
+
   changedEditor(event: EditorChangeContent | EditorChangeSelection) {
     if (event['event'] == 'text-change') {
       this.text = event['html'];
-      console.log(this.text);
       if (this.text == null) {
         this.valid = false;
       }
@@ -113,6 +134,8 @@ export class CommentBoxComponent implements OnInit {
       }
     }
   }
+
+
   postToChannel() {
     this.loading = true;
     this.currentUser = JSON.parse(localStorage.getItem('user'));
@@ -122,10 +145,14 @@ export class CommentBoxComponent implements OnInit {
     this.setData();
     // this.setThread();
   }
+
+
   setData() {
     if (this.location == 'posts') this.setPostData();
     if (this.location == 'comments') this.setCommentData();
   }
+
+
   async setPostData() {
       this.post.userId = this.currentUser['uid'];
       this.post.text = this.text? this.text : '';
@@ -137,6 +164,8 @@ export class CommentBoxComponent implements OnInit {
       this.data = this.post;
       this.sendDataToPost();
   }
+
+
   setCommentData() {
     this.thread.userId = this.currentUser['uid'];
     this.thread.text = this.text? this.text : '';
@@ -147,26 +176,34 @@ export class CommentBoxComponent implements OnInit {
     this.data = this.thread;
     this.sendDataToComments();
   }
+
+
   async sendDataToPost() {
     await setDoc(doc(this.db, "channels", this.channelId, "posts", this.post.postId), this.data);
     await this.setThreadInUser();
     this.form.reset();
     this.resetUploadPost();
   }
+
+
   async setThreadInUser() {
     await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.post.postId), { channelId: this.channelId, postId: this.post.postId, time: Timestamp.fromDate(new Date()) });
   }
+
+
   async sendDataToComments() {
     await addDoc(collection(this.db, "channels", this.CommentToPost.channelId, "posts", this.CommentToPost.postId, "comments"), this.data);
     await this.setThreadCommentInUser();
     this.form.reset();
     this.resetUploadThread();
   }
+
+
   async setThreadCommentInUser() {
-    console.log(this.CommentToPost.postId)
-    console.log(this.CommentToPost.channelId)
     await setDoc(doc(this.db, "users", this.localUser.uid, "threads", this.CommentToPost.postId), { channelId: this.CommentToPost.channelId, postId: this.CommentToPost.postId, time: Timestamp.fromDate(new Date()) });
   }
+
+
   setThread() {
     let ref = collection(this.db, "channels", this.channelId, "posts");
     let y = query(ref, orderBy("time"), limit(1));
@@ -182,6 +219,8 @@ export class CommentBoxComponent implements OnInit {
       unsubscribe()
     });
   }
+
+
   uploadToPosts(event) {
     const randomId = Math.random().toString(36).substring(2);
     this.PostRef = this.afStorage.ref('/images/' + randomId);
@@ -200,6 +239,8 @@ export class CommentBoxComponent implements OnInit {
     )
       .subscribe()
   }
+
+
   uploadToThread(event) {
     const randomId = Math.random().toString(36).substring(2);
     this.CommentRef = this.afStorage.ref('/images/' + randomId);
@@ -218,16 +259,22 @@ export class CommentBoxComponent implements OnInit {
     )
       .subscribe();
   }
+
+
   discardUploadPost() {
     this.imgUploadPost = '';
     this.PostRef.delete();
     this.resetUploadPost();
   }
+
+
   discardUploadThread(){
     this.imgUploadThread = '';
     this.CommentRef.delete();
     this.resetUploadThread();
   }
+
+
   resetUploadPost() {
     this.valid = false;
     this.loading = false;
@@ -236,6 +283,8 @@ export class CommentBoxComponent implements OnInit {
     this.PostRef = null;
     this.PostTask = null;
   }
+
+
   resetUploadThread(){
     this.valid = false;
     this.loading = false;
@@ -244,6 +293,8 @@ export class CommentBoxComponent implements OnInit {
     this.CommentRef = null;
     this.CommentTask = null;
   }
+
+  
   openLightbox(url) {
     let dialog = this.dialog.open(LightboxComponent);
     dialog.componentInstance.lightboxImg = url;
