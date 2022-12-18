@@ -1,3 +1,6 @@
+.thread-container{
+    margin-bottom: 180px;
+}
 
 .comment-container{
     overflow-x: hidden;
@@ -15,10 +18,6 @@ pre{
 
     img{
         margin-right: 16px;
-    }
-
-    &:last-child{
-        margin-bottom: 180px !important;
     }
 
     p{
@@ -47,11 +46,9 @@ mat-expansion-panel{
 }
 
 .general-info-line{
-    display: flex;
 
     span{
         color: gray;
-        margin-left: 12px;
         font-size: 12px;
     }
 }
@@ -84,6 +81,12 @@ app-comment-box{
     border-radius: 10px!important;
     box-sizing:unset;
     border: 1px solid black;
+}
+
+@media(max-width: 680px){
+    .post{
+        max-width: 500px;
+    }
 }
 
 @media(max-width: 380px){
