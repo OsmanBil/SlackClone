@@ -52,9 +52,11 @@ p {
 }
 
 #emoji-palette {
-    top: -260px!important;
-    left: 20px!important;
+    top: 0!important;
+    left: 0px!important;
     right: auto!important;
+    max-width: 100%;
+    transform: translate(0, calc(-100% - 40px));
 }
 
 .post {
@@ -267,10 +269,9 @@ pre{
 
 @media(max-height: 600px) {
     #emoji-palette {
-        top: -100px!important;
-        left: -30px!important;
-        width: 350px;
-        max-width: 350px;
+    transform: translate(0, 0);
+    overflow-y: scroll;
+    max-height: 100px;
     }
 }
 
