@@ -1,5 +1,6 @@
 .thread-container{
-    margin-bottom: 180px;
+    height: calc(100vh - 295px);
+    overflow-y: scroll;
 }
 
 .comment-container{
@@ -27,7 +28,7 @@ pre{
 
 mat-expansion-panel{
     position: absolute;
-    bottom: 8px;
+    bottom: 32px;
     right: 8px;
     left: 8px;
     z-index: 10;
@@ -128,3 +129,9 @@ app-comment-box{
         }
     }
 }
+
+@media(max-height: 600px){
+.thread-container{
+    height: calc(100vh - 195px);
+  
+}}

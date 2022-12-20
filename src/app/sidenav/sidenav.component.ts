@@ -173,6 +173,12 @@ export class SidenavComponent implements OnInit {
       })
   }
 
+  createChatAndCloseSidenav(){
+    if(this.innerWidth < 645){
+      this.sidenavService.closeSidenav();
+    }
+  }
+
   // SHOWS IN SIDEBAR WHICH CHANNEL IS ACTIVE
   showActive(value, positionInArray) {
     this.activeChatChannel = value;

@@ -27,6 +27,7 @@ const routes: Routes = [
     path: 'mainpage', component: MainpageComponent, canActivate: [AuthGuard],
     children: [
       { path: '', component: DialogCreateChatComponent },
+      { path: 'create-chat', component: DialogCreateChatComponent },
       { path: 'create-chanel', component: DialogCreateChatComponent },
       { path: 'threads', component: ThreadsComponent },
       { path: 'chatroom/:id', component: ChatroomComponent },
