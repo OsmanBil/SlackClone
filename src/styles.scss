@@ -273,6 +273,11 @@ pre{
     overflow-y: scroll;
     max-height: 100px;
     }
+
+    #tab-panel{
+        overflow-x: unset;
+        max-height: none;
+    }
 }
 
 @media(max-width: 450px) {
