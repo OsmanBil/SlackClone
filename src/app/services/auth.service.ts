@@ -135,7 +135,7 @@ export class AuthService {
     let searchName = String(userName);
     let searchUserValue = '';
     const userData: User = {
-      uid: user.uid, email: user.email, displayName: userName, photoURL: user.photoURL,
+      uid: user.uid, email: user.email, displayName: userName, photoURL: 'https://firebasestorage.googleapis.com/v0/b/slack-clone-5c2d6.appspot.com/o/images%2Fnew_user1.png?alt=media&token=06196bc7-93a8-4d59-90ac-28ed6c67b6d8',
       emailVerified: user.emailVerified, isOnline: false, search: []
     };
     this.setDataToDb(user, doc);
