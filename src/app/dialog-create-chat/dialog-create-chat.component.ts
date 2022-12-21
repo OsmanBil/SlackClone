@@ -16,21 +16,6 @@ import { Router } from '@angular/router';
 import { limit } from '@angular/fire/firestore';
 import { SearchService } from '../services/search.service';
 
-class City {
-  name: any;
-  state: any;
-  country: any;
-
-  constructor(name, state, country) {
-    this.name = name;
-    this.state = state;
-    this.country = country;
-  }
-  toString() {
-    return this.name + ', ' + this.state + ', ' + this.country;
-  }
-}
-
 
 
 
@@ -41,8 +26,7 @@ class City {
 })
 export class DialogCreateChatComponent implements OnInit {
 
-
-
+  db = getFirestore();
 
   userData = {
     name: '',
@@ -53,15 +37,7 @@ export class DialogCreateChatComponent implements OnInit {
   };
 
   chatID: any;
-  chatListener: [];
-
-
-  db = getFirestore();
-
-
-
   mymodel;
-  foundUsers: any[];
   @Input() usersWantToChat: any[] = [];
 
 
@@ -69,36 +45,32 @@ export class DialogCreateChatComponent implements OnInit {
   roomidsSort: string[];
   roomid: string;
 
-
-
   @Input() oldMessages: any[] = [];
-
-
   @Input() public messages: any[] = [];
-  textMessage;
   localUserRef;
   localUserSnap;
-
   @Input() localUser: any;
   @Input() loadingFinish = false;
 
   searchText = '';
+  @Input() searchUsers = '';
+
+  @Input() allUsers: any[] = [];
 
   constructor(private firestore: AngularFirestore, private router: Router, private search: SearchService,) { }
 
+  // load local user + load old messages + timeout because the backend need some time + set the searchvalue to null + load a list of all users
   async ngOnInit() {
     this.localUser = JSON.parse(localStorage.getItem('user'));
     await this.loadOldMessages();
-
-    setTimeout(() => { this.check() }, 500);
+    setTimeout(() => { this.sortOldMessages() }, 500);
     this.setSearchValue();
+    this.searchUsers = '';
+    this.loadAllUsers();
   }
 
-  
-
-
+  // LOAD FORM LOCAL USERS ALL CHATROMM IDS
   async loadOldMessages() {
-    // LOAD FORM LOCAL USERS ALL CHATROMM IDS
     const chatroomRefLocalUser = collection(this.db, "users", this.localUser.uid, "chatids");
     const chatroomLocalUserQuerysnapshot = await getDocs(chatroomRefLocalUser);
     chatroomLocalUserQuerysnapshot.forEach(async (doc) => {
@@ -118,100 +90,102 @@ export class DialogCreateChatComponent implements OnInit {
       }
       messageData.chatroomID = doc.id;
 
-      // GET THE NUMBERS OF USERS OF THE CHATROOM
-      const chatrooms = collection(this.db, "chatrooms");
-      const chatroomsQ = query(chatrooms, where('id', '==', doc.id));
-      const chatroomsQuerySnapshot = await getDocs(chatroomsQ);
-      chatroomsQuerySnapshot.forEach(async (chatroomDoc: any) => {
-        messageData.chatroomNumberUsers = chatroomDoc.data().numberOfUsers
-      })
+      this.loadNumberOfChatroomUsers(doc, messageData);
+      this.loadOtherUsersChatrooms(doc, messageData)
+      this.loadLastMessage(doc, messageData);
 
-      // FOR EACH CHATROOM ID THERE IS A CHECK WHO IS THE OTHER CHATROOM USERS
-      const chatroomOtherUser = collection(this.db, "chatrooms", doc.id, "users");
-      const chatroomOtherUserQ = query(chatroomOtherUser, where('id', '!=', this.localUser.uid));
-      const chatroomOtherUserquerySnapshot = await getDocs(chatroomOtherUserQ)
-      chatroomOtherUserquerySnapshot.forEach(async (doc4: any) => {
-        messageData.messageOtherUserID = doc4.data().uid;
-        const authorRef = collection(this.db, "users")
-        const q2 = query(authorRef, where('uid', '==', doc4.data().id))
-        const querySnapshot2 = await getDocs(q2)
-        querySnapshot2.forEach((doc5: any) => {
-          messageData.messageOtherUserName.push(doc5.data().displayName)
-          if(messageData.messageOtherUserName.length > 1)
-          {
-            messageData.messageOtherUserImg = '/assets/img/groupchat.png'
-          }else {
-          messageData.messageOtherUserImg = doc5.data().photoURL}
 
-        })
-      })
-
-      // FOR EACH CHATROOM ID LOAD THE LAST MESSAGE (TIME, TEXT, IMG etc. )
-      const allMessage = collection(this.db, "chatrooms", doc.id, "messages");
-      const allMessageQ = query(allMessage, orderBy('messageTime', 'desc'), limit(1));
-      const allMessagequerySnapshot = await getDocs(allMessageQ)
-      allMessagequerySnapshot.forEach(async (doc2: any) => {
-        messageData.messageAuthorID = doc2.data().messageAuthorID
-        messageData.messageTime = this.convertTimestamp(doc2.data().messageTime)
-        messageData.messageServerTime = doc2.data().messageServerTime
-      
-        if( doc2.data().messageText == ''){
-          messageData.messageText = null
-        } else {
-          messageData.messageText = doc2.data().messageText
-        }
-        messageData.messageImg = doc2.data().messageImg
-
-        // FOR THE LAST MESSAGE LOAD THE IMG AND NAME OF THE AUTHOR OF THE LAST MESSAGE
-        const authorRef = collection(this.db, "users")
-        const q2 = query(authorRef, where('uid', '==', doc2.data().messageAuthorID))
-        const querySnapshot2 = await getDocs(q2)
-        querySnapshot2.forEach((doc3: any) => {
-          messageData.messageAuthor = doc3.data().displayName
-          messageData.messageAuthorImg = doc3.data().photoURL
-        })
-        this.oldMessages.push(messageData)
-      })
     })
-    
+
   }
 
+  // GET THE NUMBERS OF USERS OF THE CHATROOM
+  async loadNumberOfChatroomUsers(doc, messageData) {
+    const chatrooms = collection(this.db, "chatrooms");
+    const chatroomsQ = query(chatrooms, where('id', '==', doc.id));
+    const chatroomsQuerySnapshot = await getDocs(chatroomsQ);
+    chatroomsQuerySnapshot.forEach(async (chatroomDoc: any) => {
+      messageData.chatroomNumberUsers = chatroomDoc.data().numberOfUsers
+    })
+  }
 
-  check() {
+  // FOR EACH CHATROOM ID THERE IS A CHECK WHO IS THE OTHER CHATROOM USERS
+  async loadOtherUsersChatrooms(doc, messageData) {
+    const chatroomOtherUser = collection(this.db, "chatrooms", doc.id, "users");
+    const chatroomOtherUserQ = query(chatroomOtherUser, where('id', '!=', this.localUser.uid));
+    const chatroomOtherUserquerySnapshot = await getDocs(chatroomOtherUserQ)
+    chatroomOtherUserquerySnapshot.forEach(async (doc4: any) => {
+      messageData.messageOtherUserID = doc4.data().uid;
+      const authorRef = collection(this.db, "users")
+      const q2 = query(authorRef, where('uid', '==', doc4.data().id))
+      const querySnapshot2 = await getDocs(q2)
+      querySnapshot2.forEach((doc5: any) => {
+        messageData.messageOtherUserName.push(doc5.data().displayName)
+        if (messageData.messageOtherUserName.length > 1) {
+          messageData.messageOtherUserImg = '/assets/img/groupchat.png'
+        } else {
+          messageData.messageOtherUserImg = doc5.data().photoURL
+        }
+      })
+    })
+  }
+
+  // FOR EACH CHATROOM ID LOAD THE LAST MESSAGE (TIME, TEXT, IMG etc. )
+  async loadLastMessage(doc, messageData) {
+    const allMessage = collection(this.db, "chatrooms", doc.id, "messages");
+    const allMessageQ = query(allMessage, orderBy('messageTime', 'desc'), limit(1));
+    const allMessagequerySnapshot = await getDocs(allMessageQ)
+    allMessagequerySnapshot.forEach(async (doc2: any) => {
+      messageData.messageAuthorID = doc2.data().messageAuthorID
+      messageData.messageTime = this.convertTimestamp(doc2.data().messageTime)
+      messageData.messageServerTime = doc2.data().messageServerTime
+      if (doc2.data().messageText == '') {
+        messageData.messageText = null
+      } else {
+        messageData.messageText = doc2.data().messageText
+      }
+      messageData.messageImg = doc2.data().messageImg
+      this.loadUserDataOfMessage(doc2, messageData);
+    })
+  }
+
+  // FOR THE LAST MESSAGE LOAD THE IMG AND NAME OF THE AUTHOR OF THE LAST MESSAGE
+  async loadUserDataOfMessage(doc2, messageData) {
+    const authorRef = collection(this.db, "users")
+    const q2 = query(authorRef, where('uid', '==', doc2.data().messageAuthorID))
+    const querySnapshot2 = await getDocs(q2)
+    querySnapshot2.forEach((doc3: any) => {
+      messageData.messageAuthor = doc3.data().displayName
+      messageData.messageAuthorImg = doc3.data().photoURL
+    })
+    this.oldMessages.push(messageData)
+  }
+
+  // sort the old messages by time
+  sortOldMessages() {
     this.oldMessages.sort((a, b) => b.messageServerTime - a.messageServerTime)
     this.loadingFinish = true;
   }
 
   // search Users
   async valuechange(newValue) {
-    this.mymodel = newValue;
-    // let mymodelLength = this.mymodel.lenght
-    let mymodelLengthLowerCase = String(this.mymodel).toLocaleLowerCase();
-    const usersRef = collection(this.db, "users")
-    const q = query(usersRef, where('search', 'array-contains', mymodelLengthLowerCase));
-    const querySnapshot = await getDocs(q);
-    this.foundUsers = [];
-    querySnapshot.forEach((doc) => {
-      const founduser: any = { name: doc.data()['displayName'], imageUrl: doc.data()['photoURL'], id: doc.id };
-      if(founduser.id != this.localUser.uid){
-      this.foundUsers.push(founduser)
-      }
-    });
+    this.searchUsers = newValue;
   }
 
   addUserWantToChat(i, input: HTMLInputElement) {
-    if (this.usersWantToChat.includes(this.foundUsers[i]) == false) {
-      this.usersWantToChat.push(this.foundUsers[i])
+    if (this.usersWantToChat.includes(i) == false) {
+      this.usersWantToChat.push(i)
       input.value = '';
-      const foundIndex = this.foundUsers.indexOf(this.foundUsers[i]);
-      this.foundUsers.splice(foundIndex);
+      this.searchUsers = '';
     } else {
       alert('This user already exists')
     }
   }
 
+  // delete the user from the list userswantstochat
   deleteUserWantToChat(i) {
-    this.usersWantToChat.splice(i);
+    const foundIndex = this.usersWantToChat.indexOf(i);
+    this.usersWantToChat.splice(foundIndex, 1);
   }
 
   // CREATE CHATROOM OR LINK TO THE EXISTING ROOM
@@ -230,7 +204,7 @@ export class DialogCreateChatComponent implements OnInit {
     } else {
       this.setUsersForRoom();
       this.setChatroomsInUsers();
-      
+
     }
   }
 
@@ -266,7 +240,7 @@ export class DialogCreateChatComponent implements OnInit {
       await setDoc(doc(this.db, "chatrooms", this.roomid, "users", this.userData.id), this.userData);
       setTimeout(() => { this.router.navigateByUrl('/mainpage/chatroom/' + this.roomid) }, 500);
     }
-  
+
   }
 
   // SET THE CHATROOM ID IN EVERY USER BY FIREBASE
@@ -277,7 +251,28 @@ export class DialogCreateChatComponent implements OnInit {
     };
   }
 
+  // load all Users for the search function
+  async loadAllUsers() {
+    this.allUsers = [];
+    const usersRef = collection(this.db, 'users');
+    const usersDocs = await getDocs(usersRef);
 
+    usersDocs.forEach((doc: any) => {
+      let oneUserData = {
+        name: '',
+        photoURL: '',
+        id: '',
+      }
+      oneUserData.name = doc.data().displayName;
+      oneUserData.photoURL = doc.data().photoURL;
+      oneUserData.id = doc.data().uid;
+      if (oneUserData.id != this.localUser.uid) {
+        this.allUsers.push(oneUserData);
+      }
+    })
+  }
+
+  // convert the timestamps
   convertTimestamp(timestamp) {
     let date = timestamp.toDate();
     let mm = date.getMonth();
@@ -298,118 +293,21 @@ export class DialogCreateChatComponent implements OnInit {
     date = dd + '/' + (mm + 1) + '/' + yyyy + ' ' + hours + ':' + minutes;
     return date;
   }
-  
-  setSearchValue(){
-    this.search.getData().subscribe(s => {                  
-      this.searchText = s; 
-      
+
+  setSearchValue() {
+    this.search.getData().subscribe(s => {
+      this.searchText = s;
     });
   }
 
-  async setShownInSidebarToTrue(currentChatroomID){
-      const otherUserChatroomRef = doc(this.db, "users", this.localUser.uid, "chatids", currentChatroomID);
-         await updateDoc(otherUserChatroomRef, {
-           shownInSidebar: true,
-         })   
+  async setShownInSidebarToTrue(currentChatroomID) {
+    const otherUserChatroomRef = doc(this.db, "users", this.localUser.uid, "chatids", currentChatroomID);
+    await updateDoc(otherUserChatroomRef, {
+      shownInSidebar: true,
+    })
   }
 
-  // BEISPIELE VON MIHAI
 
 
-  // LOAD 3 ist aus dem Call und könnte die Abfrage where komplett ersetzen
-  async loadOldMessages3() {
-    const chatroomRef = collection(this.db, "users", this.localUser.uid, "chatids");
-    const chatRoomSnapshot = (await getDocs(chatroomRef)).docs;
-
-    console.log('All ChatRooms :', chatRoomSnapshot);
-
-    for (let chatRoomIndex = 0; chatRoomIndex < chatRoomSnapshot.length; chatRoomIndex++) {
-      const docChatRoom = chatRoomSnapshot[chatRoomIndex];
-
-      const messages = collection(this.db, "chatrooms", docChatRoom.id, "messages");
-      const lastMessagesQuery = query(messages, orderBy('messageTime', "desc"), limit(1));
-      const lastMessagesSnapshot = (await getDocs(lastMessagesQuery)).docs;
-      console.log('All LastMessages from chatRoomIndex' + chatRoomIndex +' :', lastMessagesSnapshot );
-
-      for (let lastMessageIndex = 0; lastMessageIndex < lastMessagesSnapshot.length; lastMessageIndex++) {
-        const lastMessage = lastMessagesSnapshot[lastMessageIndex];
-
-        let messageData = {
-          messageText: '',
-          messageServerTime: Timestamp,
-          messageAuthor: '',
-          messageTime: Timestamp,
-          messageAuthorImg: '',
-          messageAuthorID: '',
-        };
-
-        messageData.messageAuthorID = lastMessage.data()['messageAuthorID']
-        messageData.messageTime = this.convertTimestamp(lastMessage.data()['messageTime'])
-        messageData.messageText = lastMessage.data()['messageText']
-
-
-        // DAS HIER
-        const authorRef = collection(this.db, "users")
-        const userRef = doc(authorRef, lastMessage.data()['messageAuthorID']);
-        const author = await getDoc(userRef);
-        // 
-
-
-        messageData.messageAuthor = author.data()['displayName']
-        messageData.messageAuthorImg = author.data()['photoURL']
-
-        console.log('Pushing MessageData from chatRoomIndex ' + chatRoomIndex + ', lastMessageIndex ' + lastMessageIndex + ' :', messageData);
-        this.oldMessages.push(messageData)
-      }
-
-    }
-   
-  }
-
-  async loadOldMessages2() {
-    const chatroomRef = collection(this.db, "users", this.localUser.uid, "chatids");
-    const chatRoomSnapshot = (await getDocs(chatroomRef)).docs;
-
-    for (let index = 0; index < chatRoomSnapshot.length; index++) {
-      const docChatRoom = chatRoomSnapshot[index];
-
-
-      let messageData = {
-        messageText: '',
-        messageServerTime: Timestamp,
-        messageAuthor: '',
-        messageTime: Timestamp,
-        messageAuthorImg: '',
-        messageAuthorID: '',
-      };
-
-      const messages = collection(this.db, "chatrooms", docChatRoom.id, "messages");
-      const lastMessagesQuery = query(messages, orderBy('messageTime', "desc"), limit(1));
-
-
-      const lastMessagesSnapshot = (await getDocs(lastMessagesQuery)).docs;
-
-      for (let index = 0; index < lastMessagesSnapshot.length; index++) {
-        const doc2 = lastMessagesSnapshot[index];
-
-        messageData.messageAuthorID = doc2.data()['messageAuthorID']
-        messageData.messageTime = this.convertTimestamp(doc2.data()['messageTime'])
-        messageData.messageText = doc2.data()['messageText']
-
-        const authorRef = collection(this.db, "users")
-        const authorQuery = query(authorRef, where('uid', '==', doc2.data()['messageAuthorID']))
-        const querySnapshot2 = await getDocs(authorQuery)
-        querySnapshot2.forEach((doc3: any) => {
-          messageData.messageAuthor = doc3.data().displayName
-          messageData.messageAuthorImg = doc3.data().photoURL
-        });
-
-        this.oldMessages.push(messageData)
-      }
-
-    }
-  }
-
- 
 
 }

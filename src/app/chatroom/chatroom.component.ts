@@ -26,11 +26,11 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-  this.innerWidth = window.innerWidth;
-  this.innerHeight = window.innerHeight;
-}
+    this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
+  }
 
-  textMessage;
+
   localUser;
   numberOfLoadMessages = 10;
   scrollCounter = 0;
@@ -84,16 +84,13 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     } catch (err) { }
   }
 
+  //needed for the max-height 600px
   scrollToBottom2(value: any): void {
-    
-      this.scrollToBottom();
-      console.log(value)
-    
+    this.scrollToBottom();
   }
 
-
+  // load all bookmarks of a chatroom
   async loadBookmarks() {
-
     const bookmarksRef = collection(this.db, 'chatrooms', this.currentChatroomID, 'bookmarks');
     const loadedChatID = this.currentChatroomID;
     const unsubscribe2 = onSnapshot(bookmarksRef, async (bookmarksDocs) => {
@@ -116,13 +113,14 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     })
   }
 
-
+  // load more messages then 10
   async loadMoreMessages() {
     this.numberOfLoadMessages += 10;
     await this.loadMessages();
     await this.loadUsers();
   }
 
+  // load the messages of a chatroom, at the first time limited to 10 messages
   loadMessages() {
     const messagesRef = collection(this.db, "chatrooms", this.currentChatroomID, "messages");
     const messagesQ = query(messagesRef, orderBy("messageServerTime", "desc"), limit(this.numberOfLoadMessages));
@@ -134,7 +132,6 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
       else {
         this.messages = [];
         snapshot.forEach((postDoc: any) => {
-
           let loadMessage = {
             loadMessageText: postDoc.data()['messageText'],
             loadMessageTime: postDoc.data()['messageTime'],
@@ -147,18 +144,22 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
           };
           loadMessage.loadMessageTime = this.convertTimestamp(loadMessage.loadMessageTime);
 
-          // LOAD AUTHOR
-          const authorRef = query(collection(this.db, "users"), where("uid", "==", loadMessage.loadMessageAuthorID));
-          const unsubscribe2 = onSnapshot(authorRef, async (snapshot2) => {
-            snapshot2.forEach((postDoc2: any) => {
-              loadMessage.loadMessageAuthor = postDoc2.data().displayName;
-              loadMessage.loadMessageAuthorImg = postDoc2.data().photoURL;
-            })
-          })
-          this.messages.push(loadMessage)
+          this.loadAuthorOfMesssage(loadMessage);
+          this.messages.push(loadMessage);
         });
       }
     });
+  }
+
+  // LOAD AUTHOR OF THE MESSAGES FROM THE AUTHOR ID
+  loadAuthorOfMesssage(loadMessage) {
+    const authorRef = query(collection(this.db, "users"), where("uid", "==", loadMessage.loadMessageAuthorID));
+    const unsubscribe2 = onSnapshot(authorRef, async (snapshot2) => {
+      snapshot2.forEach((postDoc2: any) => {
+        loadMessage.loadMessageAuthor = postDoc2.data().displayName;
+        loadMessage.loadMessageAuthorImg = postDoc2.data().photoURL;
+      })
+    })
   }
 
   // GET NUMBER OF CHATROOM USERS FOR EACH CHATROOM
@@ -185,14 +186,19 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     const otherUsersID = query(collection(this.db, "chatrooms", this.currentChatroomID, "users"), where('id', '!=', this.localUser.uid))
     const querySnapshotsUsersID = await getDocs(otherUsersID);
     this.chatusers = [];
-
     querySnapshotsUsersID.forEach((doc: any) => {
       this.userNamesAsString = '';
       chatuserData.id = doc.data().id;
       const loadedChatID = this.currentChatroomID;
-      const chatroomOtherUsers = query(collection(this.db, "users"), where('uid', '==', doc.data().id))
-      const unsub = onSnapshot(chatroomOtherUsers, async (chatroomOtherUserID: any) => {
+      this.loadOtherChatroomUsers(doc, loadedChatID, chatuserData);
+    })
+    this.chatusers.push(chatuserData)
+  }
 
+  // load the other users of a chatroom and checks if it´s a groupchat
+  async loadOtherChatroomUsers(doc, loadedChatID, chatuserData){
+    const chatroomOtherUsers = query(collection(this.db, "users"), where('uid', '==', doc.data().id))
+      const unsub = onSnapshot(chatroomOtherUsers, async (chatroomOtherUserID: any) => {
         chatroomOtherUserID.forEach((doc2: any) => {
           if (loadedChatID != this.currentChatroomID) {
             unsub();
@@ -214,11 +220,9 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
         )
         this.userNamesAsStringWithoutAnd = this.userNamesAsString.substring(0, this.userNamesAsString.length - 4)
       })
-    })
-
-    this.chatusers.push(chatuserData)
   }
 
+  // convert the timestamps
   convertTimestamp(timestamp) {
     let date = timestamp.toDate();
     let mm = date.getMonth();
@@ -240,15 +244,11 @@ export class ChatroomComponent implements OnInit, AfterViewChecked {
     return date;
   }
 
-  alertlist() {
-    alert('Ist auf der To-Do Liste ;)')
-  }
-
-
+  
+  // set the search value in the header
   setSearchValue() {
     this.search.getData().subscribe(s => {
       this.searchText = s;
-
     });
   }
 
