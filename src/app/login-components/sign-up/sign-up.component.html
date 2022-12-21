@@ -1,52 +1,52 @@
 <div class="center-container background-color">
   <mat-card class="mat-elevation-z0 login-card background-color align-item-center">
     <img src="/assets/img/slack-clone-icon.png">
-    <mat-card-title class="background-color">Registrierung</mat-card-title>
-    <mat-card-subtitle class="background-color">Registrierung mit E-mail Adresse </mat-card-subtitle>
+    <mat-card-title class="background-color">Sign up</mat-card-title>
+    <mat-card-subtitle class="background-color">Sign up with E-mail </mat-card-subtitle>
     <mat-card-content class="background-color">
     </mat-card-content>
     <form class="login-form background-color">
       <mat-form-field class="full-width" appearance="fill">
         <mat-label class="color-white">Username</mat-label>
         <input class="color-white" type="text" matInput [formControl]="userNameFormControl" #userName
-          placeholder="z.B. Max Musterman">
+          placeholder="e.g. Max Musterman">
         <mat-error *ngIf="userNameFormControl.hasError('name') && !userNameFormControl.hasError('required')">
           Please enter a username
         </mat-error>
         <mat-error *ngIf="userNameFormControl.hasError('required')">
-          Benutzername wird <strong>benötigt</strong>
+          Username is <strong>required</strong>
         </mat-error>
       </mat-form-field>
       <mat-form-field class="full-width" appearance="fill">
         <mat-label class="color-white">Email</mat-label>
         <input class="color-white" type="email" matInput [formControl]="emailFormControl" #userEmail
-          placeholder="z.B. mail@example.com">
+          placeholder="e.g. mail@example.com">
         <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
           Please enter a valid email address
         </mat-error>
         <mat-error *ngIf="emailFormControl.hasError('required')">
-          Email wird <strong>benötigt</strong>
+          Email is <strong>required</strong>
         </mat-error>
       </mat-form-field>
       <mat-form-field class="full-width" appearance="fill">
-        <mat-label class="color-white">Passwort</mat-label>
+        <mat-label class="color-white">Password</mat-label>
         <input class="color-white" matInput matInput [formControl]="passwordFormControl" #userPwd
-          placeholder="z.B. Password" [type]="hide ? 'password' : 'text'">
+          placeholder="e.g. Password" [type]="hide ? 'password' : 'text'">
         <button class="background-color-green" mat-icon-button matSuffix (click)="hide = !hide"
           [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
         <mat-error *ngIf="passwordFormControl.hasError('required')">
-          Password wird <strong>benötigt</strong>
+          Password is <strong>required</strong>
         </mat-error>
       </mat-form-field>
       <div class="center-container">
         <button mat-raised-button class="background-color-green"
-          (click)="authService.SignUp(userEmail.value, userPwd.value, userName.value)">Registrieren</button>
+          (click)="authService.SignUp(userEmail.value, userPwd.value, userName.value)">Sign up</button>
       </div>
     </form>
     <div class="center-container padding-top padding-bottom">
-      <span class="redirect" routerLink="/sign-in">Zurück zu Login</span>
+      <span class="redirect" routerLink="/sign-in">Back to Sign in</span>
     </div>
   </mat-card>
 </div>
