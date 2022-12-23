@@ -2,7 +2,7 @@ import { AfterViewChecked, AfterViewInit, Component, ElementRef, HostListener, I
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Channel } from 'src/models/channel.class';
-import { getFirestore } from '@firebase/firestore';
+import { getCountFromServer, getFirestore } from '@firebase/firestore';
 import { collection, orderBy, onSnapshot, query, where } from "firebase/firestore";
 import { MatDialog } from '@angular/material/dialog';
 import { ChannelDetailsComponent } from '../channel-details/channel-details.component';
@@ -11,6 +11,7 @@ import { LightboxComponent } from '../lightbox/lightbox.component';
 import { MatDrawer } from '@angular/material/sidenav';
 import { SidenavToggleService } from '../services/sidenav-toggle.service';
 import { MarkPostService } from '../services/mark-post.service';
+import { collectionGroup } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-open-channel',
@@ -160,9 +161,10 @@ export class OpenChannelComponent implements OnInit, AfterViewInit, AfterViewChe
         postId: postDoc.id,
         userId: postDoc.data()['userId'],
         channelId: postDoc.data()['channelId'],
-        uploadImg: postDoc.data()['upload']
+        uploadImg: postDoc.data()['upload'],
+        commentSize: '',
       };
-      this.loadAuthor(post);
+      this.loadComments(post);
     });
   }
 
@@ -177,6 +179,14 @@ export class OpenChannelComponent implements OnInit, AfterViewInit, AfterViewChe
     });
     this.posts.push(post);
     this.scrollCounter = 0
+  }
+
+
+  async loadComments(post){
+    let commentRef = collection(this.db, "channels", post.channelId, "posts", post.postId, 'comments');
+    let snapshot = await getCountFromServer(commentRef);
+    post.commentSize = snapshot.data().count;
+    this.loadAuthor(post);
   }
 
 

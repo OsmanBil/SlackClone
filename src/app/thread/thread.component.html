@@ -5,7 +5,7 @@
         <div>
             <div class="general-info-line">
                 <p><b>{{ post.author }}</b></p>
-                <span>{{ post.time }}</span>
+                <span>{{ post.time }} Uhr</span>
             </div>
             <div class="post">
                 <p [innerHTML]="post.text"></p>
@@ -22,7 +22,7 @@
             <div>
                 <div class="general-info-line">
                     <p><b>{{ comment.author }}</b></p>
-                    <span>{{ comment.time }}</span>
+                    <span>{{ comment.time }} Uhr</span>
                 </div>
                 <div class="post">
                     <p [innerHTML]="comment.text"></p>

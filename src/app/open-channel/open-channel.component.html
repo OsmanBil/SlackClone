@@ -32,7 +32,7 @@
                         <div>
                             <div class="general-info-line">
                                 <p><b>{{ post.author }}</b></p>
-                                <span>{{ post.time }}</span>
+                                <span>{{ post.time }} Uhr</span>
                             </div>
                             <div class="post">
                                 <p [innerHTML]="post.text"></p>
@@ -42,7 +42,7 @@
                             src="{{ post['uploadImg'] }}">
         
                             <div class="open-thread">
-                                <p (click)="openComments(post)">Comments</p>
+                                <p (click)="openComments(post)">{{ post.commentSize }} Comments</p>
                             </div>
                         </div>
                     </div>
