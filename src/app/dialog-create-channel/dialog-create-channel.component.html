@@ -2,8 +2,8 @@
     <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
 
     <h1 mat-dialog-title>Create new channel</h1>
-    <div mat-dialog-content class="mat-dialog-content">
 
+    <div mat-dialog-content class="mat-dialog-content">
         <mat-form-field id="title" appearance="outline">
             <mat-label>Channel Name</mat-label>
             <input [(ngModel)]="channel.channelName" name="title" matInput [disabled]="loading" placeholder="Enter a Name"
@@ -18,10 +18,10 @@
         <mat-form-field id="privacy" appearance="outline">
             <mat-label> Set Privacy</mat-label>
             <mat-select [(ngModel)]="channel.privacy" name="privacy" [disabled]="loading">
-                <mat-option value="Private">Private</mat-option>
+                <!-- <mat-option value="Private">Private</mat-option> -->
                 <mat-option value="Public">Public</mat-option>
             </mat-select>
-            <mat-hint>Public by default</mat-hint>
+            <!-- <mat-hint>Public by default</mat-hint> -->
         </mat-form-field>
     </div>
 
@@ -32,7 +32,7 @@
         </button>
         <button type="submit" class="button-save" [disabled]="!f.form.valid || loading" (click)="save()" mat-button
             cdkFocusInitial>
-            <span>Create new channel</span>
+            <span>Create</span>
             <mat-icon fontIcon="check"></mat-icon>
         </button>
     </div>

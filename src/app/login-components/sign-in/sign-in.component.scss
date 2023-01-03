@@ -1,0 +1,85 @@
+.mat-card{
+  width: 80vw;
+}
+
+.mat-card-title {
+  color: white;
+  padding-bottom: 20px;
+}
+
+.align-item-center {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+img {
+  margin-bottom: 24px;
+  height: 50px;
+}
+
+.mat-card-subtitle {
+  color: white;
+}
+
+span {
+  cursor: pointer;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.mat-input-element::placeholder {
+  color: white;
+}
+
+::ng-deep .mat-form-field-required-marker {
+  color: white
+}
+
+.color-white {
+  color: white;
+}
+
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: white;
+}
+
+.background-color {
+  background-color: #4a154b;
+}
+
+.background-color-green {
+  color: white;
+  background-color: #007a5a;
+  border: none;
+  border-radius: 4px;
+}
+
+.login-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+  background-color: #4a154b;
+}
+
+.padding-top {
+  margin-top: 16px;
+}
+
+.padding-bottom {
+  padding-bottom: 16px
+}
+
+.full-width {
+  width: 100%;
+}
+
+@media(max-width: 330px){
+  img {
+    height: 36px;
+  }
+}

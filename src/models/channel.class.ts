@@ -3,14 +3,12 @@ export class Channel {
     channelName: string;
     description: string;
     privacy: string;
-    posts: Channel[];
 
 
     constructor(obj?: any){
         this.channelName = obj ? obj.channelName : '';
         this.description = obj ? obj.description : '';
-        this.privacy = obj ? obj.privacy : 'public';
-        this.posts = obj ? obj.posts : '';
+        this.privacy = obj ? obj.privacy : 'Public';
     }
 
     public toJSON(){
@@ -18,7 +16,6 @@ export class Channel {
             channelName: this.channelName,
             description: this.description,
             privacy: this.privacy,
-            posts: this.posts
         };
     }
 }

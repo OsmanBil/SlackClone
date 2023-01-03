@@ -1,0 +1,85 @@
+<div class="over-container">
+    <div class="header-container">
+        <h2>Direct messages</h2>
+        <div class="search-container w-100">
+            <div class="w-100 d-flex align-items-center">
+                <p class="text-center">To:</p>
+                <div class="want-to-chat-user-list" *ngFor="let userwantToChat of usersWantToChat; let i = index">
+                    <div class="want-to-chat-user">
+                        <img src="{{ userwantToChat['photoURL'] }}">
+                        <p>{{ userwantToChat['name'] }}</p>
+                        <div class="want-to-chat-icon" (click)="deleteUserWantToChat(userwantToChat)">
+                            <mat-icon>close</mat-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="ms-auto btn btn-outline-success fw-bold" (click)="createChat()"
+                    [disabled]="usersWantToChat.length == 0">create
+                    chat</button>
+            </div>
+
+        </div>
+        <div class="search-container">
+            <input [ngClass]="{'d-none' : usersWantToChat.length > 3}" #searchUserField placeholder="Search User"
+                type="text" [ngModel]="mymodel" (ngModelChange)="valuechange($event)" />
+            <input disabled [ngClass]="{'d-none' : usersWantToChat.length <= 3}"
+                placeholder="This is the maximum of Chat Users" type="text" />
+        </div>
+    </div>
+
+
+
+
+
+    <div class="body-container">
+        <div class="search-user-list-container" *ngIf="searchUsers !== ''">
+
+            <div class="search-user-list" *ngFor="let foundUser of allUsers; let i = index">
+                    <div class="search-user-one" *ngIf=" foundUser.name.toLowerCase().includes(searchUsers)" (click)="addUserWantToChat(foundUser, searchUserField)">
+                        <div >
+                            <img class="found-user-image" src="{{ foundUser['photoURL'] }}">
+                            <p>{{ foundUser['name'] }}</p>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <div class="latest-messages-container" *ngIf="loadingFinish == true">
+
+            <div *ngFor="let messageEx of oldMessages">
+                <div
+                    *ngIf="searchText === '' || messageEx['messageText'].toLowerCase().includes(searchText) || messageEx['messageAuthor'].toLowerCase().includes(searchText) ">
+
+                    <div class="day-container" (click)="setShownInSidebarToTrue(messageEx.chatroomID)"
+                        [routerLink]="['/mainpage/chatroom/' + messageEx.chatroomID]">
+                        <p class="day-text">{{ messageEx.messageTime }} Uhr</p>
+                        <div class="message-container">
+                            <img src="{{ messageEx['messageOtherUserImg'] }}">
+                            <div class="message-text-container">
+                                <div>
+                                    <div class="user-name"
+                                        *ngFor="let user of messageEx['messageOtherUserName'], let i = index">
+                                        <span *ngIf="i > 0" class="me-2">, </span>
+                                        <p>{{user}}</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <p>{{ messageEx['messageAuthor'] }}:</p>
+                                    <p *ngIf=" messageEx['messageText'] != null">
+                                        <i class="d-flex"
+                                            [innerHTML]="'&bdquo;' + messageEx['messageText'] + '&rdquo;'"></i>
+                                    </p>
+                                </div>
+                                <img class="loadmessage-image" *ngIf=" messageEx['messageImg']"
+                                    src="{{ messageEx['messageImg'] }}">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

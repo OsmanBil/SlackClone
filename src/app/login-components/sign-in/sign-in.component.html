@@ -1,0 +1,55 @@
+<div class="center-container background-color">
+  <mat-card class="mat-elevation-z0 login-card background-color align-item-center">
+    <img src="/assets/img/slack-clone-icon.png">
+    <mat-card-title class="background-color">Sign in</mat-card-title>
+    <mat-card-subtitle class="background-color">Sign in with E-mail or with Google account</mat-card-subtitle>
+    <mat-card-content class="background-color">
+    </mat-card-content>
+    <form class="login-form background-color">
+      <mat-form-field class="full-width " appearance="fill">
+        <mat-label class="color-white">Email</mat-label>
+        <input type="email" class="color-white" matInput [formControl]="emailFormControl" #userName
+          placeholder="z.B. mail@example.com">
+        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error *ngIf="emailFormControl.hasError('required')">
+          Email is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label class="color-white">Passwort</mat-label>
+        <input class="color-white" matInput matInput [formControl]="passwordFormControl" #userPassword
+          placeholder="z.B. Password" [type]="hide ? 'password' : 'text'">
+        <button class="background-color-green" mat-icon-button matSuffix (click)="hide = !hide"
+          [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="passwordFormControl.hasError('required')">
+          Password is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <div class="center-container">
+        <button mat-raised-button class="background-color-green"
+          (click)="authService.SignIn(userName.value, userPassword.value)">Sign in</button>
+      </div>
+    </form>
+    <div class="center-container padding-top padding-bottom">
+      or
+    </div>
+    <div class="center-container">
+      <button mat-raised-button class="background-color-green" (click)="authService.GoogleAuth()">Sign in with
+        Google</button>
+    </div>
+    <div class="center-container">
+      <button mat-raised-button class="background-color-green padding-top" (click)="authService.SignIn('osman.bilgin@web.de', 'gastZugang')">Sign in as
+        Test User</button>
+    </div>
+    <div class="center-container padding-top padding-bottom">
+      <span routerLink="/forgot-password">Forgot Password?</span>
+    </div>
+    <div class="center-container padding-top padding-bottom">
+      No account? <span routerLink="/register-user">Register</span>
+    </div>
+  </mat-card>
+</div>

@@ -1,0 +1,137 @@
+.thread-container{
+    height: calc(100vh - 295px);
+    overflow-y: scroll;
+}
+
+.comment-container{
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+pre{
+    width:200px !important;
+}
+
+.comments{
+    display: flex;
+    margin-bottom: 16px;
+    padding: 16px;
+
+    img{
+        margin-right: 16px;
+    }
+
+    p{
+        word-break: break-word;
+    }
+}
+
+mat-expansion-panel{
+    position: absolute;
+    bottom: 32px;
+    right: 8px;
+    left: 8px;
+    z-index: 10;
+}
+
+.posts{
+    margin: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0px 2px 8px -1px rgb(0 0 0 / 20%);
+    border-radius: 10px;
+    background-color: rgba(0,0,0,0.05);
+
+    p{
+        word-break: break-word;
+    }
+}
+
+.general-info-line{
+
+    span{
+        color: gray;
+        font-size: 12px;
+    }
+}
+
+.post{
+    max-width: 200px;
+}
+
+.profile-img{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+app-comment-box{
+    position: absolute;
+    bottom: 32px;
+    right: 8px;
+    left: 8px;
+    z-index: 10;
+}
+
+.upload-image{
+    margin-top: 15px;
+    height: 100px!important;
+    width: 100px!important;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 10px!important;
+    box-sizing:unset;
+    border: 1px solid black;
+}
+
+@media(max-width: 680px){
+    .post{
+        max-width: 500px;
+    }
+}
+
+@media(max-width: 600px){
+    .post{
+        max-width: 400px;
+    }
+}
+
+@media(max-width: 500px){
+    .post{
+        max-width: 300px;
+    }
+}
+
+@media(max-width: 400px){
+    .post{
+        max-width: 200px;
+    }
+}
+
+@media(max-width: 320px){
+    .post{
+        max-width: 150px;
+    }
+}
+
+@media(max-width: 380px){
+    app-comment-box{
+        bottom: 16px;
+    }
+}
+
+@media(max-width: 315px){
+    .general-info-line{
+        flex-direction: column;
+    
+        span{
+            margin-left: unset;
+        }
+    }
+}
+
+@media(max-height: 600px){
+.thread-container{
+    height: calc(100vh - 195px);
+  
+}}

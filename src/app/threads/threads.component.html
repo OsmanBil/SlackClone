@@ -1,0 +1,69 @@
+<div class="d-flex flex-column-reverse">
+<div class="thread-container" *ngFor="let post of ALLTHREADS; index as i">
+    <div class="channel-page" *ngIf="searchText === '' 
+        || post.postAuthorName.toLowerCase().includes(searchText) 
+        || post.postText.toLowerCase().includes(searchText) 
+        || post.channelName.toLowerCase().includes(searchText)
+        || post.lastTwoComment[0]?.commentLastText.toLowerCase().includes(searchText)      
+        || post.lastTwoComment[1]?.commentLastText.toLowerCase().includes(searchText)">
+        <div></div>
+
+        <div class="channel-inner-page">
+            <div class="fw-bold"># {{post.channelName}}</div>
+            <div class="post-container" #scrollMe>
+                <div class="posts">
+                    <img class="profile-img" src="{{ post.postAuthorImg }}">
+                    <div>
+                        <div class="general-info-line">
+                            <p><b>{{ post.postAuthorName }}</b></p>
+                            <span>{{ post.postTime }}</span>
+                        </div>
+                        <div class="post">
+                            <p [innerHTML]="post.postText"></p>
+                        </div>
+                        <img (click)="openLightbox( post['uploadImg'] )" class="upload-image" *ngIf=" post['uploadImg']"
+                            src="{{ post['uploadImg'] }}">
+                    </div>
+                </div>
+                <a class="pd-left pd-top" id="{{ post.postId }}"
+                    [routerLink]="'/mainpage/channel/' + ALLTHREADS[i].channelID"
+                    [queryParams]="{sendedPostID: ALLTHREADS[i].postID}" (click)="setMarkedPostId(post.postID)">weiter
+                    zum Post</a>
+                <div class="comments-container">
+                    <div class="comments" *ngIf="(post.lastTwoComment[1] | keyvalue)?.length"  >
+                        <img class="profile-img" src="{{ post.lastTwoComment[1].commentLastAuthorImg }}">
+                        <div>
+                            <div class="general-info-line" >
+                                <p><b>{{ post.lastTwoComment[1]?.commentLastAuthorName }}</b></p>
+                                <span>{{ post.lastTwoComment[1]?.commentLastTime }}</span>
+                            </div>
+                            <div class="post">
+                                <p [innerHTML]="post.lastTwoComment[1]?.commentLastText"></p>
+                            </div>
+                            <img (click)="openLightbox( post['uploadImg'] )" class="upload-image"
+                            *ngIf=" post.lastTwoComment[1]['commentLastUpload']"  src="{{ post.lastTwoComment[1]['commentLastUpload'] }}">
+                        </div>
+                    </div>
+
+                    <div class="comments" *ngIf="(post.lastTwoComment[0] | keyvalue)?.length">
+                        <img class="profile-img" src="{{ post.lastTwoComment[0]?.commentLastAuthorImg }}">
+                        <div>
+                            <div class="general-info-line">
+                                <p><b>{{ post.lastTwoComment[0]?.commentLastAuthorName }}</b></p>
+                                <span>{{ post.lastTwoComment[0]?.commentLastTime }}</span>
+                            </div>
+                            <div class="post">
+                                <p [innerHTML]="post.lastTwoComment[0]?.commentLastText"></p>
+                            </div>
+                            <img (click)="openLightbox( post['uploadImg'] )" class="upload-image"
+                            *ngIf=" post.lastTwoComment[0]['commentLastUpload']"  src="{{ post.lastTwoComment[0]['commentLastUpload'] }}">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>

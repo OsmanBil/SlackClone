@@ -1,0 +1,161 @@
+.thread-container{
+    .channel-page{
+        height: 100%;
+        width: auto;
+        margin: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: #eeeeee;
+        border-radius: 5px;
+
+        .channel-inner-page{
+            padding-top: 16px;
+            padding-left: 16px;
+        }
+    }
+}
+
+.profile-img{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-left: 8px;
+}
+
+.posts-container{
+    margin-bottom: 16px;
+    margin-right: 16px;
+    width: auto;
+    background-color: white;
+
+    border-left: 1px solid rgb(209, 207, 207);
+    border-right: 1px solid rgb(209, 207, 207);
+    border-top: 1px solid rgb(209, 207, 207);
+    border-bottom: 1px solid rgb(209, 207, 207);
+    border-radius: 15px;
+
+}
+
+
+
+.pd-left{
+    padding-left: 16px;
+}
+
+.pd-left-s{
+    padding-left: 4px;
+}
+
+.pd-top{
+    margin-top: 8px;
+}
+
+.display-row{
+    display: flex;
+    flex-direction: row;
+}
+
+.post-container{
+    padding-right: 16px;
+}
+
+
+.upload-image{
+    height: 150px;
+    width: 150px;
+}
+
+.posts{
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-right: 8px;
+    width: 100%;
+    background-color: white;
+
+
+    display: flex;
+    margin-bottom: 8px;
+    box-shadow: 0px 2px 8px -1px rgb(0 0 0 / 20%);
+    border-radius: 10px;
+
+    .infos{
+        img{
+            height: 150px;
+            width: 150px;
+        }
+    }
+
+
+    img{
+        margin-right: 16px;
+
+
+    }
+
+    &:first-child{
+        background-color: white;
+        border-top: 1px solid rgb(209, 207, 207);
+        border-radius: 15px;
+    }
+    
+
+    &:last-child{
+        margin-bottom: 10px !important;
+        background-color: white;
+    }
+}
+
+.post{
+    padding-right: 16px;
+}
+
+.comments-container{
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.comments{
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-right: 8px;
+    width: 100%;
+    background-color: white;
+
+    display: flex;
+    margin-bottom: 4px;
+    box-shadow: 0px 2px 8px -1px rgb(0 0 0 / 20%);
+    border-radius: 10px;
+
+    img{
+        margin-right: 16px;
+    }
+
+    &:first-child{
+        background-color: rgb(255, 255, 255);
+        border-top: 1px solid rgb(209, 207, 207);
+        border-radius: 15px;
+    }
+    
+
+    &:last-child{
+       background-color: white;
+    }
+}
+
+.general-info-line{
+    display: flex;
+
+    span{
+        color: gray;
+        margin-left: 12px;
+        font-size: 12px;
+    }
+}
+
+
+
+
+
+

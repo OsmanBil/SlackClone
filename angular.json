@@ -28,7 +28,9 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/quill-emoji/dist/quill-emoji.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -38,13 +40,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "6mb",
+                  "maximumError": "3mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "8kb"
                 }
               ],
               "fileReplacements": [
@@ -115,5 +117,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "c9e07b6c-d459-47bc-9981-15e50af50d02"
   }
 }

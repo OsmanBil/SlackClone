@@ -1,0 +1,76 @@
+<form #f="ngForm" class="dialog-container" novalidate>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+    <h1 mat-dialog-title>Settings</h1>
+    <div mat-dialog-content>
+        <div class="container-dialog-content">
+            <div class="container-user-details">
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>User name</mat-label>
+                        <input [(ngModel)]="user['displayName']" name="displayName" matInput placeholder="User name"
+                            [disabled]="loading" required>
+                        <mat-icon [ngStyle]="{'color':'#757575'}" matSuffix>perm_identity</mat-icon>
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>E-mail</mat-label>
+                        <input [(ngModel)]="user['email']" name="email" matInput placeholder="your@mail.com"
+                            [disabled]="loading" required>
+                        <mat-icon [ngStyle]="{'color':'#757575'}" matSuffix>mail</mat-icon>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="container-profile-picture">
+                <div class="profilePic">
+                    <div>
+                        <img src="{{ user['photoURL'] }}" class="picture">
+                    </div>
+                    <div *ngIf="downloadURL | async; let url">
+                        <img [src]="url" class="picture ml-16">
+                    </div>
+                </div>
+                <div class="editProfilePic">
+                    <div class="button-upload">
+                        <label for="file" class="upload-file">
+                            <i class="material-icons">cloud_upload</i>
+                            Upload image
+                        </label>
+                        <input type="file" id="file" (change)="upload($event)" accept=".png,.jpg" />
+                    </div>
+
+                    <progress max="100" [value]="(ProfileUploadProgress | async)"
+                        *ngIf="ProfileUploadState | async; let state"></progress>
+
+                    <section class="control-bar" *ngIf="downloadURL | async; let state">
+                        <button (click)="discardUpload()" [disabled]="state === 'running'">Discard</button>
+                        <button (click)="changePicture()" [disabled]="state === 'running'">Change Picture</button>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="container-toggle-online">
+            <p>Who can see you're online</p>
+            <mat-slide-toggle [(ngModel)]="user['isOnline']" name="online">
+                <span *ngIf="user['isOnline']">everybody</span>
+                <span *ngIf="!user['isOnline']">nobody</span>
+            </mat-slide-toggle>
+        </div>
+    </div>
+
+    <div mat-dialog-actions>
+        <button class="button-cancel" [disabled]="loading" mat-button (click)="dialogRef.close()">
+            <span>Discard</span>
+            <mat-icon fontIcon="close"></mat-icon>
+        </button>
+        <button type="submit" class="button-save" [disabled]="!f.form.valid || loading" (click)="save()" mat-button
+            cdkFocusInitial>
+            <span>Save</span>
+            <mat-icon fontIcon="check"></mat-icon>
+        </button>
+    </div>
+
+</form>

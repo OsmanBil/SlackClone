@@ -1,0 +1,167 @@
+.ml-16{
+    margin-left: 16px;
+}
+
+.container-dialog-content{
+    display: flex;
+}
+
+.container-user-details{
+    border-right: 1px solid rgb(233, 233, 233);
+    padding-right: 16px;
+}
+
+.container-profile-picture{
+    margin-left: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profilePic {
+    display: flex;
+    align-items: center;
+}
+
+.button-upload{
+    margin-bottom: 16px;
+}
+
+.upload-file{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: end;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 125ms ease-in-out;
+
+    &:hover{
+        background-color: rgb(233, 233, 233);
+        transition: all 125ms ease-in-out;
+    }
+
+    .material-icons{
+        margin-right: 8px;
+        color: #757575;
+    }
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.picture {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.editProfilePic{
+    margin-bottom: 16px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+section{
+    display: flex;
+
+    button{
+        &:hover{
+            background-color: #c0c0c0;
+        }
+    }
+}
+
+.container-toggle-online{
+    margin-top: 16px;
+    margin-bottom: 16px;
+
+    mat-slide-toggle{
+        margin-top: 8px;      
+    }
+}
+
+.mat-dialog-actions{
+    justify-content: end;
+
+    .button-save{
+        color: white;
+        background-color: #3F0E40;
+
+        &:hover{
+            background-color: #A161A3;
+        }
+
+        &:disabled{
+            background-color:#cdcdcd;
+        }
+    }
+
+    .button-cancel{
+        &:hover{
+            background-color: #c0c0c0;
+        }
+    }
+
+
+}
+
+button{
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    margin-left: 16px;
+
+    mat-icon{
+        height: 16px;
+        width: 16px;
+        margin-left: 8px;
+    }
+
+    .material-icons{
+        font-size: 16px;
+    }
+}
+
+@media(max-width: 650px){
+    .container-dialog-content{
+        flex-direction: column;
+    }
+
+    .container-user-details{
+        padding: unset;
+        border: unset;
+    }
+
+    .container-profile-picture{
+        margin: unset;
+    }
+}
+
+@media(max-width: 300px){
+    .container-toggle-online{
+        margin-top: 0;
+    }
+
+    button{
+        font-size: 12px;
+        margin-left: 8px;
+    }
+
+    .picture{
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media(max-width: 330px) {
+    mat-form-field {
+        width: 180px;
+    }
+}

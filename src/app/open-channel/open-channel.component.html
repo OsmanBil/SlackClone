@@ -1,0 +1,70 @@
+<mat-drawer-container class="drawer-container" autosize>
+
+    <mat-drawer #threadContainer class="example-sidenav" mode="side" position="end">
+        <div class="head">
+            <h2>Thread</h2>
+            <i (click)="closeThreads()" class="material-icons">close</i>
+        </div>
+        <app-thread [post]="thread"></app-thread>
+    </mat-drawer>
+
+        <div class="channel-page">
+            <div>
+                <h2 (click)="showChannelDetails()" class="align"> 
+                    <mat-icon *ngIf="channel['privacy'] == 'Public'" fontIcon="numbers"></mat-icon>
+                    <mat-icon *ngIf="channel['privacy'] == 'Private'" fontIcon="lock_outline"></mat-icon>
+                    {{ channel.channelName }}
+                </h2>
+            </div>
+
+            <div class="empty-channel" *ngIf="posts.length == 0">
+                <i class="material-icons">rocket_launch</i>
+                <p>Start a conversation</p>
+            </div>
+
+            <div class="post-container" #scrollMe>
+                <div *ngFor="let post of posts; index as i">
+                    <div [ngClass]="{greenClass: post.postId == postIdFrom}" class="posts" id="{{ post.postId }}" *ngIf="searchText === '' || 
+                    post?.author?.toLowerCase().includes(searchText) ||
+                    post?.text?.toLowerCase().includes(searchText)">
+                        <img class="profile-img" src="{{ post.img }}">
+    
+                        <div>
+                            <div class="general-info-line">
+                                <p><b>{{ post.author }}</b></p>
+                                <span>{{ post.time }} Uhr</span>
+                            </div>
+                            <div class="post">
+                                <p [innerHTML]="post.text"></p>
+                            </div>
+
+                            <img (click)="openLightbox( post['uploadImg'] )" class="upload-image" *ngIf=" post['uploadImg']"
+                            src="{{ post['uploadImg'] }}">
+        
+                            <div class="open-thread">
+                                <p (click)="openComments(post)">{{ post.commentSize }} Comments</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <app-comment-box location="posts" *ngIf="innerHeight > 600"></app-comment-box>
+
+            <mat-accordion *ngIf="innerHeight < 600">
+                <mat-expansion-panel 
+                  (opened)="panelOpenState = true" 
+                  (closed)="panelOpenState = false">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Write something
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <app-comment-box location="posts"></app-comment-box>
+                </mat-expansion-panel>
+              </mat-accordion>
+        </div>
+
+
+</mat-drawer-container>

@@ -1,0 +1,73 @@
+.mat-dialog-content{
+    display: flex;
+    flex-direction: column;
+
+    textarea{
+        resize: none;
+    }
+}
+
+.mat-dialog-actions{
+    justify-content: end;
+
+    .button-save{
+        color: white;
+        background-color: #3F0E40;
+
+        &:hover{
+            background-color: #A161A3;
+        }
+
+        &:disabled{
+            background-color:#cdcdcd;
+        }
+    }
+
+    .button-cancel{
+        &:hover{
+            background-color: #c0c0c0;
+        }
+    }
+
+
+}
+
+button{
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    margin-left: 16px;
+
+    mat-icon{
+        height: 16px;
+        width: 16px;
+        margin-left: 8px;
+    }
+
+    .material-icons{
+        font-size: 16px;
+    }
+}
+
+@media(max-width: 295px){
+    button{
+        font-size: 12px;
+    }
+}
+
+@media(max-height: 390px){
+    form{
+        display: flex;
+    }
+
+    .mat-dialog-content{
+        padding: 0 16px;
+    }
+
+    h1{
+        font-size: 18px;
+        padding-right: 8px;
+    }
+}

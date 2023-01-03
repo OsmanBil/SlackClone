@@ -1,0 +1,37 @@
+<form class="bookmarks-container">
+
+    <div class="header-container d-flex align-items-center justify-content-between mb-4">
+        <p class="fw-bold">Add a bookmarkt to this channel</p>
+        <i class="material-icons close-lightbox" (click)="dialogRef.close()">close</i>
+    </div>
+    <div class="mb-2">
+        <div>
+            <mat-form-field appearance="outline">
+                <mat-label>Name</mat-label>
+                <input [(ngModel)]="linkName" name="link" matInput placeholder="Documentation..." required>
+                <mat-icon [ngStyle]="{'color':'#757575'}" matSuffix>bookmark</mat-icon>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="outline">
+                <mat-label>Link</mat-label>
+                <input [(ngModel)]="link" name="link" matInput placeholder="https://devoloper-academy.com" required>
+                <mat-icon [ngStyle]="{'color':'#757575'}" matSuffix>link</mat-icon>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="bottom-container">
+    <div class="d-flex align-items-center mx-0 mx-sm-3 mb-sm-4 mb-2">
+        <img class="folder-img me-3" src="/assets/img/folder.png">
+        <div class="bookmark-text">
+            <p class="fw-bold pb-1">Bookmark important links for your team</p>
+            <p>Add bookmarks for links you want to find quickly. All channel members can see the bookmarks you add.</p>
+        </div>
+    </div>
+    <div>
+        <button  [disabled]="link.length == 0 || linkName.length == 0" class="btn btn-success add-button ms-auto" (click)="addBookmark()">
+           <mat-icon class="">add</mat-icon> add bookmark</button>
+       
+    </div>
+    </div>
+</form>

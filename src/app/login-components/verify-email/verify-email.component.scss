@@ -1,0 +1,26 @@
+.displayTable {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    color: white;
+    background-color: #4a154b;
+}
+
+button{
+    margin-top: 16px;
+    margin-bottom: 16px;
+    background-color: #007a5a;
+    color: white;
+}
+
+button:hover{
+    background-color: #015e45;  
+}
+
+span{
+    cursor: pointer;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
